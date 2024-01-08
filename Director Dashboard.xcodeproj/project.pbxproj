@@ -18,6 +18,8 @@
 		4450839A2B48EA3400707476 /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083992B48EA3400707476 /* SignUp.swift */; };
 		4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839D2B48EB1900707476 /* DirectorWelcome.swift */; };
 		445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839F2B48EB2900707476 /* DataCellWelcome.swift */; };
+		445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083BF2B4AAC0200707476 /* ExistingUser.swift */; };
+		445083C52B4C13CE00707476 /* Faculty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083C42B4C13CE00707476 /* Faculty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		445083992B48EA3400707476 /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		4450839D2B48EB1900707476 /* DirectorWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorWelcome.swift; sourceTree = "<group>"; };
 		4450839F2B48EB2900707476 /* DataCellWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellWelcome.swift; sourceTree = "<group>"; };
+		445083BF2B4AAC0200707476 /* ExistingUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUser.swift; sourceTree = "<group>"; };
+		445083C42B4C13CE00707476 /* Faculty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Faculty.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +69,7 @@
 		4450837F2B48E8EF00707476 /* Director Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				445083C32B4C136B00707476 /* DataCell */,
 				445083902B48E92E00707476 /* MongoServer */,
 				4450838F2B48E91E00707476 /* Welcome */,
 				4450838E2B48E8F900707476 /* Authentication */,
@@ -107,9 +112,18 @@
 			isa = PBXGroup;
 			children = (
 				445083912B48E95C00707476 /* NotificationModel.swift */,
+				445083BF2B4AAC0200707476 /* ExistingUser.swift */,
 				445083952B48E9B000707476 /* LoginModel.swift */,
 			);
 			path = MongoServer;
+			sourceTree = "<group>";
+		};
+		445083C32B4C136B00707476 /* DataCell */ = {
+			isa = PBXGroup;
+			children = (
+				445083C42B4C13CE00707476 /* Faculty.swift */,
+			);
+			path = DataCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,9 +197,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */,
+				445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */,
 				4450839A2B48EA3400707476 /* SignUp.swift in Sources */,
 				445083962B48E9B000707476 /* LoginModel.swift in Sources */,
 				445083922B48E95C00707476 /* NotificationModel.swift in Sources */,
+				445083C52B4C13CE00707476 /* Faculty.swift in Sources */,
 				445083982B48E9C500707476 /* HODWelcome.swift in Sources */,
 				445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */,
 				445083832B48E8EF00707476 /* Login.swift in Sources */,

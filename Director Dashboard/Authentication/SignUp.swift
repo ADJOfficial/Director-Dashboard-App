@@ -14,47 +14,47 @@ struct SignUp: View {
     @State private var name = ""
     @State private var phone = ""
     @State private var showAlert = false
-    
+
     var body: some View {
         VStack {
             Text("iOS Fam")
                 .font(.largeTitle)
                 .bold()
-            
+
             Spacer()
-            
+
             TextField("Username", text: $username)
                 .padding()
                 .background(Color.gray.opacity(0.3))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            
+
             TextField("Email Address", text: $email)
                 .padding()
                 .background(Color.gray.opacity(0.3))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            
+
             TextField("Password", text: $password)
                 .padding()
                 .background(Color.gray.opacity(0.3))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            
+
             TextField("First Name", text: $name)
                 .padding()
                 .background(Color.gray.opacity(0.3))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            
+
             TextField("Phone", text: $phone)
                 .padding()
                 .background(Color.gray.opacity(0.3))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            
+
             Spacer()
-            
+
             Button("Create Account") {
                 create()
             }
@@ -64,7 +64,7 @@ struct SignUp: View {
                     .navigationBarBackButtonHidden(true)
             } label: {
                 HStack{
-                    
+
                     Text("Back to Login?")
                         .fontWeight(.bold)
                 }
@@ -72,7 +72,7 @@ struct SignUp: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color.yellow)
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Account Created"),
@@ -81,12 +81,12 @@ struct SignUp: View {
             )
         }
     }
-    
+
     func create() {
         guard let url = URL(string: "http://localhost:1000/createFam") else {
             return
         }
-        
+
         let fam = [
             "username": username,
             "email": email,
@@ -94,16 +94,16 @@ struct SignUp: View {
             "name": name,
             "phone": phone
         ] as [String : Any]
-        
+
         guard let jsonData = try? JSONSerialization.data(withJSONObject: fam) else {
             return
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = jsonData
-        
+
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
                 do {
@@ -125,6 +125,8 @@ struct SignUp: View {
         }.resume()
     }
 }
+
+
 
 struct SignUp_Previews: PreviewProvider {
     static var previews: some View {
