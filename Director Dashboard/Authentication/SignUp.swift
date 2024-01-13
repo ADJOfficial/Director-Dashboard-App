@@ -17,7 +17,7 @@ struct SignUp: View {
 
     var body: some View {
         VStack {
-            Text("iOS Fam")
+            Text("Create Faculty")
                 .font(.largeTitle)
                 .bold()
 
@@ -72,7 +72,6 @@ struct SignUp: View {
             }
         }
         .padding()
-        .background(Color.yellow)
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Account Created"),

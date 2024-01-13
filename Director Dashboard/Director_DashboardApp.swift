@@ -11,7 +11,7 @@ import SwiftUI
 struct Director_DashboardApp: App {
     var body: some Scene {
         WindowGroup {
-            ViewYourCourses()
+            Dashboard()
         }
     }
 }

@@ -18,56 +18,58 @@ struct Faculty: View {
         VStack(alignment: .leading) {
             Text("Name")
                 .padding()
+                .foregroundColor(Color.white)
             TextField("Name" , text: $name)
                 .padding()
-                .background(Color.gray.opacity(0.1))
+                .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
             Text("Username")
                 .padding()
+                .foregroundColor(Color.white)
             TextField("Username" , text: $username)
                 .padding()
-                .background(Color.gray.opacity(0.1))
+                .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
             Text("Password")
                 .padding()
+                .foregroundColor(Color.white)
             SecureField("Password" , text: $password)
                 .padding()
-                .background(Color.gray.opacity(0.1))
+                .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
             
             Button("Create"){
                 saveUser()
             }
-            .foregroundColor(.white)
+            .foregroundColor(.black)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.blue)
+            .background(Color.yellow)
             .cornerRadius(8)
             .padding()
             
-            ScrollView{
-                VStack {
-                    HStack {
-                        Text("Name")
-                            .font(.headline)
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                        
-                        Divider()
-                        Text("Username")
-                            .font(.headline)
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                        
-                        Divider()
-                        Text("Edit")
-                            .font(.headline)
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                        
-                    }
-                    .padding()
+            
+            VStack {
+                HStack {
+                    Text("Name")
+                        .font(.headline)
+                        .frame(minWidth: 0, maxWidth: .infinity)
                     
+                    Divider()
+                    Text("Username")
+                        .font(.headline)
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                    
+                    Divider()
+                    Text("Edit")
+                        .font(.headline)
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                    
+                }
+                ScrollView{
                     ForEach(userViewModel.existing , id:\ .self) { cr in
                         HStack{
                             Text(cr.name)
@@ -90,14 +92,15 @@ struct Faculty: View {
                     }
                 }
             }
-            .background(Color.gray.opacity(0.3)) // Add a background color for better visibility
+            .background(Color.white.opacity(0.8)) // Add a background color for better visibility
             .cornerRadius(8)
-            .frame(width: 360, height: 150)
+            .frame(width: 360, height: 200)
             .padding()
             .onAppear {
                 userViewModel.fetchExistingUser()
             }
         }
+        .background(Image("fac"))
     }
     func saveUser() {
         guard let url = URL(string: "http://localhost:1000/addFaculties") else {

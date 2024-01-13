@@ -47,3 +47,42 @@ class UserViewModel: ObservableObject {
     }
 }
 
+struct ExistingCourses: Hashable , Codable {
+    var course = ""
+    var code = ""
+}
+
+class CourseViewModel: ObservableObject {
+    
+    @Published var courses: [ExistingCourses] = []
+    
+    func fetchExistingCourse() {
+        guard let url = URL(string: "http://localhost:1000/course")
+                
+        else{
+            return
+        }
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            
+            guard let data = data , error == nil
+                    
+            else {
+                return
+            }
+            
+            // Convert to JSON
+            
+            do{
+                let courses = try JSONDecoder().decode([ExistingCourses].self, from: data)
+                DispatchQueue.main.async {
+                    self?.courses = courses
+                }
+            }
+            catch{
+                print("Error While Getting Data")
+            }
+        }
+        task.resume()
+    }
+}
+

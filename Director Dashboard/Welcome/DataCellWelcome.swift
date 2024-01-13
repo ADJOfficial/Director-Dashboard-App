@@ -12,13 +12,15 @@ struct DataCellWelcome: View {
         NavigationView{
             VStack{
                 Text("DataCell")
-                    .font(.largeTitle)
                     .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
                 Spacer()
                 
-                Text("Welcome Nadeem")
+                Text("Welcome Mr Nadeem")
                     .font(.title)
-                    .position(x:130,y: 80)
+                    .position(x:150,y: 80)
+                    .foregroundColor(Color.white)
                 
                 VStack{
                     NavigationLink{
@@ -26,11 +28,11 @@ struct DataCellWelcome: View {
                     } label: {
                         Text("Faculty")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.yellow)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -39,11 +41,11 @@ struct DataCellWelcome: View {
                     } label: {
                         Text("Papers")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.yellow)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -52,30 +54,37 @@ struct DataCellWelcome: View {
                     } label: {
                         Text("Printed")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.yellow)
                     .cornerRadius(8)
                     .padding(.all)
                 }
                 .position(x:200)
             }
+            .background(Image("fac"))
         }
     }
 }
 struct VerifiedPapers: View {
-
-        var body: some View {
-            VStack {
-            }
+    var body: some View {
+        VStack {
+            Text("Verified Printed")
+                .foregroundColor(Color.white)
         }
+        .background(Image("fac"))
     }
+}
 
 struct Printed: View {
     var body: some View {
-        Text("Printed")
+        VStack{
+            Text("Printed")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fac"))
     }
 }
 

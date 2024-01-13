@@ -7,17 +7,20 @@
 
 import SwiftUI
 
-struct Welcome: View {
+struct FacultyWelcome: View {
+    
     var body: some View {
         NavigationView {
             VStack {
                 Text("Faculty")
+                    .bold()
                     .font(.largeTitle)
-                    .bold()
+                    .foregroundColor(Color.white)
                 Text("Welcome Mr ... ")
-                    .font(.title)
                     .bold()
+                    .font(.title)
                     .position(x:120,y:100)
+                    .foregroundColor(Color.white)
                 VStack{
                     NavigationLink {
                         ViewYourCourses()
@@ -25,11 +28,11 @@ struct Welcome: View {
                     } label: {
                         Text("Courses")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -38,11 +41,11 @@ struct Welcome: View {
                     } label: {
                         Text("CLOs")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -51,31 +54,39 @@ struct Welcome: View {
                     } label: {
                         Text("Topics")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                 }
                 .position(x:195,y: 10)
             }
-            .background(Color.yellow)
+            .background(Image("fa"))
         }
     }
 }
 
 struct CLOs: View {
     var body: some View {
-        Text("CLOs")
+        VStack{
+            Text("CLOs")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fa"))
     }
 }
 
 
 struct Topic: View {
     var body: some View {
-        Text("Topics")
+        VStack{
+            Text("Topics")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fa"))
     }
 }
 
@@ -85,41 +96,40 @@ struct ViewYourCourses: View {
     var body: some View {
         NavigationView {
             VStack{
-                Text("Faculty Dashboard")
-                    .font(.largeTitle)
+                Text("Faculty")
                     .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
                 Text("Welcome ")
                     .position(x:80,y:100)
                     .bold()
                     .font(.title)
+                    .foregroundColor(Color.white)
                 NavigationLink {
                     Mail()
                 } label: {
                     Image(systemName: "mail.fill")
-                        .foregroundColor(.black)
+                        .foregroundColor(.blue)
                 }
                 .font(.largeTitle)
                 .position(x:350,y:-130)
                 Text("Subjects")
                     .position(x:60,y:-90)
                     .bold()
-                
-                
+                    .foregroundColor(Color.white)
                 HStack{
-                    
                     Spacer()
-                    
                     NavigationLink {
                         PF()
                             .navigationBarBackButtonHidden(false)
                     } label: {
                         Text("Programming Fundamental")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -131,11 +141,11 @@ struct ViewYourCourses: View {
                     } label: {
                         Text("Web Technology")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -153,11 +163,11 @@ struct ViewYourCourses: View {
                     } label: {
                         Text("Software Engennring")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -169,11 +179,11 @@ struct ViewYourCourses: View {
                     } label: {
                         Text("Operation Research")
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
                     .bold()
                     .frame(width: 150)
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -182,7 +192,8 @@ struct ViewYourCourses: View {
                 .position(x: 195,y: -180)
                 
                 Spacer()
-            }.background(Color.yellow)
+            }
+            .background(Image("fa"))
         }
     }
 }
@@ -191,22 +202,38 @@ struct ViewYourCourses: View {
 
 struct PF: View {
     var body: some View {
-        Text("Subject : Programming Fundamental")
+        VStack {
+            Text("Subject : Programming Fundamental")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fa"))
     }
 }
 struct Web: View {
     var body: some View {
-        Text("Subject : Web Technology")
+        VStack {
+            Text("Subject : Web Technology")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fa"))
     }
 }
 struct SE: View {
     var body: some View {
-        Text("Subject : Software English")
+        VStack {
+            Text("Subject : Software English")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fa"))
     }
 }
 struct OR: View {
     var body: some View {
-        Text("Subject : Operation Research")
+        VStack {
+            Text("Subject : Operation Research")
+                .foregroundColor(Color.white)
+        }
+        .background(Image("fa"))
     }
 }
  // To Get Notification on New Screen
@@ -218,28 +245,40 @@ struct Notification: Hashable , Codable {
 struct Mail: View {
     @StateObject var viewModel = ViewModel()
     @State private var isFetchingData = false
+    
     var body: some View {
-        NavigationView{
-            List {
-                ForEach(viewModel.notif , id:\ .self) { no in
-                    VStack(alignment: .leading){
+        ScrollView {
+            Text("Notifications")
+                .bold()
+                .font(.largeTitle)
+                .foregroundColor(Color.white)
+            VStack {
+                ForEach(viewModel.notif, id: \.self) { no in
+                    VStack(alignment: .leading) {
                         Text(no.subject)
+                            .foregroundColor(Color.white)
                             .bold()
                         Text(no.Comment)
+                            .foregroundColor(Color.white)
                     }
                     .padding(20)
+                    
                 }
             }
         }
-        .navigationTitle("Notification")
+        .background(
+            Image("fa")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .edgesIgnoringSafeArea(.all)
+        )
         .onAppear {
             viewModel.fetchApiData()
         }
     }
 }
-
 struct Welcome_Previews: PreviewProvider {
     static var previews: some View {
-        Welcome()
+        FacultyWelcome()
     }
 }

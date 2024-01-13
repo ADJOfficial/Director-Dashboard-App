@@ -10,85 +10,82 @@ import SwiftUI
 struct HODWelcome: View {
     
     var body: some View {
-        VStack {
-            Text("HOD Dashboard")
-                .font(.largeTitle)
-                .bold()
-            
-            Spacer()
-            
-            Text("Welcome")
-                .font(.title)
-                .position(x:80,y: 80)
-            
-            VStack{
-                NavigationLink{
-                    ViewCourses()
-                } label: {
-                    Text("View Courses")
+        NavigationView{
+            VStack {
+                Text("HOD Dashboard")
+                    .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
+
+                Text("Welcome Dr Munir")
+                    .font(.title)
+                    .padding()
+                    .frame(maxWidth: .infinity,alignment: .leading)
+                    .foregroundColor(Color.white)
+               
+                VStack{
+                    Spacer()
+                    NavigationLink{
+                        ViewCourses()
+                    } label: {
+                        Text("View Courses")
+                    }
+                    .foregroundColor(.black)
+                    .padding()
+                    .bold()
+                    .frame(width: 150)
+                    .background(Color.teal)
+                    .cornerRadius(8)
+                    .padding(.all)
+                    
+                    NavigationLink{
+                        FacultyDetails()
+                            .navigationBarBackButtonHidden(true)
+                    } label: {
+                        Text("Faculty Details")
+                    }
+                    .foregroundColor(.black)
+                    .padding()
+                    .bold()
+                    .frame(width: 150)
+                    .background(Color.teal)
+                    .cornerRadius(8)
+                    .padding(.all)
+                    
+                    NavigationLink{
+                        AssignCourses()
+                    } label: {
+                        Text("Assign Course")
+                    }
+                    .foregroundColor(.black)
+                    .padding()
+                    .bold()
+                    .frame(width: 150)
+                    .background(Color.teal)
+                    .cornerRadius(8)
+                    .padding(.all)
+                    
+                    NavigationLink{
+                        GridView()
+                    } label: {
+                        Text("Grid View")
+                    }
+                    .foregroundColor(.black)
+                    .padding()
+                    .bold()
+                    .frame(width: 150)
+                    .background(Color.teal)
+                    .cornerRadius(8)
+                    .padding(.all)
+                    
+                    Spacer()
                 }
-                .foregroundColor(.white)
-                .padding()
-                .bold()
-                .frame(width: 150)
-                .background(Color.blue)
-                .cornerRadius(8)
-                .padding(.all)
-                
-                NavigationLink{
-                    FacultyDetails()
-                } label: {
-                    Text("Faculty Details")
-                }
-                .foregroundColor(.white)
-                .padding()
-                .bold()
-                .frame(width: 150)
-                .background(Color.blue)
-                .cornerRadius(8)
-                .padding(.all)
-                
-                NavigationLink{
-                    AssignCourses()
-                } label: {
-                    Text("Assign Course")
-                }
-                .foregroundColor(.white)
-                .padding()
-                .bold()
-                .frame(width: 150)
-                .background(Color.blue)
-                .cornerRadius(8)
-                .padding(.all)
             }
-            .position(x: 200)
+            .background(Image("h").resizable().aspectRatio(contentMode: .fill).ignoresSafeArea())
         }
     }
 }
 
-struct ViewCourses: View {
-    var body: some View {
-        VStack {
-            Text("")
-        }
-    }
-}
-
-struct FacultyDetails: View {
-    var body: some View {
-        VStack {
-            Text("")
-        }
-    }
-}
-
-struct AssignCourses: View {
-    var body: some View {
-        VStack {
-            Text("")
-        }
-    }
-}
 struct HODWelcome_Previews: PreviewProvider {
     static var previews: some View {
         HODWelcome()
