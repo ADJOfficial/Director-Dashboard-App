@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct GridView: View {
+struct GridView: View { // Design 100% ok
     
     @State private var SelectedOption = 0
-    var options = ["Cyber Security" , "Communication Skills" , "Spftware engeenring"]
+    var options = ["Cyber Security" , "Communication Skills" , "Software engeenring"]
     
     @State private var weight = ""
     @State private var clo1 = ""
@@ -19,7 +19,7 @@ struct GridView: View {
     @State private var clo4 = ""
     @State private var clo5 = ""
     
-    var body: some View {
+    var body: some View { // Get All Data From Node MongoDB : Pending
         VStack {
            Spacer()
             Text("Grid")
@@ -37,10 +37,10 @@ struct GridView: View {
                     Text(options[index])
                 }
             }
-            .frame(width: 350)
+            .frame(maxWidth: .infinity)
             .background(Color.white.opacity(0.8))
-            .pickerStyle(.automatic)
             .cornerRadius(8)
+            .padding(.horizontal)
             Text("Assessments")
                 .font(.title3)
                 .cornerRadius(8)
@@ -220,7 +220,7 @@ struct GridView: View {
             .padding(.bottom)
             Spacer()
         }
-        .background(Image("h"))
+        .background(Image("h").resizable().ignoresSafeArea())
     }
 }
 

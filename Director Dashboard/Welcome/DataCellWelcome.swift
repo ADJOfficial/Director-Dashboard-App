@@ -7,31 +7,45 @@
 
 import SwiftUI
 
-struct DataCellWelcome: View {
-    var body: some View {
+struct DataCellWelcome: View { // Design 100% Ok
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+    
         NavigationView{
             VStack{
                 Text("DataCell")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                Spacer()
-                
                 Text("Welcome Mr Nadeem")
+                    .padding()
                     .font(.title)
-                    .position(x:150,y: 80)
                     .foregroundColor(Color.white)
-                
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                Spacer()
                 VStack{
                     NavigationLink{
                         Faculty()
                     } label: {
                         Text("Faculty")
                     }
-                    .foregroundColor(.black)
-                    .padding()
                     .bold()
+                    .padding()
                     .frame(width: 150)
+                    .foregroundColor(.black)
+                    .background(Color.yellow)
+                    .cornerRadius(8)
+                    .padding(.all)
+                    
+                    NavigationLink{
+                        Courses()
+                    } label: {
+                        Text("Course")
+                    }
+                    .bold()
+                    .padding()
+                    .frame(width: 150)
+                    .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
                     .padding(.all)
@@ -41,53 +55,33 @@ struct DataCellWelcome: View {
                     } label: {
                         Text("Papers")
                     }
-                    .foregroundColor(.black)
-                    .padding()
                     .bold()
+                    .padding()
                     .frame(width: 150)
+                    .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
                     .padding(.all)
                     
                     NavigationLink{
-                        Printed()
+                        PrintedPapers()
                     } label: {
                         Text("Printed")
                     }
-                    .foregroundColor(.black)
-                    .padding()
                     .bold()
+                    .padding()
                     .frame(width: 150)
+                    .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
                     .padding(.all)
                 }
-                .position(x:200)
+                Spacer()
             }
             .background(Image("fac"))
         }
     }
 }
-struct VerifiedPapers: View {
-    var body: some View {
-        VStack {
-            Text("Verified Printed")
-                .foregroundColor(Color.white)
-        }
-        .background(Image("fac"))
-    }
-}
-
-struct Printed: View {
-    var body: some View {
-        VStack{
-            Text("Printed")
-                .foregroundColor(Color.white)
-        }
-        .background(Image("fac"))
-    }
-}
-
 
 struct DataCellWelcome_Previews: PreviewProvider {
     static var previews: some View {

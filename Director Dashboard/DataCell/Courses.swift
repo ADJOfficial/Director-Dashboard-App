@@ -1,5 +1,5 @@
 //
-//  Faculty.swift
+//  Courses.swift
 //  Director Dashboard
 //
 //  Created by ADJ on 13/01/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Faculty: View {   // Design 100% OK
+struct Courses: View {   // Design 100% OK
     
     @State private var name = ""
     @State private var username = ""
@@ -18,37 +18,37 @@ struct Faculty: View {   // Design 100% OK
     var body: some View { // Get All Data From Node MongoDB : Pending
         NavigationView {
             VStack {
-                Text("Create Faculty")
+                Text("Create Course")
                     .padding()
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                Text("Name")
+                Text("Course Code")
                     .padding(.horizontal)
                     .font(.headline)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Name" , text: $name)
+                TextField("Course Code" , text: $name)
                     .padding()
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                Text("Username")
+                Text("Course Title")
                     .padding(.horizontal)
                     .font(.headline)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Username" , text: $username)
+                TextField("Course Title" , text: $username)
                     .padding()
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                Text("Password")
+                Text("Credit Hours")
                     .padding(.horizontal)
                     .font(.headline)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                SecureField("Password" , text: $password)
+                SecureField("Credit Hours" , text: $password)
                     .padding()
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
@@ -65,7 +65,7 @@ struct Faculty: View {   // Design 100% OK
                     .background(Color.yellow)
                     .cornerRadius(8)
                     Spacer()
-                    TextField("Search Teacher" , text: $search)
+                    TextField("Search Course" , text: $search)
                         .padding()
                         .background(Color.gray.opacity(0.8))
                         .cornerRadius(8)
@@ -74,17 +74,19 @@ struct Faculty: View {   // Design 100% OK
                 }
                 VStack {
                     HStack {
-                        Text("Name")
+                        Text("Course")
                             .bold()
                             .font(.title2)
                             .padding(.horizontal)
                             .foregroundColor(Color.white)
                             .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("Username")
+                        Text("Code")
                             .bold()
+                            .padding()
                             .font(.title2)
                             .foregroundColor(Color.white)
                             .frame(maxWidth: .infinity , alignment: .leading)
+                            .padding(.horizontal)
                         Text("")
                             .font(.headline)
                             .frame(maxWidth: .infinity , alignment: .trailing)
@@ -95,16 +97,16 @@ struct Faculty: View {   // Design 100% OK
                             HStack{
                                 Text(cr.name)
                                     .font(.headline)
-                                    .padding(.horizontal)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
+                                    .padding(.horizontal)
                                 Text(cr.username)
                                     .font(.headline)
                                     .padding(.horizontal)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .trailing)
                                 NavigationLink{
-                                    EditFaculty()
+                                    EditCourse()
                                         .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
@@ -165,8 +167,7 @@ struct Faculty: View {   // Design 100% OK
     }
 }
 
-
-struct EditFaculty: View { // Design 100% OK
+struct EditCourse: View { // Design 100% OK
     
     @State private var name = ""
     @State private var username = ""
@@ -174,38 +175,38 @@ struct EditFaculty: View { // Design 100% OK
 
     var body: some View { // Get All Data From Node MongoDB : Pending
         VStack {
-            Text("Update Faculty")
+            Text("Update Course")
                 .padding()
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Name")
+            Text("Course Code")
                 .padding(.horizontal)
                 .font(.headline)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            TextField("Name" , text: $name)
+            TextField("Course Code" , text: $name)
                 .padding()
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            Text("Username")
+            Text("Course Title")
                 .padding(.horizontal)
                 .font(.headline)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            TextField("Username" , text: $username)
+            TextField("Course Title" , text: $username)
                 .padding()
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            Text("Password")
+            Text("Credit Hours")
                 .padding(.horizontal)
                 .font(.headline)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            SecureField("Password" , text: $password)
+            SecureField("Credit Hours" , text: $password)
                 .padding()
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
@@ -228,8 +229,9 @@ struct EditFaculty: View { // Design 100% OK
         
     }
 }
-struct Faculty_Previews: PreviewProvider {
+
+struct Courses_Previews: PreviewProvider {
     static var previews: some View {
-        Faculty()
+        Courses()
     }
 }

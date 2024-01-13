@@ -7,124 +7,77 @@
 
 import SwiftUI
 
-struct AssignCourses: View {
+struct AssignCourse: View { // Design 100% ok
     
-    @StateObject private var courseViewModel = CourseViewModel()
-    
-    var body: some View {
-        NavigationView{
-            VStack {
-                Text("Assigned Course")
-                    .bold()
-                    .font(.largeTitle)
-                    .foregroundColor(Color.white)
-                    .padding(.bottom)
-                Text("Programming Fundamental")
-                    .bold()
-                    .padding(.top)
-                    .font(.title2)
-                    .foregroundColor(Color.white)
-                Text("Course Code  CS-323")
-                    .bold()
-                    .font(.headline)
-                    .foregroundColor(Color.white)
-                
-                ScrollView{
-                    Text("Assigned To")
-                        .bold()
-                        .underline()
-                        .font(.title3)
-                        .foregroundColor(Color.white)
-                    VStack{
-                        ForEach(courseViewModel.courses , id:\ .self) { cr in
-                            HStack{
-                                Text(cr.course) // Teacher Names From DB
-                                    .padding(.horizontal)
-                                    .frame(width:290)
-                                    .multilineTextAlignment(.leading)
-                                
-                                Image(systemName: "delete.right.fill")
-                                    .padding(.horizontal)
-                                    .font(.title3)
-                                    .foregroundColor(Color.red)
-                                //                                .frame(minWidth: 0, maxWidth: .infinity)
-                            }
-                            .padding(1)
-                        }
-                        
-                    }
-                    .background(Color.white.opacity(0.8)) // Add a background color for better visibility
-                    .cornerRadius(8)
-                    //                .frame(width: 360, height: 200)
-                    .padding()
-                    .onAppear {
-                        courseViewModel.fetchExistingCourse()
-                    }
-                }
-                NavigationLink{
-                    CLOS()
-                }label: {
-                    Text("CLOS")
-                }
-                .foregroundColor(.black)
-                .padding()
-                .bold()
-                .frame(width: 100)
-                .background(Color.teal)
-                .cornerRadius(8)
-                .padding(.all)
-            }
-            .background(Image("h"))
-        }
-    }
-}
-struct CLOS: View {
-    var body: some View { // Get all Data From API using MongoDB
+    @State private var SelectedOption = 0
+    @State private var searchSubject = ""
+    var options = ["Sir Zahid" , "Sir Abid Jameel" , "Sir Shahid Rasheed"]
+   
+    var body: some View { // Get All Data From Node MongoDB : Pending
+       
         VStack {
-            Text("CLOS")
+            Text("Assign Course")
                 .bold()
+                .padding()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
-
-            Text("Status .. Pending ")
-                .padding(.top)
-                .padding(.leading,100)
+            Spacer()
+            Text("Semester: Fall 2024")
                 .foregroundColor(Color.white)
-            Text("Programming Fundamental")
-                .bold()
-                .padding(.top)
-                .padding(.trailing,80)
-                .font(.title2)
-                .foregroundColor(Color.white)
-            Text("Course Code  CS-323")
-                .bold()
-                .padding(.trailing,185)
-                .font(.headline)
-                .foregroundColor(Color.white)
-           Spacer()
             VStack{
-                Text("CLO-1")
+                Picker("" , selection: $SelectedOption){
+                    ForEach(0..<options.count) { index in
+                        Text(options[index])
+                    }
+                }
+                .frame(maxWidth: .infinity , alignment: .leading)
+                .padding(.horizontal)
+                .background(Color.white.opacity(0.8))
+                .cornerRadius(8)
+                Text("---------------")
+                    .bold()
                     .padding()
-                Text("CLO-2")
+                    .font(.title2)
+                    .foregroundColor(Color.white)
+                Text("Subject")
                     .padding()
-                Text("CLO-3")
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity,alignment: .leading)
+                TextField("Search Subject", text: $searchSubject)
                     .padding()
-                Text("CLO-4")
-                    .padding()
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+            }
+            ScrollView{
+                HStack{
+                    Spacer()
+                    Image(systemName: "checkmark.square")
+                    Spacer()
+                    Text("Parallel & distributing Computing")
+                    Spacer()
+                }
+                .padding(.top)
+                .font(.title3)
+                .foregroundColor(Color.white)
+            }
+            Button("Save"){
+                // Add Logic for Backend to Store New Data
             }
             .bold()
-            .padding(.trailing,285)
-            .font(.headline)
-            .foregroundColor(Color.white)
-            
-            Spacer()
+            .padding()
+            .frame(width: 150)
+            .foregroundColor(.black)
+            .background(Color.teal)
+            .cornerRadius(8)
+            .padding(.all)
         }
-        .background(Image("h"))
+        .background(Image("h").resizable().ignoresSafeArea())
     }
 }
 
-struct AssignCourses_Previews: PreviewProvider {
+struct AssignCourse_Previews: PreviewProvider {
     static var previews: some View {
-        AssignCourses()
+        AssignCourse()
     }
 }

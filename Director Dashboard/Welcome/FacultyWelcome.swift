@@ -277,7 +277,8 @@ struct Mail: View {
         }
     }
 }
-struct Welcome_Previews: PreviewProvider {
+
+struct FacultyWelcome_Previews: PreviewProvider {
     static var previews: some View {
         FacultyWelcome()
     }

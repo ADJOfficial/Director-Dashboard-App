@@ -27,6 +27,7 @@ struct HODWelcome: View {
                     Spacer()
                     NavigationLink{
                         ViewCourses()
+                            
                     } label: {
                         Text("View Courses")
                     }
@@ -53,7 +54,7 @@ struct HODWelcome: View {
                     .padding(.all)
                     
                     NavigationLink{
-                        AssignCourses()
+                        AssignCourse()
                     } label: {
                         Text("Assign Course")
                     }

@@ -19,16 +19,19 @@
 		4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839D2B48EB1900707476 /* DirectorWelcome.swift */; };
 		445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839F2B48EB2900707476 /* DataCellWelcome.swift */; };
 		445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083BF2B4AAC0200707476 /* ExistingUser.swift */; };
-		445083C52B4C13CE00707476 /* Faculty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083C42B4C13CE00707476 /* Faculty.swift */; };
 		449BA12F2B4FF159009473F6 /* DirectorLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA12E2B4FF159009473F6 /* DirectorLogin.swift */; };
 		449BA1312B4FF177009473F6 /* HODLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1302B4FF177009473F6 /* HODLogin.swift */; };
 		449BA1332B4FF187009473F6 /* FacultyLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1322B4FF187009473F6 /* FacultyLogin.swift */; };
 		449BA1352B4FF19A009473F6 /* DataCellLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1342B4FF19A009473F6 /* DataCellLogin.swift */; };
 		44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A786512B4F24A600C55B7A /* Dashboard.swift */; };
+		44A7CB642B53001F00314DD8 /* VerifiedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */; };
 		44C5C0202B52440200702538 /* ViewCourses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C01F2B52440200702538 /* ViewCourses.swift */; };
 		44C5C0222B52445800702538 /* FacultyDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C0212B52445800702538 /* FacultyDetails.swift */; };
 		44C5C0242B5244E900702538 /* AssignCourses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C0232B5244E900702538 /* AssignCourses.swift */; };
 		44C5C0262B52451E00702538 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C0252B52451E00702538 /* GridView.swift */; };
+		44C5C0292B52944B00702538 /* Faculty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C0282B52944B00702538 /* Faculty.swift */; };
+		44C5C02D2B52960D00702538 /* PrintedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C02C2B52960D00702538 /* PrintedPapers.swift */; };
+		44C5C02F2B52971600702538 /* Courses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C02E2B52971600702538 /* Courses.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,16 +48,19 @@
 		4450839D2B48EB1900707476 /* DirectorWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorWelcome.swift; sourceTree = "<group>"; };
 		4450839F2B48EB2900707476 /* DataCellWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellWelcome.swift; sourceTree = "<group>"; };
 		445083BF2B4AAC0200707476 /* ExistingUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUser.swift; sourceTree = "<group>"; };
-		445083C42B4C13CE00707476 /* Faculty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Faculty.swift; sourceTree = "<group>"; };
 		449BA12E2B4FF159009473F6 /* DirectorLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorLogin.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 		449BA1302B4FF177009473F6 /* HODLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HODLogin.swift; sourceTree = "<group>"; };
 		449BA1322B4FF187009473F6 /* FacultyLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyLogin.swift; sourceTree = "<group>"; };
 		449BA1342B4FF19A009473F6 /* DataCellLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellLogin.swift; sourceTree = "<group>"; };
 		44A786512B4F24A600C55B7A /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
+		44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifiedPapers.swift; sourceTree = "<group>"; };
 		44C5C01F2B52440200702538 /* ViewCourses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCourses.swift; sourceTree = "<group>"; };
 		44C5C0212B52445800702538 /* FacultyDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyDetails.swift; sourceTree = "<group>"; };
 		44C5C0232B5244E900702538 /* AssignCourses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignCourses.swift; sourceTree = "<group>"; };
 		44C5C0252B52451E00702538 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
+		44C5C0282B52944B00702538 /* Faculty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Faculty.swift; sourceTree = "<group>"; };
+		44C5C02C2B52960D00702538 /* PrintedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintedPapers.swift; sourceTree = "<group>"; };
+		44C5C02E2B52971600702538 /* Courses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Courses.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,9 +93,9 @@
 		4450837F2B48E8EF00707476 /* Director Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				44C5C0272B5291AC00702538 /* DataCell */,
 				44C5C01E2B5243D500702538 /* HOD */,
 				449BA12D2B4FF139009473F6 /* Dashboard Login`s */,
-				445083C32B4C136B00707476 /* DataCell */,
 				445083902B48E92E00707476 /* MongoServer */,
 				4450838F2B48E91E00707476 /* Welcome */,
 				4450838E2B48E8F900707476 /* Authentication */,
@@ -139,14 +145,6 @@
 			path = MongoServer;
 			sourceTree = "<group>";
 		};
-		445083C32B4C136B00707476 /* DataCell */ = {
-			isa = PBXGroup;
-			children = (
-				445083C42B4C13CE00707476 /* Faculty.swift */,
-			);
-			path = DataCell;
-			sourceTree = "<group>";
-		};
 		449BA12D2B4FF139009473F6 /* Dashboard Login`s */ = {
 			isa = PBXGroup;
 			children = (
@@ -167,6 +165,17 @@
 				44C5C0252B52451E00702538 /* GridView.swift */,
 			);
 			path = HOD;
+			sourceTree = "<group>";
+		};
+		44C5C0272B5291AC00702538 /* DataCell */ = {
+			isa = PBXGroup;
+			children = (
+				44C5C0282B52944B00702538 /* Faculty.swift */,
+				44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */,
+				44C5C02C2B52960D00702538 /* PrintedPapers.swift */,
+				44C5C02E2B52971600702538 /* Courses.swift */,
+			);
+			path = DataCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -239,7 +248,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44C5C02D2B52960D00702538 /* PrintedPapers.swift in Sources */,
+				44C5C0292B52944B00702538 /* Faculty.swift in Sources */,
 				4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */,
+				44A7CB642B53001F00314DD8 /* VerifiedPapers.swift in Sources */,
 				449BA1352B4FF19A009473F6 /* DataCellLogin.swift in Sources */,
 				44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */,
 				445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */,
@@ -250,12 +262,12 @@
 				449BA12F2B4FF159009473F6 /* DirectorLogin.swift in Sources */,
 				44C5C0202B52440200702538 /* ViewCourses.swift in Sources */,
 				445083922B48E95C00707476 /* NotificationModel.swift in Sources */,
-				445083C52B4C13CE00707476 /* Faculty.swift in Sources */,
 				44C5C0242B5244E900702538 /* AssignCourses.swift in Sources */,
 				445083982B48E9C500707476 /* HODWelcome.swift in Sources */,
 				445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */,
 				445083832B48E8EF00707476 /* Login.swift in Sources */,
 				44C5C0222B52445800702538 /* FacultyDetails.swift in Sources */,
+				44C5C02F2B52971600702538 /* Courses.swift in Sources */,
 				445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */,
 				44C5C0262B52451E00702538 /* GridView.swift in Sources */,
 				445083942B48E98A00707476 /* FacultyWelcome.swift in Sources */,
@@ -385,11 +397,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Director Dashboard/Preview Content\"";
+				DEVELOPMENT_TEAM = PX6PQ3S98G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Papers;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -402,12 +418,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "self.Director-Dashboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -417,11 +434,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Director Dashboard/Preview Content\"";
+				DEVELOPMENT_TEAM = PX6PQ3S98G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Papers;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -434,12 +455,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "self.Director-Dashboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

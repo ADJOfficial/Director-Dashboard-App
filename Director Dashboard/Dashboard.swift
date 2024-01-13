@@ -105,9 +105,7 @@ struct Dashboard: View {
                             .foregroundColor(Color.gray)
                     }
                 }
-            }.background(Image("fa")
-                .resizable()
-                .ignoresSafeArea())
+            }.background(Image("fa").resizable().ignoresSafeArea())
         }
     }
 }
