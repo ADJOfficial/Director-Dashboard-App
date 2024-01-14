@@ -7,31 +7,34 @@
 
 import SwiftUI
 
-struct FacultyLogin: View {
+struct FacultyLogin: View { // Design 100% OK
     
     @State private var username = ""
     @State private var password = ""
     @State private var loginStatus = ""
     @State private var isLoggedIn = false
     
-    var body: some View {
+    var body: some View { // Get All Data From Node MongoDB : Done
+      
         VStack{
             Text("Faculty")
-                .font(.largeTitle)
                 .bold()
+                .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Welcome")
-                .font(.title2)
+            Text("Faculty  Login")
                 .bold()
+                .padding()
+                .font(.title2)
+                .frame(maxWidth: .infinity , alignment: .leading)
+                .padding(.horizontal)
                 .foregroundColor(Color.white)
-                .padding(.leading,-170)
             Spacer()
             VStack(alignment: .leading){
                 Text("Username")
                     .bold()
                     .font(.title3)
-                    .padding(.leading)
+                    .padding(.horizontal)
                     .foregroundColor(Color.white)
                 TextField("Username", text: $username)
                     .padding()
@@ -42,28 +45,30 @@ struct FacultyLogin: View {
                 Text("Password")
                     .bold()
                     .font(.title3)
-                    .padding(.leading)
+                    .padding(.horizontal)
                     .foregroundColor(Color.white)
                 TextField("Password", text: $password)
                     .padding()
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                    .padding(.bottom,220)
             }
+            Spacer()
             Button("Login"){
                 login()
             }
-            .foregroundColor(Color.black)
+            .bold()
             .padding()
-            .frame(width: 150, height: 60)
+            .frame(width: 150)
+            .foregroundColor(.black)
             .background(Color.green)
             .cornerRadius(8)
+            Spacer()
         }
         .fullScreenCover(isPresented: $isLoggedIn){
             FacultyWelcome()
         }
-        .background(Image("fa"))
+        .background(Image("fa").resizable().ignoresSafeArea())
     }
     
     func login() {

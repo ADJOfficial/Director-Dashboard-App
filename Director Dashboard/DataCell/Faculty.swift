@@ -122,6 +122,7 @@ struct Faculty: View {   // Design 100% OK
                         }
                     }
                 }
+                .background(Color.gray)
                 .onAppear {
                     userViewModel.fetchExistingUser()
                 }

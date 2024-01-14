@@ -61,6 +61,7 @@ struct DataCellLogin: View {
         }
         .fullScreenCover(isPresented: $isLoggedIn){
             DataCellWelcome()
+                .navigationBarBackButtonHidden(true)
         }
         .background(Image("fac"))
     }

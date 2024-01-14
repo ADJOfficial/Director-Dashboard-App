@@ -17,15 +17,19 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
+                Spacer()
                 Text("Welcome Mr Nadeem")
+                    .bold()
                     .padding()
                     .font(.title)
                     .foregroundColor(Color.white)
+                    .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 Spacer()
                 VStack{
                     NavigationLink{
                         Faculty()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Faculty")
                     }
@@ -39,6 +43,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     
                     NavigationLink{
                         Courses()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Course")
                     }
@@ -52,6 +57,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     
                     NavigationLink{
                         VerifiedPapers()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Papers")
                     }
@@ -65,6 +71,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     
                     NavigationLink{
                         PrintedPapers()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Printed")
                     }
