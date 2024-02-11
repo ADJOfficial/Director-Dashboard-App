@@ -20,7 +20,7 @@ struct HODLogin: View {
                 .bold()
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Welcome Dr  Munir")
+            Text("Welcome")
                 .font(.title2)
                 .bold()
                 .foregroundColor(Color.white)
@@ -67,7 +67,7 @@ struct HODLogin: View {
     }
     
     func login() {
-        if username.uppercased() == "" &&  password == "" {
+        if username == "" &&  password == "" {
             isLoggedIn = true
             print("Login Successfull")
         }

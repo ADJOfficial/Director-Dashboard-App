@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DataCellWelcome: View { // Design 100% Ok
     
+//    let username: String
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
     
         NavigationView{
@@ -18,7 +20,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome Mr Nadeem")
+                Text("Welcome")
                     .bold()
                     .padding()
                     .font(.title)

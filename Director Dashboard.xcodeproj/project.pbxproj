@@ -32,6 +32,8 @@
 		44A041E32B53B11400AF79AD /* Topics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A041E22B53B11400AF79AD /* Topics.swift */; };
 		44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A786512B4F24A600C55B7A /* Dashboard.swift */; };
 		44A7CB642B53001F00314DD8 /* VerifiedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */; };
+		44BCB4F02B5A3E2300FDC33B /* chek.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BCB4EF2B5A3E2300FDC33B /* chek.swift */; };
+		44BCB4F22B5B816A00FDC33B /* AssignRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BCB4F12B5B816A00FDC33B /* AssignRole.swift */; };
 		44C5C0202B52440200702538 /* ViewCourses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C01F2B52440200702538 /* ViewCourses.swift */; };
 		44C5C0222B52445800702538 /* FacultyDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C0212B52445800702538 /* FacultyDetails.swift */; };
 		44C5C0242B5244E900702538 /* AssignCourses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C0232B5244E900702538 /* AssignCourses.swift */; };
@@ -68,6 +70,8 @@
 		44A041E22B53B11400AF79AD /* Topics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Topics.swift; sourceTree = "<group>"; };
 		44A786512B4F24A600C55B7A /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
 		44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifiedPapers.swift; sourceTree = "<group>"; };
+		44BCB4EF2B5A3E2300FDC33B /* chek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chek.swift; sourceTree = "<group>"; };
+		44BCB4F12B5B816A00FDC33B /* AssignRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignRole.swift; sourceTree = "<group>"; };
 		44C5C01F2B52440200702538 /* ViewCourses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCourses.swift; sourceTree = "<group>"; };
 		44C5C0212B52445800702538 /* FacultyDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyDetails.swift; sourceTree = "<group>"; };
 		44C5C0232B5244E900702538 /* AssignCourses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignCourses.swift; sourceTree = "<group>"; };
@@ -119,6 +123,7 @@
 				44A786512B4F24A600C55B7A /* Dashboard.swift */,
 				445083842B48E8F100707476 /* Assets.xcassets */,
 				445083862B48E8F100707476 /* Preview Content */,
+				44BCB4EF2B5A3E2300FDC33B /* chek.swift */,
 			);
 			path = "Director Dashboard";
 			sourceTree = "<group>";
@@ -200,6 +205,7 @@
 				44C5C0212B52445800702538 /* FacultyDetails.swift */,
 				44C5C0232B5244E900702538 /* AssignCourses.swift */,
 				44C5C0252B52451E00702538 /* GridView.swift */,
+				44BCB4F12B5B816A00FDC33B /* AssignRole.swift */,
 			);
 			path = HOD;
 			sourceTree = "<group>";
@@ -287,6 +293,7 @@
 			files = (
 				44C5C02D2B52960D00702538 /* PrintedPapers.swift in Sources */,
 				44C5C0292B52944B00702538 /* Faculty.swift in Sources */,
+				44BCB4F22B5B816A00FDC33B /* AssignRole.swift in Sources */,
 				4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */,
 				44A7CB642B53001F00314DD8 /* VerifiedPapers.swift in Sources */,
 				449BA1352B4FF19A009473F6 /* DataCellLogin.swift in Sources */,
@@ -312,6 +319,7 @@
 				44C5C0222B52445800702538 /* FacultyDetails.swift in Sources */,
 				44C5C02F2B52971600702538 /* Courses.swift in Sources */,
 				445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */,
+				44BCB4F02B5A3E2300FDC33B /* chek.swift in Sources */,
 				44A041E32B53B11400AF79AD /* Topics.swift in Sources */,
 				44C5C0262B52451E00702538 /* GridView.swift in Sources */,
 				445083942B48E98A00707476 /* FacultyWelcome.swift in Sources */,

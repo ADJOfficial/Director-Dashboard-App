@@ -86,3 +86,4 @@ class CourseViewModel: ObservableObject {
     }
 }
 
+

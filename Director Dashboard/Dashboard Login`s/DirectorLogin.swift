@@ -61,7 +61,7 @@ struct DirectorLogin: View {
             .cornerRadius(8)
         }
         .fullScreenCover(isPresented: $isLoggedIn){
-            DirectorWelcome()
+            DirectorWelcome(username: username)
         }
         .background(Image("dark"))
     }

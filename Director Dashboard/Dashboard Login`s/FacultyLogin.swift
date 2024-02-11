@@ -11,6 +11,7 @@ struct FacultyLogin: View { // Design 100% OK
     
     @State private var username = ""
     @State private var password = ""
+//    @State private var name = ""
     @State private var loginStatus = ""
     @State private var isLoggedIn = false
     
@@ -98,8 +99,8 @@ struct FacultyLogin: View { // Design 100% OK
             if let responseString = String(data: data, encoding: .utf8) {
                 DispatchQueue.main.async {
                     loginStatus = responseString
-                    isLoggedIn = true // Update isLoggedIn based on the Response
-                    print("Login successful")
+                    isLoggedIn = responseString == "Login successful"// Update isLoggedIn based on the Response
+//                    print("Login successful")
                 }
             }
             else{

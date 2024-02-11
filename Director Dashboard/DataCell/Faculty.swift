@@ -109,7 +109,6 @@ struct Faculty: View {   // Design 100% OK
                                 }label: {
                                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
                                         .font(.title2)
-//                                        .padding(.horizontal)
                                         .foregroundColor(Color.green)
                                         .frame(maxWidth: .infinity , alignment: .trailing)
                                 }
@@ -122,7 +121,7 @@ struct Faculty: View {   // Design 100% OK
                         }
                     }
                 }
-                .background(Color.gray)
+//                .background(Color.gray)
                 .onAppear {
                     userViewModel.fetchExistingUser()
                 }

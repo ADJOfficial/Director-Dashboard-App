@@ -20,7 +20,7 @@ struct DataCellLogin: View {
                 .bold()
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Welcome Mr Nadeem")
+            Text("Welcome")
                 .font(.title2)
                 .bold()
                 .foregroundColor(Color.white)
@@ -61,13 +61,13 @@ struct DataCellLogin: View {
         }
         .fullScreenCover(isPresented: $isLoggedIn){
             DataCellWelcome()
-                .navigationBarBackButtonHidden(true)
+//                .navigationBarBackButtonHidden(false)
         }
         .background(Image("fac"))
     }
     
     func login() {
-        if username.uppercased() == "" &&  password == "" {
+        if username == "" &&  password == "" {
             isLoggedIn = true
             print("Login Successfull")
         }

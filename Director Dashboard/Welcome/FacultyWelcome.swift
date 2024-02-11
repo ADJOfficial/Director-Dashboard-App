@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FacultyWelcome: View { // Design 100% OK
     
+//    let username: String
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
        
         NavigationView {
@@ -18,7 +20,7 @@ struct FacultyWelcome: View { // Design 100% OK
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome  -------- ")
+                Text("Welcome :")
                     .bold()
                     .padding()
                     .font(.title)

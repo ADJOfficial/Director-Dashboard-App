@@ -60,8 +60,8 @@ struct SignUp: View {
             }
             .padding()
             NavigationLink {
-                Login()
-                    .navigationBarBackButtonHidden(true)
+//                Login()
+//                    .navigationBarBackButtonHidden(true)
             } label: {
                 HStack{
 

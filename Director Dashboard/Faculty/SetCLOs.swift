@@ -35,7 +35,7 @@ struct SetCLOs: View { // Design 100% OK
                         Text(options[index])
                     }
                 }
-//                .accentColor(.green)
+                .accentColor(.green)
                 .pickerStyle(.segmented)
 //                .background(Color.green)
                 .environment(\.colorScheme, .dark)

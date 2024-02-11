@@ -7,20 +7,28 @@
 
 import SwiftUI
 
-struct DirectorWelcome: View {
-    var body: some View {
+struct DirectorWelcome: View { // Design 100% Ok
+    
+    let username: String
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+    
         NavigationView{
             VStack{
                 Text("Director")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                Text("Welcome Dr ... ")
+                Spacer()
+                Text("Welcome \(username) ")
+                    .bold()
+                    .padding()
                     .font(.title)
-                    .position(x:110,y: 70)
                     .foregroundColor(Color.white)
-                VStack {
-                    
+                    .padding(.all)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                Spacer()
+                VStack {   
                     NavigationLink {
                         UploadPapers()
                     } label: {
@@ -33,7 +41,6 @@ struct DirectorWelcome: View {
                     .background(Color.cyan)
                     .cornerRadius(8)
                     .padding(.all)
-                    
                     NavigationLink {
                         ApprovedPapers()
                     } label: {
@@ -47,49 +54,49 @@ struct DirectorWelcome: View {
                     .cornerRadius(8)
                     .padding(.all)
                 }
-                .position(x:200)
+                Spacer()
             }
             .background(Image("dark"))
         }
     }
 }
 
-struct Comments: View {
+struct Comments: View { // Design 100% Ok
+    
     @State private var comment: String = ""
-    var body: some View {
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+        
         VStack {
             Text("Comments")
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
+            Spacer()
             Text("Feedback")
                 .bold()
                 .font(.title)
                 .foregroundColor(Color.white)
-                .position(x:90,y: 130)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity , alignment: .leading)
             ZStack(alignment: .bottomTrailing) {
                 TextEditor(text: $comment)
                     .padding()
-                    .frame(width: 370, height: 200)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(Color.gray, lineWidth: 1)
                     )
-                    .padding(.horizontal)
-                    .position(x: 197,y: -60)
+                    .frame(height: 400)
                 HStack {
                     Spacer()
                     Image(systemName: "paperplane.fill")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .padding(.horizontal)
-                        .foregroundColor(.green)
-                        .position(x: 335 , y: 1)
-                    
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(Color.green)
                 }
-                .padding(.trailing)
-                .padding(.bottom)
             }
+            .padding()
+            Spacer()
         }
         .background(Image("dark"))
     }
@@ -101,7 +108,7 @@ struct UploadPapers: View {
     @State private var search = ""
     @State private var course = ""
     @State private var code = ""
-    
+
     var body: some View {
         NavigationView {
             VStack{
@@ -115,47 +122,33 @@ struct UploadPapers: View {
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.horizontal)
-//                    .position(x: 196,y: 200)
-                
+                Spacer()
                 VStack {
                     HStack {
+                        Spacer()
                         Text("Courses")
-                            .font(.title2)
                             .bold()
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(width: 150)
-                        Divider()
-                            .background(Color.black)
+                            .font(.title2)
+                            .frame(maxWidth: .infinity , alignment: .leading)
+                        Spacer()
                         Text("Code")
-                            .font(.title2)
                             .bold()
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(width: 130)
-                        
-                        Divider()
-                            .background(Color.black)
-                        Text("")
-                            .font(.headline)
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                        
+                            .font(.title2)
+                            .frame(maxWidth: .infinity , alignment: .center)
+                        Spacer()
                     }
-                    .padding(1)
+                    .padding()
                     ScrollView {
                         ForEach(courseViewModel.courses , id:\ .self) { cr in
                             HStack{
+                                Spacer()
                                 Text(cr.course)
-                                    .padding(.horizontal)
-                                    .frame(minWidth: 0, maxWidth: .infinity)
-                                    .frame(width: 150)
-                                Divider()
-                                    .background(Color.black)
+                                    .frame(maxWidth: .infinity , alignment: .leading)
+                                Spacer()
                                 Text(cr.code)
                                     .padding(.horizontal)
-                                    .frame(minWidth: 0, maxWidth: .infinity)
-                                    .frame(width: 130)
-                                Divider()
-                                    .background(Color.black)
-                                
+                                    .frame(maxWidth: .infinity , alignment: .trailing)
+                                Spacer()
                                 NavigationLink {
                                     Eye()
                                         .navigationBarBackButtonHidden(true)
@@ -164,18 +157,15 @@ struct UploadPapers: View {
                                         .padding(.horizontal)
                                         .font(.title3)
                                         .foregroundColor(Color.orange)
-                                        .frame(minWidth: 0, maxWidth: .infinity)
                                 }
                             }
                             .padding(1)
                         }
                     }
                 }
+                .frame(height: 400)
                 .background(Color.white.opacity(0.8))
                 .cornerRadius(8)
-                .frame(width: 360, height: 200)
-                .padding()
-//                .position(x: 196)
                 .onAppear {
                     courseViewModel.fetchExistingCourse()
                 }
@@ -264,7 +254,6 @@ struct ApprovedPapers: View {
             .cornerRadius(8)
             .frame(width: 360, height: 200)
             .padding()
-//            .position(x: 196)
             .onAppear {
                 courseViewModel.fetchExistingCourse()
             }
@@ -273,34 +262,40 @@ struct ApprovedPapers: View {
     }
 }
 
-struct Eye: View {
-    var body: some View {
+struct Eye: View { // Design 100% Ok
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+    
         NavigationView {
             VStack{
                 Text("Paper Information")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                VStack(alignment: .leading){
-                    Text("Communication Skills")
-                        .bold()
-                        .font(.title2)
-                        .foregroundColor(Color.white)
-                    Text("Code: CS-502")
-                        .font(.headline)
-                        .foregroundColor(Color.white)
-                }
-                .position(x:130,y: 60)
-                
+                Spacer()
+                Text("Communication Skills")
+                    .bold()
+                    .font(.title2)
+                    .padding(.horizontal)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                Text("Code: CS-502")
+                    .bold()
+                    .font(.headline)
+                    .padding(.horizontal)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
                 NavigationLink {
                     Comments()
                         .navigationBarBackButtonHidden(true)
                 } label: {
                     Image(systemName: "text.bubble.fill")
-                        .foregroundColor(Color.green)
                         .font(.largeTitle)
+                        .padding(.horizontal)
+                        .foregroundColor(Color.green)
+                        .frame(maxWidth: .infinity , alignment: .trailing)
                 }
-                .position(x:350,y: -80)
+                Spacer()
                 VStack(alignment: .leading){
                     Text("Teacher ")
                         .padding(5)
@@ -332,12 +327,13 @@ struct Eye: View {
                     Text("Questions ")
                         .padding(5)
                         .foregroundColor(Color.white)
-                    
                 }
-                .font(.headline)
-                .position(x:80,y: -50)
-                
-                NavigationLink{
+                .bold()
+                .font(.title3)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity , alignment: .leading)
+                Spacer()
+                NavigationLink {
                     MakePaper()
                         .navigationBarBackButtonHidden(true)
                 }label: {
@@ -347,8 +343,9 @@ struct Eye: View {
                 .padding()
                 .background(Color.cyan)
                 .cornerRadius(8)
+                Spacer()
             }
-            .background(Image("dark"))
+            .background(Image("dark").resizable().ignoresSafeArea())
         }
     }
 }
@@ -403,6 +400,6 @@ struct MakePaper: View {
 }
 struct DirectorWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        DirectorWelcome()
+        UploadPapers()
     }
 }

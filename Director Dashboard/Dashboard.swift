@@ -7,9 +7,6 @@
 
 import SwiftUI
 
-
-
-
 struct Dashboard: View {
     
     @State private var animate = false

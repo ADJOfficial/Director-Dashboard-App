@@ -7,24 +7,29 @@
 
 import SwiftUI
 
-struct HODWelcome: View {
+struct HODWelcome: View { // Design 100% OK
     
-    var body: some View {
+//    let username: String
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+        
         NavigationView{
             VStack {
                 Text("HOD Dashboard")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-
-                Text("Welcome Dr Munir")
-                    .font(.title)
+                Spacer()
+                Text("Welcome : ")
+                    .bold()
                     .padding()
-                    .frame(maxWidth: .infinity,alignment: .leading)
+                    .font(.title)
                     .foregroundColor(Color.white)
-               
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                Spacer()
                 VStack{
-                    Spacer()
+//                    Spacer()
                     NavigationLink{
                         ViewCourses()
                             
@@ -78,11 +83,10 @@ struct HODWelcome: View {
                     .background(Color.teal)
                     .cornerRadius(8)
                     .padding(.all)
-                    
-                    Spacer()
                 }
+                Spacer()
             }
-            .background(Image("h").resizable().aspectRatio(contentMode: .fill).ignoresSafeArea())
+            .background(Image("h").resizable().ignoresSafeArea())
         }
     }
 }
