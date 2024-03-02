@@ -43,7 +43,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         Spacer()
                         NavigationLink {
                             Subject()
-                                .navigationBarBackButtonHidden(true)
+//                                .navigationBarBackButtonHidden(true)
                         } label: {
                             Text("Programming Fundamental")
                         }
@@ -59,7 +59,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         
                         NavigationLink {
                             Subject()
-                                .navigationBarBackButtonHidden(true)
+//                                .navigationBarBackButtonHidden(true)
                         } label: {
                             Text("Web Technology")
                         }
@@ -79,7 +79,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         
                         NavigationLink {
                             Subject()
-                                .navigationBarBackButtonHidden(true)
+//                                .navigationBarBackButtonHidden(true)
                         } label: {
                             Text("Software Engennring")
                         }
@@ -95,7 +95,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         
                         NavigationLink {
                             Subject()
-                                .navigationBarBackButtonHidden(true)
+//                                .navigationBarBackButtonHidden(true)
                         } label: {
                             Text("Operation Research")
                         }
@@ -112,7 +112,7 @@ struct ViewYourCourses: View { // Design 100% OK
                 }
                 Spacer()
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("fa").resizable().aspectRatio(contentMode: .fill).ignoresSafeArea())
         }
     }
 }
@@ -139,6 +139,7 @@ struct Mail: View { // Get All Data From Node MongoDB : Done
                         VStack{
                             Text(no.subject)
                                 .bold()
+                                .font(.title3)
                                 .foregroundColor(Color.white)
                                 .frame(maxWidth: .infinity , alignment: .leading)
                                 .padding(.horizontal)
@@ -157,7 +158,6 @@ struct Mail: View { // Get All Data From Node MongoDB : Done
             }
         }
         .background(Image("fa").resizable().ignoresSafeArea())
-        
     }
 }
 
@@ -176,10 +176,9 @@ struct Subject: View {
                     .bold()
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                    .font(.title)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                 Text("Course Code  CS-323")
-                    .bold()
                     .padding(.horizontal)
                     .font(.title3)
                     .frame(maxWidth: .infinity , alignment: .leading)
@@ -187,7 +186,7 @@ struct Subject: View {
                 Spacer()
                 VStack{
                     NavigationLink{
-                        ViewTopics()
+                        CoveredTopics()
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("View Topics")
@@ -247,6 +246,6 @@ struct Subject: View {
 
 struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
-        ViewYourCourses()
+        Subject()
     }
 }

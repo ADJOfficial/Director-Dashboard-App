@@ -19,7 +19,6 @@ struct ViewCLOs: View { // Design 100% Ok
         NavigationView {
             VStack {
                 Text("CLOs")
-//                    .padding()
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
@@ -28,10 +27,9 @@ struct ViewCLOs: View { // Design 100% Ok
                     .bold()
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                    .font(.title)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                 Text("Course Code  CS-323")
-                    .bold()
                     .padding(.horizontal)
                     .font(.title3)
                     .frame(maxWidth: .infinity , alignment: .leading)

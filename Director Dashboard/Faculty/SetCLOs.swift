@@ -26,8 +26,9 @@ struct SetCLOs: View { // Design 100% OK
                     .foregroundColor(Color.white)
                 Spacer()
                 Text("Course")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 Picker("" , selection: $selectedOptions){
@@ -36,7 +37,7 @@ struct SetCLOs: View { // Design 100% OK
                     }
                 }
                 .accentColor(.green)
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
 //                .background(Color.green)
                 .environment(\.colorScheme, .dark)
                 .frame(maxWidth: .infinity , alignment: .center)

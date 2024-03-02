@@ -51,46 +51,46 @@ class FacultyViewModel: ObservableObject {
     }
 }
 
-struct check: View {
-    @StateObject private var facultyViewModel = FacultyViewModel()
-    
-    var body: some View {
-        VStack {
-            ForEach(facultyViewModel.faculties) { faculty in
-                RadioButton(
-                    id: faculty.id,
-                    text: faculty.name,
-                    isSelected: faculty.role == "Senior",
-                    action: facultyViewModel.updateFacultyRole
-                )
-            }
-        }
-        .padding()
-    }
-}
+//struct check: View {
+//    @StateObject private var facultyViewModel = FacultyViewModel()
+//    
+//    var body: some View {
+//        VStack {
+//            ForEach(facultyViewModel.faculties) { faculty in
+//                RadioButton(
+//                    id: faculty.id,
+//                    text: faculty.name,
+//                    isSelected: faculty.role == "Senior",
+//                    action: facultyViewModel.updateFacultyRole
+//                )
+//            }
+//        }
+//        .padding()
+//    }
+//}
+//
+//struct RadioButton: View {
+//    let id: Int
+//    let text: String
+//    let isSelected: Bool
+//    let action: (Int) -> Void
+//    
+//    var body: some View {
+//        Button(action: {
+//            action(id)
+//        }) {
+//            HStack {
+//                Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
+//                Text(text)
+//            }
+//            .foregroundColor(isSelected ? .blue : .primary)
+//        }
+//        .padding()
+//    }
+//}
 
-struct RadioButton: View {
-    let id: Int
-    let text: String
-    let isSelected: Bool
-    let action: (Int) -> Void
-    
-    var body: some View {
-        Button(action: {
-            action(id)
-        }) {
-            HStack {
-                Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
-                Text(text)
-            }
-            .foregroundColor(isSelected ? .blue : .primary)
-        }
-        .padding()
-    }
-}
-
-struct Radio_Previews: PreviewProvider {
-    static var previews: some View {
-        check()
-    }
-}
+//struct Radio_Previews: PreviewProvider {
+//    static var previews: some View {
+//      check()
+//    }
+//}

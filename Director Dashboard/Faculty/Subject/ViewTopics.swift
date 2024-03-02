@@ -10,57 +10,53 @@ import SwiftUI
 struct ViewTopics: View { // Design 100% Ok
     
     @State private var course = ""
+    @State private var addTopic = ""
     @State private var Topic = ""
     @State private var clos = ""
     @State private var searchTopic = ""
     @StateObject var userViewModel = UserViewModel()
     
-    
     var body: some View { // Get All Data From Node MongoDB : Pending
-        
         NavigationView{
             VStack{
-                Text("Add Topic")
+                Text("Add Topics")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                VStack{
-                    Spacer()
-                    Text("Course")
-                        .bold()
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-                        .font(.title)
-                        .foregroundColor(Color.white)
-                    Text("Programming Fundamental")
-                        .bold()
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity , alignment: .center)
-                        .font(.title3)
-                        .foregroundColor(Color.white)
-                    Spacer()
-                    Text("Topic")
-                        .bold()
-                        .padding(.horizontal)
-                        .font(.title)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-                        .foregroundColor(Color.white)
-                    Text("Basic Structure of Programming")
-                        .bold()
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity , alignment: .center)
-                        .font(.title3)
-                        .foregroundColor(Color.white)
-                    Spacer()
-                }
+                Text("Course")
+                    .bold()
+                    .padding(.horizontal)
+                    .font(.title2)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                Text("Programming Fundamental")
+                    .font(.title3)
+                    .padding()
+                    .frame(maxWidth: .infinity , alignment: .center)
+                    .foregroundColor(Color.white)
+                .accentColor(.green)
+                .pickerStyle(.menu)
+                Text("Topic")
+                    .bold()
+                    .padding(.horizontal)
+                    .font(.title2)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                TextField("Username" , text: $Topic)
+                    .padding()
+                    .background(Color.gray.opacity(0.8))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                Spacer()
                 VStack{
                     Text("CLOs")
+                        .bold()
                         .padding()
-                        .padding(.horizontal)
-                        .font(.headline)
+//                        .padding(.horizontal)
+                        .font(.title2)
                         .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
+                        .frame(maxWidth: .infinity , alignment: .center)
                     HStack {
                         Text("CLO:1")
                         Image(systemName: "square")
@@ -82,39 +78,20 @@ struct ViewTopics: View { // Design 100% Ok
                         .cornerRadius(8)
                         .frame(width: 300)
                 }
-                
-                .padding()
+                .padding(.horizontal)
                 .font(.headline)
                 .foregroundColor(Color.white)
-                
-                //            Spacer()
                 VStack {
-                    HStack {
-                        Text("Name")
-                            .bold()
-                            .font(.title2)
-                            .padding(.horizontal)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        
-                        Text("SubTopic")
-                            .bold()
-                            .font(.title2)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    .padding(1)
                     ScrollView{
                         ForEach(userViewModel.existing , id:\ .self) { cr in
                             HStack{
                                 Text(cr.name)
                                     .font(.headline)
-                                    .padding(.horizontal)
+//                                    .padding(.horizontal)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 NavigationLink{
-                                    EditTopics()
+                                    EditSubTopics()
                                         .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
@@ -122,24 +99,31 @@ struct ViewTopics: View { // Design 100% Ok
                                         .foregroundColor(Color.green)
                                         .frame(maxWidth: .infinity , alignment: .trailing)
                                 }
+                                    Image(systemName: "trash.fill")
+                                        .font(.title3)
+//                                        .padding(.horizontal)
+                                        .foregroundColor(Color.red)
                                 NavigationLink{
                                     AddSubTopics()
                                 }label: {
                                     Image(systemName: "plus.rectangle.fill.on.rectangle.fill")
                                         .font(.title3)
-                                        .padding(.horizontal)
                                         .foregroundColor(Color.orange)
                                 }
                             }
+                            Divider()
+                                .background(Color.white)
                             .padding(1)
                         }
                     }
+                    .padding()
                 }
-                .frame(height:150)
+                .border(.gray , width: 2)
+                .cornerRadius(5)
+                .frame(width: 410 , height:150)
                 .onAppear {
                     userViewModel.fetchExistingUser()
                 }
-                Spacer()
                 Button("Create"){
                     saveTopic()
                 }
@@ -154,18 +138,15 @@ struct ViewTopics: View { // Design 100% Ok
             .background(Image("fa").resizable().ignoresSafeArea())
         }
     }
-    
     func saveTopic() {
         
     }
 }
+        
 
 struct EditTopics: View { // Design 100% Ok
     
-    @State private var course = ""
-    @State private var Topic = ""
-    @State private var clos = ""
-    @State private var searchTopic = ""
+    @State private var editTopic = ""
     @StateObject var userViewModel = UserViewModel()
     
     
@@ -176,42 +157,35 @@ struct EditTopics: View { // Design 100% Ok
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
-//            Spacer()
+
             VStack{
                 Spacer()
                 Text("Course")
                     .bold()
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                    .font(.title)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                 Text("Programming Fundamental")
-                    .bold()
                     .padding()
                     .frame(maxWidth: .infinity , alignment: .center)
                     .font(.title3)
                     .foregroundColor(Color.white)
-//                Spacer()
                 Text("Topic")
                     .bold()
                     .padding()
-                    .font(.title)
+                    .font(.title2)
                     .frame(maxWidth: .infinity , alignment: .leading)
                     .foregroundColor(Color.white)
-                Text("Basic Structure of Programming")
-                    .bold()
-                    .padding(.horizontal)
-                    .frame(maxWidth: .infinity , alignment: .center)
-                    .font(.title3)
-                    .foregroundColor(Color.white)
-                Spacer()
-            }
-            VStack{
-//                Spacer()
-                Text("CLOs")
+                TextField("Edit Topic Name" , text:$editTopic)
                     .padding()
-                    .padding(.horizontal)
-                    .font(.headline)
+                    .background(Color.gray.opacity(0.8))
+                    .cornerRadius(8)
+                    .frame(width: 400)
+                Text("CLOs")
+                    .bold()
+                    .padding()
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 HStack {
@@ -221,9 +195,6 @@ struct EditTopics: View { // Design 100% Ok
                     Text("CLO:2")
                     Image(systemName: "checkmark.square")
                         .foregroundColor(.green)
-                    
-//                    Spacer()
-                    
                     Text("CLO:3")
                     Image(systemName: "square")
                     Text("CLO:4")
@@ -231,10 +202,11 @@ struct EditTopics: View { // Design 100% Ok
                         .foregroundColor(.green)
                     Spacer()
                 }
+                .padding()
+                .font(.title3)
                 .foregroundColor(.white)
                 Spacer()
             }
-//            Spacer()
             Button("Update"){
                 updateTopic()
             }
@@ -256,10 +228,7 @@ struct EditTopics: View { // Design 100% Ok
 
 struct AddSubTopics: View { // Design 100% Ok
     
-    @State private var course = ""
     @State private var Topic = ""
-    @State private var clos = ""
-    @State private var searchTopic = ""
     @StateObject var userViewModel = UserViewModel()
     
     var body: some View { // Get All Data From Node MongoDB : Pending
@@ -270,18 +239,20 @@ struct AddSubTopics: View { // Design 100% Ok
                 .foregroundColor(Color.white)
             Spacer()
             Text("Course")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            TextField("Name" , text: $course)
+            Text("Programming Fundamental")
                 .padding()
-                .background(Color.gray.opacity(0.8))
-                .cornerRadius(8)
-                .padding(.horizontal)
+                .frame(maxWidth: .infinity , alignment: .center)
+                .font(.title3)
+                .foregroundColor(Color.white)
             Text("Topic")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
             TextField("Username" , text: $Topic)
@@ -289,61 +260,27 @@ struct AddSubTopics: View { // Design 100% Ok
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            Spacer()
             VStack{
-                Text("CLOs")
+                Text("Sub Topic")
+                    .bold()
                     .padding()
-                    .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                HStack {
-                    Text("CLO:1")
-                    Image(systemName: "square")
-                    Text("CLO:2")
-                    Image(systemName: "checkmark.square")
-                        .foregroundColor(.green)
-                    
-                    Spacer()
-                    
-                    Text("CLO:3")
-                    Image(systemName: "square")
-                    Text("CLO:4")
-                    Image(systemName: "checkmark.square")
-                        .foregroundColor(.green)
-                }
-                TextField("Search Teacher" , text: $searchTopic)
+                TextField("SubTopic Name" , text: $Topic)
                     .padding()
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
-                    .frame(width: 300)
+                    .padding(.horizontal)
             }
-            .padding()
-            .font(.headline)
-            .foregroundColor(Color.white)
+            Spacer()
+            
             VStack {
-                HStack {
-                    Text("Name")
-                        .bold()
-                        .font(.title2)
-                        .padding(.horizontal)
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-
-                    Text("SubTopic")
-                        .bold()
-                        .font(.title2)
-                        .foregroundColor(Color.white)
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity , alignment: .trailing)
-                }
-                .padding(1)
                 ScrollView{
                     ForEach(userViewModel.existing , id:\ .self) { cr in
                         HStack{
                             Text(cr.name)
                                 .font(.headline)
-                                .padding(.horizontal)
                                 .foregroundColor(Color.white)
                                 .frame(maxWidth: .infinity , alignment: .leading)
                             NavigationLink{
@@ -355,16 +292,19 @@ struct AddSubTopics: View { // Design 100% Ok
                                     .foregroundColor(Color.green)
                                     .frame(maxWidth: .infinity , alignment: .trailing)
                             }
-                            Image(systemName: "delete.right.fill")
+                            Image(systemName: "trash.fill")
                                 .font(.title3)
-                                .padding(.horizontal)
                                 .foregroundColor(Color.red)
                         }
-                        .padding(1)
+                        Divider()
+                            .background(Color.white)
                     }
                 }
+                .padding()
             }
-            .frame(height:150)
+            .border(Color.gray ,width: 3)
+            .cornerRadius(5)
+            .frame(height:200)
             .onAppear {
                 userViewModel.fetchExistingUser()
             }
@@ -378,12 +318,87 @@ struct AddSubTopics: View { // Design 100% Ok
             .background(Color.green)
             .cornerRadius(8)
             .padding(.all)
-//            Spacer()
         }
         .background(Image("fa").resizable().ignoresSafeArea())
     }
     
     func saveSubTopic() {
+        
+    }
+}
+struct EditSubTopics: View { // Design 100% Ok
+    
+    @State private var course = ""
+    @State private var Topic = ""
+    @State private var clos = ""
+    @State private var searchTopic = ""
+    @StateObject var userViewModel = UserViewModel()
+    
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+       
+        NavigationView{
+            VStack{
+                Text("Edit Sub Topic")
+                    .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
+                            Spacer()
+                VStack{
+                    Text("Course")
+                        .bold()
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                        .font(.title2)
+                        .foregroundColor(Color.white)
+                    Text("Programming Fundamental")
+                        .padding()
+                        .frame(maxWidth: .infinity , alignment: .center)
+                        .font(.title3)
+                        .foregroundColor(Color.white)
+                    //                Spacer()
+                    Text("Topic")
+                        .bold()
+                        .padding()
+                        .font(.title2)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                        .foregroundColor(Color.white)
+                    Text("Basic Structure of Programming")
+//                        .bold()
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity , alignment: .center)
+                        .font(.title3)
+                        .foregroundColor(Color.white)
+//                    Spacer()
+                    
+                    Text("Sub Topic")
+                        .bold()
+                        .padding()
+                        .font(.title2)
+                        .foregroundColor(Color.white)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    TextField("SubTopic Name" , text: $course)
+                        .padding()
+                        .background(Color.gray.opacity(0.8))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                }
+                Spacer()
+                Button("Update"){
+                    updateTopic()
+                }
+                .bold()
+                .padding()
+                .frame(width: 150)
+                .foregroundColor(.black)
+                .background(Color.green)
+                .cornerRadius(8)
+                .padding(.all)
+            }
+            .background(Image("fa").resizable().ignoresSafeArea())
+        }
+    }
+    func updateTopic() {
         
     }
 }
