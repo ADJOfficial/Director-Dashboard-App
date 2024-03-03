@@ -137,7 +137,7 @@ struct Topics: View { // Design 100% Ok
                 .cornerRadius(8)
                 .padding(.all)
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
     func saveTopic() {

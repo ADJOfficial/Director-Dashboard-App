@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DirectorWelcome: View { // Design 100% Ok
     
-    let username: String
+//    let username: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
     
@@ -20,7 +20,7 @@ struct DirectorWelcome: View { // Design 100% Ok
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome \(username) ")
+                Text("Welcome")
                     .bold()
                     .padding()
                     .font(.title)
@@ -56,7 +56,7 @@ struct DirectorWelcome: View { // Design 100% Ok
                 }
                 Spacer()
             }
-            .background(Image("dark"))
+            .background(Image("fe").resizable().ignoresSafeArea())
         }
     }
 }
@@ -98,7 +98,7 @@ struct Comments: View { // Design 100% Ok
             .padding()
             Spacer()
         }
-        .background(Image("dark"))
+        .background(Image("fii").resizable().ignoresSafeArea())
     }
 }
 
@@ -170,7 +170,7 @@ struct UploadPapers: View {
                     courseViewModel.fetchExistingCourse()
                 }
             }
-            .background(Image("dark"))
+            .background(Image("fii").resizable().ignoresSafeArea())
         }
     }
 }
@@ -258,7 +258,7 @@ struct ApprovedPapers: View {
                 courseViewModel.fetchExistingCourse()
             }
         }
-        .background(Image("dark"))
+        .background(Image("fii").resizable().ignoresSafeArea())
     }
 }
 
@@ -345,7 +345,7 @@ struct Eye: View { // Design 100% Ok
                 .cornerRadius(8)
                 Spacer()
             }
-            .background(Image("dark").resizable().ignoresSafeArea())
+            .background(Image("fii").resizable().ignoresSafeArea())
         }
     }
 }
@@ -357,12 +357,14 @@ struct MakePaper: View {
             Text("Paper")
                 .font(.largeTitle)
                 .bold()
+                .foregroundColor(Color.white)
             
             Image(systemName: "mail.fill")
                 .font(.largeTitle)
                 .foregroundColor(Color.green)
                 .position(x:40,y: 50)
             Text("Barani Institute of Information Technology\n         PMAS Arid Agriculture University\n                     Rawalpindi Pakistan\n        Fall 2024: Mid Term Examination")
+                .foregroundColor(Color.white)
                 .position(x:215,y: -160)
             Image(systemName: "mail.fill")
                 .font(.largeTitle)
@@ -382,6 +384,7 @@ struct MakePaper: View {
                     .position(x:52,y:-530)
                     .bold()
             }
+            .foregroundColor(Color.white)
             .padding()
             .frame(width: 410, height: 200)
             .background(
@@ -395,11 +398,11 @@ struct MakePaper: View {
                 
             }
         }
-        .background(Image("dark"))
+        .background(Image("ft").resizable().ignoresSafeArea())
     }
 }
 struct DirectorWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        UploadPapers()
+        MakePaper()
     }
 }

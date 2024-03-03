@@ -144,7 +144,7 @@ struct CoveredTopics: View { // Design 100% complete
 //                Spacer()
                 
             }
-            .background(Image("fa"))
+            .background(Image("fa").resizable().ignoresSafeArea())
         }
     }
 }

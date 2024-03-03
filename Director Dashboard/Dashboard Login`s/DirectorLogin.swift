@@ -61,9 +61,9 @@ struct DirectorLogin: View {
             .cornerRadius(8)
         }
         .fullScreenCover(isPresented: $isLoggedIn){
-            DirectorWelcome(username: username)
+            DirectorWelcome()
         }
-        .background(Image("dark"))
+        .background(Image("ft").resizable().ignoresSafeArea())
     }
     
     func login() {

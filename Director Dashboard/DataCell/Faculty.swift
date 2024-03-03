@@ -112,7 +112,7 @@ struct Faculty: View {   // Design 100% OK
                                         .foregroundColor(Color.green)
                                         .frame(maxWidth: .infinity , alignment: .trailing)
                                 }
-                                Image(systemName: "delete.right.fill")
+                                Image(systemName: "trash.fill")
                                     .font(.title3)
                                     .padding(.horizontal)
                                     .foregroundColor(Color.red)

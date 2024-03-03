@@ -69,7 +69,7 @@ struct FacultyLogin: View { // Design 100% OK
         .fullScreenCover(isPresented: $isLoggedIn){
             FacultyWelcome()
         }
-        .background(Image("fa").resizable().ignoresSafeArea())
+        .background(Image("fiii").resizable().ignoresSafeArea())
     }
     
     func login() {

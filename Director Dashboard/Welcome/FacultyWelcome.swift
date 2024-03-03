@@ -72,7 +72,7 @@ struct FacultyWelcome: View { // Design 100% OK
                 }
                 Spacer()
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("f").resizable().ignoresSafeArea())
         }
     }
 }
