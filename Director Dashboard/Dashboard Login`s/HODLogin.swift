@@ -63,7 +63,7 @@ struct HODLogin: View {
         .fullScreenCover(isPresented: $isLoggedIn){
             HODWelcome()
         }
-        .background(Image("h").resizable().ignoresSafeArea())
+        .background(Image("fc").resizable().ignoresSafeArea())
     }
     
     func login() {

@@ -86,7 +86,7 @@ struct HODWelcome: View { // Design 100% OK
                 }
                 Spacer()
             }
-            .background(Image("h").resizable().ignoresSafeArea())
+            .background(Image("fc").resizable().ignoresSafeArea())
         }
     }
 }

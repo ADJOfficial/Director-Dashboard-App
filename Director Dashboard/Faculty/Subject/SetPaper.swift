@@ -232,7 +232,7 @@ struct SetPaper: View {
                 Spacer()
                 
                 NavigationLink{
-                    Paper()
+                    StartMakingPaper()
 //                        .navigationBarBackButtonHidden(true)
                 } label: {
                     Text("Continue")
@@ -248,7 +248,7 @@ struct SetPaper: View {
 //                Spacer()
                 
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
 }
@@ -269,15 +269,148 @@ struct SemesterRadioButton: View {
         }
     }
 }
-struct Paper: View {
+
+
+struct StartMakingPaper: View {
+    
+    @State private var question = ""
+    @State private var selectedone = 0
+    var options = ["EASY" , "HARD" , "MEDIUM"]
+    var topicoptions = ["LOOP" , "ARRAY" , "INTEGERS"]
     
     var body: some View {
-        Text("Make Paper")
+        VStack{
+            Text("Paper")
+                .bold()
+                .font(.largeTitle)
+                .foregroundColor(Color.white)
+            Spacer()
+            HStack{
+                Image(systemName: "mail.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color.green)
+                Text("Barani Institute of Information Technology\n         PMAS Arid Agriculture University\n                     Rawalpindi Pakistan\n        Fall 2024: Mid Term Examination")
+                    .foregroundColor(Color.white)
+                Image(systemName: "mail.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color.green)
+            }
+            HStack{
+                VStack{
+                    Text("Course Title: PF")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    Text("Date of Exam: 9/12/2024")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    Text("Degree Program: BSCS/IT")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    Text("Teacher Name: Shahid Abid")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                }
+                VStack{
+                    Text("Course Code: CS-323")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    Text("Duration: 11:00-12:30")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    Text("Total Marks: 100")
+                        .bold()
+                        .padding(.all,1)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                }
+            }
+            .padding()
+            .frame(width: 420)
+            .foregroundColor(Color.white)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.gray, lineWidth: 2)
+            )
+            Spacer()
+            VStack{
+                TextField("Type Question" , text: $question)
+                    .padding()
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                HStack{
+                    Spacer()
+                    Text("Difficulty :")
+                        .frame(maxWidth: .infinity , alignment: .trailing)
+                        .font(.title3)
+                        .foregroundColor(Color.white)
+                    Picker("" , selection: $selectedone) {
+                        ForEach(0..<options.count) {index in
+                            Text(options[index])
+                        }
+                    }
+                    .accentColor(Color.green)
+                    Spacer()
+                    Text("Topic :")
+                        .frame(maxWidth: .infinity , alignment: .trailing)
+                        .font(.title3)
+                        .foregroundColor(Color.white)
+                   
+                    Picker("" , selection: $selectedone) {
+                        ForEach(0..<topicoptions.count) {index in
+                            Text(topicoptions[index])
+                        }
+                    }
+                    .accentColor(Color.green)
+                    Spacer()
+                }
+                HStack{
+                    Spacer()
+                    Image(systemName: "photo.fill")
+                        .font(.largeTitle)
+                        .foregroundColor(Color.green)
+                    Spacer()
+                    Text("Marks :")
+                        .font(.title3)
+                        .foregroundColor(Color.white)
+                    TextField("Marks", text: $question)
+                        .frame(width: 50, height: 40)
+                        .background(Color.white.opacity(0.8))
+                        .cornerRadius(10)
+                    Spacer()
+                    Image(systemName: "bolt.fill")
+                        .font(.largeTitle)
+                        .foregroundColor(Color.green)
+                    Spacer()
+                }
+            }
+            Spacer()
+            
+            Button("Save"){
+                savePaper()
+            }
+            .bold()
+            .padding()
+            .frame(width: 150)
+            .foregroundColor(.black)
+            .background(Color.green)
+            .cornerRadius(8)
+        }
+        .background(Image("fiii").resizable().aspectRatio(contentMode: .fill).ignoresSafeArea())
+    }
+    
+    func savePaper() {
+        
     }
 }
 
 struct SetPaper_Previews: PreviewProvider {
     static var previews: some View {
-        SetPaper()
+        StartMakingPaper()
     }
 }

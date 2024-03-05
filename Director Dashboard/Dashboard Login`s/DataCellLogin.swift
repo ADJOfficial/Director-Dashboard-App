@@ -63,7 +63,7 @@ struct DataCellLogin: View {
             DataCellWelcome()
 //                .navigationBarBackButtonHidden(false)
         }
-        .background(Image("fac"))
+        .background(Image("ff").resizable().ignoresSafeArea())
     }
     
     func login() {

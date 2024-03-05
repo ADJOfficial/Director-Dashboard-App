@@ -87,7 +87,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                 }
                 Spacer()
             }
-            .background(Image("fac"))
+            .background(Image("ff").resizable().ignoresSafeArea())
         }
     }
 }
