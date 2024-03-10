@@ -411,6 +411,6 @@ struct StartMakingPaper: View {
 
 struct SetPaper_Previews: PreviewProvider {
     static var previews: some View {
-        StartMakingPaper()
+        SetPaper()
     }
 }

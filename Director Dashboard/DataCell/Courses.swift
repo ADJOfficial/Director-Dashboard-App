@@ -9,11 +9,12 @@ import SwiftUI
 
 struct Courses: View {   // Design 100% OK
     
+    @State private var isEnable = false
     @State private var name = ""
     @State private var username = ""
     @State private var password = ""
     @State private var search = ""
-    @StateObject var userViewModel = UserViewModel()
+    @StateObject private var facultiesViewModel = FacultiesViewModel()
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         NavigationView {
@@ -24,8 +25,9 @@ struct Courses: View {   // Design 100% OK
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Text("Course Code")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 TextField("Course Code" , text: $name)
@@ -34,8 +36,9 @@ struct Courses: View {   // Design 100% OK
                     .cornerRadius(8)
                     .padding(.horizontal)
                 Text("Course Title")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 TextField("Course Title" , text: $username)
@@ -44,8 +47,9 @@ struct Courses: View {   // Design 100% OK
                     .cornerRadius(8)
                     .padding(.horizontal)
                 Text("Credit Hours")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 SecureField("Credit Hours" , text: $password)
@@ -73,59 +77,47 @@ struct Courses: View {   // Design 100% OK
                     Spacer()
                 }
                 VStack {
-                    HStack {
-                        Text("Course")
-                            .bold()
-                            .font(.title2)
-                            .padding(.horizontal)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("Code")
-                            .bold()
-                            .padding()
-                            .font(.title2)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                            .padding(.horizontal)
-                        Text("")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    .padding(1)
                     ScrollView{
-                        ForEach(userViewModel.existing , id:\ .self) { cr in
+                        ForEach(facultiesViewModel.remaining , id:\ .self) { cr in
                             HStack{
-                                Text(cr.name)
+                                Text(cr.f_name)
                                     .font(.headline)
-                                    .foregroundColor(Color.white)
-                                    .frame(maxWidth: .infinity , alignment: .leading)
                                     .padding(.horizontal)
+                                    .foregroundColor(Color.white)
                                 Text(cr.username)
                                     .font(.headline)
                                     .padding(.horizontal)
                                     .foregroundColor(Color.white)
-                                    .frame(maxWidth: .infinity , alignment: .trailing)
+                                    .frame(maxWidth: .infinity , alignment: .center)
                                 NavigationLink{
                                     EditCourse()
                                         .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
                                         .font(.title2)
-//                                        .padding(.horizontal)
-                                        .foregroundColor(Color.green)
-                                        .frame(maxWidth: .infinity , alignment: .trailing)
+                                        .foregroundColor(Color.orange)
                                 }
-                                Image(systemName: "delete.right.fill")
-                                    .font(.title3)
-                                    .padding(.horizontal)
-                                    .foregroundColor(Color.red)
+                                Image(systemName: "nosign")
+                                    .font(.title2)
+                                    .foregroundColor(isEnable ? .green : .red)
+                                    .onTapGesture {
+                                        isEnable.toggle()
+                                    }
                             }
+                            Divider()
+                                .background(Color.white)
                             .padding(1)
                         }
                     }
+                    .padding()
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410 , height:250)
                 .onAppear {
-                    userViewModel.fetchExistingUser()
+                    facultiesViewModel.fetchExistingFaculties()
                 }
                 Spacer()
             }
@@ -182,8 +174,9 @@ struct EditCourse: View { // Design 100% OK
                 .foregroundColor(Color.white)
             Spacer()
             Text("Course Code")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
             TextField("Course Code" , text: $name)
@@ -192,8 +185,9 @@ struct EditCourse: View { // Design 100% OK
                 .cornerRadius(8)
                 .padding(.horizontal)
             Text("Course Title")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
             TextField("Course Title" , text: $username)
@@ -202,8 +196,9 @@ struct EditCourse: View { // Design 100% OK
                 .cornerRadius(8)
                 .padding(.horizontal)
             Text("Credit Hours")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
             SecureField("Credit Hours" , text: $password)
@@ -212,7 +207,7 @@ struct EditCourse: View { // Design 100% OK
                 .cornerRadius(8)
                 .padding(.horizontal)
             Spacer()
-                Button("Create"){
+                Button("Update"){
                     update()
                 }
                 .bold()
@@ -223,7 +218,7 @@ struct EditCourse: View { // Design 100% OK
                 .cornerRadius(8)
                 .padding(.all)
         }
-        .background(Image("fac"))
+        .background(Image("fw"))
     }
     func update() {
         

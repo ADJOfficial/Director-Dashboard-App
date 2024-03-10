@@ -24,30 +24,33 @@ struct PrintedPapers: View {
                     .background(Color.gray.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                ScrollView{ // Get From Backend
-                    HStack{
-                        Spacer()
-                        Text("Parallel & distributing Computing")
-                            .font(.headline)
-                        Spacer()
-                        Text("CS-323")
-                        Spacer()
-                        NavigationLink{
-                            PrintedPapers()
-                                .navigationBarBackButtonHidden(true)
-                        }label: {
-                            Image(systemName: "newspaper.fill")
-                                .font(.title2)
+                VStack{
+                    ScrollView{ // Get From Backend
+                        HStack{
+                            Spacer()
+                            Text("Parallel & distributing Computing")
+                                .foregroundColor(Color.white)
+                                .font(.headline)
+                            Spacer()
+                            Text("Printed")
                                 .foregroundColor(Color.green)
+                                .font(.headline)
+                            Spacer()
                         }
-                        Spacer()
+                        Divider()
+                            .background(Color.white)
+                        .padding(1)
                     }
                     .padding()
-                    .foregroundColor(Color.white)
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410 , height:700)
                 Spacer()
             }
-            .background(Image("h").resizable().ignoresSafeArea())
+            .background(Image("fw").resizable().ignoresSafeArea())
         }
     }
 }

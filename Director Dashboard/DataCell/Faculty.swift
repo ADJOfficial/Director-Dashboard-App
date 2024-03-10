@@ -8,13 +8,47 @@
 import SwiftUI
 
 struct Faculty: View {   // Design 100% OK
-    
-    @State private var name = ""
+
+    @State private var f_name = ""
     @State private var username = ""
     @State private var password = ""
-    @State private var search = ""
-    @StateObject var userViewModel = UserViewModel()
-    
+    @State private var searchText = ""
+    @State private var searchResults: [faculties] = []
+    @StateObject private var facultiesViewModel = FacultiesViewModel()
+
+    var filteredFaculties: [faculties] { // All Data Will Be Filter and show on Table
+            if searchText.isEmpty {
+                return facultiesViewModel.remaining
+            } else {
+                return facultiesViewModel.remaining.filter { faculty in
+                    faculty.f_name.localizedCaseInsensitiveContains(searchText) ||
+                    faculty.username.localizedCaseInsensitiveContains(searchText)
+                }
+            }
+        }
+
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        @Binding var text: String
+
+        var body: some View {
+            HStack {
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+            }
+        }
+    }
     var body: some View { // Get All Data From Node MongoDB : Pending
         NavigationView {
             VStack {
@@ -24,39 +58,43 @@ struct Faculty: View {   // Design 100% OK
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Text("Name")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Name" , text: $name)
+                TextField("Name" , text: $f_name)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
                 Text("Username")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 TextField("Username" , text: $username)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
                 Text("Password")
+                    .bold()
                     .padding(.horizontal)
-                    .font(.headline)
+                    .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 SecureField("Password" , text: $password)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
+                
                 VStack{
                     Spacer()
                     Button("Create"){
-                        saveUser()
+                        createFaculty()
                     }
                     .bold()
                     .padding()
@@ -65,78 +103,121 @@ struct Faculty: View {   // Design 100% OK
                     .background(Color.yellow)
                     .cornerRadius(8)
                     Spacer()
-                    TextField("Search Teacher" , text: $search)
-                        .padding()
-                        .background(Color.gray.opacity(0.8))
-                        .cornerRadius(8)
-                        .frame(width: 300)
+                    SearchBar(text: $searchText)
                     Spacer()
                 }
-                VStack {
-                    HStack {
-                        Text("Name")
-                            .bold()
-                            .font(.title2)
-                            .padding(.horizontal)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("Username")
-                            .bold()
-                            .font(.title2)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    .padding(1)
-                    ScrollView{
-                        ForEach(userViewModel.existing , id:\ .self) { cr in
+
+                VStack{
+                    ScrollView {
+                        ForEach(filteredFaculties.indices, id: \.self) { index in
+                            let cr = filteredFaculties[index]
                             HStack{
-                                Text(cr.name)
+                                Text(cr.f_name)
                                     .font(.headline)
-                                    .padding(.horizontal)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 Text(cr.username)
                                     .font(.headline)
                                     .padding(.horizontal)
                                     .foregroundColor(Color.white)
-                                    .frame(maxWidth: .infinity , alignment: .trailing)
-                                NavigationLink{
-                                    EditFaculty()
-                                        .navigationBarBackButtonHidden(true)
-                                }label: {
-                                    Image(systemName: "rectangle.and.pencil.and.ellipsis")
-                                        .font(.title2)
-                                        .foregroundColor(Color.green)
-                                        .frame(maxWidth: .infinity , alignment: .trailing)
+                                    .frame(maxWidth: .infinity , alignment: .center)
+                                
+                                NavigationLink(destination: EditFaculty(faculty: cr)) {
+                                    Image(systemName: "square.and.pencil.circle")
+                                        .bold()
+                                        .font(.title)
+                                        .foregroundColor(Color.orange)
                                 }
-                                Image(systemName: "trash.fill")
-                                    .font(.title3)
-                                    .padding(.horizontal)
-                                    .foregroundColor(Color.red)
+                                Image(systemName: isFacultyEnabled(index) ? "checkmark.circle.fill" : "nosign")
+                                    .font(.title2)
+                                    .foregroundColor(isFacultyEnabled(index) ? .green : .red)
+                                    .onTapGesture {
+                                        toggleFacultyStatus(index)
+                                    }
                             }
-                            .padding(1)
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
                         }
                     }
                 }
-//                .background(Color.gray)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410 , height:250)
                 .onAppear {
-                    userViewModel.fetchExistingUser()
+                    facultiesViewModel.fetchExistingFaculties()
                 }
                 Spacer()
             }
-            .background(Image("fac"))
+            .background(Image("fw"))
         }
     }
-    func saveUser() {
-        guard let url = URL(string: "http://localhost:1000/addFaculties") else {
+    func performSearch(_ searchText: String) {
+            guard !searchText.isEmpty else {
+                searchResults = []
+                return
+            }
+            
+            guard let url = URL(string: "http://localhost:8000/faculty/search?q=\(searchText)") else {
+                return
+            }
+            
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    print("Error searching faculty: \(error.localizedDescription)")
+                } else if let data = data {
+                    do {
+                        let searchResults = try JSONDecoder().decode([faculties].self, from: data)
+                        DispatchQueue.main.async {
+                            self.searchResults = searchResults
+                        }
+                    } catch {
+                        print("Error decoding search results: \(error.localizedDescription)")
+                    }
+                }
+            }.resume()
+        }
+    func isFacultyEnabled(_ index: Int) -> Bool {
+        return facultiesViewModel.remaining[index].status == "enable"
+    }
+    func toggleFacultyStatus(_ index: Int) {
+        let faculty = facultiesViewModel.remaining[index]
+        let newStatus = faculty.status == "enable" ? "disable" : "enable"
+        
+        guard let url = URL(string: "http://localhost:8000/EDfaculty/\(faculty.f_id)") else {
+            return
+        }
+        
+        guard let jsonData = try? JSONEncoder().encode(["status": newStatus]) else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error updating faculty status: \(error.localizedDescription)")
+            } else if let data = data {
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Faculty status updated successfully: \(responseString)")
+                    facultiesViewModel.fetchExistingFaculties()
+                }
+            }
+        }.resume()
+    }
+    func createFaculty() {
+        guard let url = URL(string: "http://localhost:8000/addfaculty") else {
             return
         }
 
         let user = [
-            "name": name,
+            "f_name": f_name,
             "username": username,
             "password": password
         ] as [String : Any]
@@ -155,6 +236,12 @@ struct Faculty: View {   // Design 100% OK
                 do {
                     let result = try JSONSerialization.jsonObject(with: data)
                     print("Result from server:", result)
+                    facultiesViewModel.fetchExistingFaculties() // Refresh faculties after creating a new one
+                    DispatchQueue.main.async {
+                        f_name = ""
+                        username = ""
+                        password = ""
+                    }
                 } catch {
                     print("Error parsing JSON:", error)
                 }
@@ -167,11 +254,11 @@ struct Faculty: View {   // Design 100% OK
 
 
 struct EditFaculty: View { // Design 100% OK
-    
-    @State private var name = ""
+    var faculty: faculties
+    @State private var f_name = ""
     @State private var username = ""
     @State private var password = ""
-
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
         VStack {
             Text("Update Faculty")
@@ -181,18 +268,23 @@ struct EditFaculty: View { // Design 100% OK
                 .foregroundColor(Color.white)
             Spacer()
             Text("Name")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            TextField("Name" , text: $name)
+            TextField("Name" , text: $f_name)
                 .padding()
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
+                .onAppear {
+                    f_name = faculty.f_name
+                }
             Text("Username")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
             TextField("Username" , text: $username)
@@ -200,32 +292,68 @@ struct EditFaculty: View { // Design 100% OK
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
+                .onAppear {
+                    username = faculty.username
+                }
             Text("Password")
+                .bold()
                 .padding(.horizontal)
-                .font(.headline)
+                .font(.title2)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            SecureField("Password" , text: $password)
+            TextField("Password" , text: $password)
                 .padding()
                 .background(Color.gray.opacity(0.8))
                 .cornerRadius(8)
                 .padding(.horizontal)
-            Spacer()
-                Button("Create"){
-                    update()
+                .onAppear {
+                    password = faculty.password
                 }
-                .bold()
-                .padding()
-                .frame(width: 150)
-                .foregroundColor(.black)
-                .background(Color.yellow)
-                .cornerRadius(8)
-                .padding(.all)
+            Spacer()
+            Button("Update"){
+                updateFaculty()
+            }
+            .bold()
+            .padding()
+            .frame(width: 150)
+            .foregroundColor(.black)
+            .background(Color.yellow)
+            .cornerRadius(8)
+            .padding(.all)
         }
-        .background(Image("fac"))
+        .background(Image("fw"))
     }
-    func update() {
-        
+    func updateFaculty() {
+        guard let url = URL(string: "http://localhost:8000/faculty/\(faculty.f_id)") else {
+            return
+        }
+
+        let updatedFaculty = faculties(f_id: faculty.f_id, f_name: f_name, username: username , password: password ,status: faculty.status)
+
+        guard let encodedData = try? JSONEncoder().encode(updatedFaculty) else {
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = encodedData
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error while updating faculty: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            if let response = try? JSONDecoder().decode(faculties.self, from: data) {
+                print("Faculty updated successfully: \(response)")
+
+                // Perform any necessary UI updates or navigation after successful update
+            } else {
+                print("Error while decoding updated faculty data")
+            }
+        }
+        task.resume()
     }
 }
 struct Faculty_Previews: PreviewProvider {
@@ -233,3 +361,68 @@ struct Faculty_Previews: PreviewProvider {
         Faculty()
     }
 }
+
+
+    //                    VStack {
+    //                        TextField("Search", text: $searchText)
+    //                            .padding()
+    //                            .background(Color.gray.opacity(1))
+    //                            .cornerRadius(8)
+    //                            .padding(.horizontal)
+    //                            .frame(width: 400)
+    //                            .onChange(of: searchText, perform: performSearch)
+    //
+    //                        if !searchResults.isEmpty {
+    //                            VStack(alignment: .leading) {
+    //                                ForEach(searchResults, id: \.f_id) { faculty in
+    //                                    VStack(alignment: .leading) {
+    //                                        Text(faculty.f_name)
+    //                                            .font(.headline)
+    //                                        Text(faculty.username)
+    //                                            .font(.subheadline)
+    //                                    }
+    //                                }
+    //                            }
+    //                            .frame(width: 300)
+    //                            .background(Color.white)
+    //                            .background(
+    //                                RoundedRectangle(cornerRadius: 20)
+    //                                    .stroke(Color.gray, lineWidth: 2)
+    //                            )
+    //                        }
+    //                    }
+    //                    Spacer()
+    //                }
+    ////                Spacer()
+    //                VStack {
+    //                    ScrollView{
+    //                        ForEach(facultiesViewModel.remaining.indices , id:\ .self) { index in
+    //                            let cr = facultiesViewModel.remaining[index]
+    //                            HStack{
+    //                                Text(cr.f_name)
+    //                                    .font(.headline)
+    //                                    .foregroundColor(Color.white)
+    //                                    .frame(maxWidth: .infinity , alignment: .leading)
+    //                                Text(cr.username)
+    //                                    .font(.headline)
+    //                                    .padding(.horizontal)
+    //                                    .foregroundColor(Color.white)
+    //                                    .frame(maxWidth: .infinity , alignment: .center)
+    //
+    //                                NavigationLink(destination: EditFaculty(faculty: cr)) {
+    //                                    Image(systemName: "square.and.pencil.circle")
+    //                                        .bold()
+    //                                        .font(.title)
+    //                                        .foregroundColor(Color.orange)
+    //                                }
+    //                                Image(systemName: isFacultyEnabled(index) ? "checkmark.circle.fill" : "nosign")
+    //                                    .font(.title2)
+    //                                    .foregroundColor(isFacultyEnabled(index) ? .green : .red)
+    //                                    .onTapGesture {
+    //                                        toggleFacultyStatus(index)
+    //                                    }
+    //                            }
+    //                            Divider()
+    //                                .background(Color.white)
+    //                            .padding(1)
+    //                        }
