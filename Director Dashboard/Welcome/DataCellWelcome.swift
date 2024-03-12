@@ -44,7 +44,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .padding(.all)
                     
                     NavigationLink{
-                        Courses()
+                        Course()
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Course")
@@ -72,8 +72,8 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .padding(.all)
                     
                     NavigationLink{
-                        PrintedPapers()
-                            .navigationBarBackButtonHidden(true)
+//                        PrintedPapers()
+//                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Printed")
                     }

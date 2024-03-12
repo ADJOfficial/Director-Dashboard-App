@@ -139,6 +139,13 @@ struct Faculty: View {   // Design 100% OK
                                 .background(Color.white)
                                 .padding(1)
                         }
+                        if filteredFaculties.isEmpty {
+                            Text("No Data Found")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 }
                 .padding()
@@ -155,36 +162,36 @@ struct Faculty: View {   // Design 100% OK
             .background(Image("fw"))
         }
     }
-    func performSearch(_ searchText: String) {
-            guard !searchText.isEmpty else {
-                searchResults = []
-                return
-            }
-            
-            guard let url = URL(string: "http://localhost:8000/faculty/search?q=\(searchText)") else {
-                return
-            }
-            
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                if let error = error {
-                    print("Error searching faculty: \(error.localizedDescription)")
-                } else if let data = data {
-                    do {
-                        let searchResults = try JSONDecoder().decode([faculties].self, from: data)
-                        DispatchQueue.main.async {
-                            self.searchResults = searchResults
-                        }
-                    } catch {
-                        print("Error decoding search results: \(error.localizedDescription)")
-                    }
-                }
-            }.resume()
-        }
+//    func performSearch(_ searchText: String) {
+//            guard !searchText.isEmpty else {
+//                searchResults = []
+//                return
+//            }
+//            
+//            guard let url = URL(string: "http://localhost:8000/faculty/search?q=\(searchText)") else {
+//                return
+//            }
+//
+//            URLSession.shared.dataTask(with: url) { data, response, error in
+//                if let error = error {
+//                    print("Error searching faculty: \(error.localizedDescription)")
+//                } else if let data = data {
+//                    do {
+//                        let searchResults = try JSONDecoder().decode([faculties].self, from: data)
+//                        DispatchQueue.main.async {
+//                            self.searchResults = searchResults
+//                        }
+//                    } catch {
+//                        print("Error decoding search results: \(error.localizedDescription)")
+//                    }
+//                }
+//            }.resume()
+//        }
     func isFacultyEnabled(_ index: Int) -> Bool {
-        return facultiesViewModel.remaining[index].status == "enable"
+        return filteredFaculties[index].status == "enable"
     }
     func toggleFacultyStatus(_ index: Int) {
-        let faculty = facultiesViewModel.remaining[index]
+        let faculty = filteredFaculties[index]
         let newStatus = faculty.status == "enable" ? "disable" : "enable"
         
         guard let url = URL(string: "http://localhost:8000/EDfaculty/\(faculty.f_id)") else {
@@ -361,68 +368,3 @@ struct Faculty_Previews: PreviewProvider {
         Faculty()
     }
 }
-
-
-    //                    VStack {
-    //                        TextField("Search", text: $searchText)
-    //                            .padding()
-    //                            .background(Color.gray.opacity(1))
-    //                            .cornerRadius(8)
-    //                            .padding(.horizontal)
-    //                            .frame(width: 400)
-    //                            .onChange(of: searchText, perform: performSearch)
-    //
-    //                        if !searchResults.isEmpty {
-    //                            VStack(alignment: .leading) {
-    //                                ForEach(searchResults, id: \.f_id) { faculty in
-    //                                    VStack(alignment: .leading) {
-    //                                        Text(faculty.f_name)
-    //                                            .font(.headline)
-    //                                        Text(faculty.username)
-    //                                            .font(.subheadline)
-    //                                    }
-    //                                }
-    //                            }
-    //                            .frame(width: 300)
-    //                            .background(Color.white)
-    //                            .background(
-    //                                RoundedRectangle(cornerRadius: 20)
-    //                                    .stroke(Color.gray, lineWidth: 2)
-    //                            )
-    //                        }
-    //                    }
-    //                    Spacer()
-    //                }
-    ////                Spacer()
-    //                VStack {
-    //                    ScrollView{
-    //                        ForEach(facultiesViewModel.remaining.indices , id:\ .self) { index in
-    //                            let cr = facultiesViewModel.remaining[index]
-    //                            HStack{
-    //                                Text(cr.f_name)
-    //                                    .font(.headline)
-    //                                    .foregroundColor(Color.white)
-    //                                    .frame(maxWidth: .infinity , alignment: .leading)
-    //                                Text(cr.username)
-    //                                    .font(.headline)
-    //                                    .padding(.horizontal)
-    //                                    .foregroundColor(Color.white)
-    //                                    .frame(maxWidth: .infinity , alignment: .center)
-    //
-    //                                NavigationLink(destination: EditFaculty(faculty: cr)) {
-    //                                    Image(systemName: "square.and.pencil.circle")
-    //                                        .bold()
-    //                                        .font(.title)
-    //                                        .foregroundColor(Color.orange)
-    //                                }
-    //                                Image(systemName: isFacultyEnabled(index) ? "checkmark.circle.fill" : "nosign")
-    //                                    .font(.title2)
-    //                                    .foregroundColor(isFacultyEnabled(index) ? .green : .red)
-    //                                    .onTapGesture {
-    //                                        toggleFacultyStatus(index)
-    //                                    }
-    //                            }
-    //                            Divider()
-    //                                .background(Color.white)
-    //                            .padding(1)
-    //                        }

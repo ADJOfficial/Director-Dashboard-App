@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ViewYourCourses: View { // Design 100% OK
     
+    
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         NavigationView {
