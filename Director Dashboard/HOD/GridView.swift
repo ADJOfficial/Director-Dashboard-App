@@ -220,7 +220,7 @@ struct GridView: View { // Design 100% ok
             .padding(.bottom)
             Spacer()
         }
-        .background(Image("h").resizable().ignoresSafeArea())
+        .background(Image("fc").resizable().ignoresSafeArea())
     }
 }
 

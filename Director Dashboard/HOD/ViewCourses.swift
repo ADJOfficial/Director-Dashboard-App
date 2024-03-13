@@ -56,7 +56,7 @@ struct ViewCourses: View {    // Design 100% OK
         
         NavigationView {
             VStack {
-                Text("Faculty")
+                Text("Course")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
@@ -66,16 +66,17 @@ struct ViewCourses: View {    // Design 100% OK
                 //                Spacer()
                 VStack{
                     ScrollView {
-                        ForEach(filteredCourses.indices, id: \.self) { index in
-                            let cr = filteredCourses[index]
+                        ForEach(filteredCourses, id: \.self) { cr in
+//                            let cr = filteredCourses[index]
                             HStack {
                                 Text(cr.c_title)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                NavigationLink(destination: CourseAssigned(courseName: cr.c_title), tag: cr.c_title,selection: $selectedCourseName) {
-                                    Image(systemName: "eye.fill")
+                                NavigationLink{
+                                    CourseAssignedTo(courseID: cr.c_id, courseName: cr.c_title)
+                                } label: {Image(systemName: "eye.fill")
                                         .bold()
                                         .font(.title3)
                                         .foregroundColor(Color.orange)
@@ -110,94 +111,201 @@ struct ViewCourses: View {    // Design 100% OK
     }
 }
 
-struct CourseAssigned: View { // Design 100% OK
+
+struct Courer: Codable  ,Hashable {
+    let f_id: Int
+    let c_id: Int
+    let c_code: String
+    let c_title: String
+    let f_name: String
     
-    let courseName: String
-//    let courseCode: String
-//    @State private var selectedOptions = 0
-    @StateObject private var courseViewModel = CoursesViewModel()
-    var options = ["Sir Naveed Ashraf" , "Sir Abid Jameel" , "Ma'am Zoya" , "Sir Zeeshan"]
+}
+
+class CoViewModel: ObservableObject {
+    @Published var Courseassignedto: [Courer] = []
+    
+    func fetchCoursesAssignedTo(courseID: Int) {
+        guard let url = URL(string: "http://localhost:2000/CourseAssignedTo?c_id=\(courseID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned")
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                            print("Response status code: \(httpResponse.statusCode)")
+                        }
+            
+            do {
+                let courses = try JSONDecoder().decode([Courer].self, from: data)
+                DispatchQueue.main.async {
+                    self.Courseassignedto = courses
+                    print("Fetched \(courses.count) assigned courses for faculty ID: \(courseID)")
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }
+    func deleteAssignedCourse(courseId: Int , facultyId: Int) {
+        // Perform the deletion using an API call or database query
+        deleteAssignedCourseFromServer(courseId: courseId , facultyId: facultyId) { success in
+            if success {
+                // Remove the deleted assigned course from the array
+                DispatchQueue.main.async {
+                    if let index = self.Courseassignedto.firstIndex(where: { $0.c_id == courseId && $0.f_id == facultyId }) {
+                        self.Courseassignedto.remove(at: index)
+                    }
+                }
+            } else {
+                // Handle error
+                print("Failed to delete assigned course")
+            }
+        }
+    }
+
+    private func deleteAssignedCourseFromServer(courseId: Int , facultyId: Int, completion: @escaping (Bool) -> Void) {
+        // Make the API call or database query to delete the assigned course
+        // You can use URLSession or Alamofire to make the HTTP request
+        
+        // Example using URLSession
+        guard let url = URL(string: "http://localhost:2000/DeleteAssignedF/\(courseId)/\(facultyId)") else {
+            completion(false)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error deleting assigned course:", error)
+                completion(false)
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(false)
+                return
+            }
+            
+            if httpResponse.statusCode == 200 {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }.resume()
+    }
+}
+
+struct CourseAssignedTo: View {  // Design 100% ok
+    
+    @StateObject private var coViewModel = CoViewModel()
+//    var facultyID: Int
+    var courseID: Int
+    var courseName: String
+    @Environment(\.presentationMode) var presentationMode
+    
     
     var body: some View { // Get All Data From Node MongoDB : Pending
+        
         NavigationView{
             VStack {
-                Text("Course Assigned")
+                Text("Assigned Courses")
                     .bold()
-                    .padding()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
                 Text("\(courseName)")
                     .bold()
-                    .padding(.horizontal)
-                    .frame(maxWidth: .infinity , alignment: .leading)
+                    .padding()
+                    .font(.title2)
+                    .frame(maxWidth: .infinity , alignment: .center)
+                    .foregroundColor(Color.white)
+                Text("Assigned Courses")
+                    .underline()
                     .font(.title2)
                     .foregroundColor(Color.white)
-//                Text("Course Code  CS-323")
-//                    .bold()
-//                    .padding(.horizontal)
-//                    .font(.headline)
-//                    .frame(maxWidth: .infinity , alignment: .leading)
-//                    .foregroundColor(Color.white)
-
-                    Text("Assigned To")
-                        .bold()
-                        .padding()
-                        .underline()
-                        .font(.title3)
-                        .foregroundColor(Color.white)
-
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity , alignment: .leading)
                 VStack{
                     ScrollView{
-                        ForEach(courseViewModel.existing , id:\ .self) { cr in
+                        ForEach(coViewModel.Courseassignedto, id: \.self) { cr in
                             HStack{
-                                Spacer()
-                                Text(cr.c_code)
-                                    .padding(.top)
+                                Text(cr.f_name)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                Text(cr.c_title)
-                                    .padding(.top)
-                                    .font(.headline)
-                                    .foregroundColor(Color.white)
-                                    .frame(maxWidth: .infinity , alignment: .leading)
-                                Image(systemName: "delete.right.fill")
+                                Image(systemName: "trash.fill")
                                     .font(.title3)
                                     .foregroundColor(Color.red)
-                                Spacer()
+                                    .onTapGesture {
+                                        deleteAssignedCourse(courseId: cr.c_id,facultyId: cr.f_id)
+                                    }
                             }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
+                        }
+                        if coViewModel.Courseassignedto.isEmpty {
+                            Text("\(courseName) have no Assigned Courses Yet !")
+                            //                                .font(.headline)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.yellow)
+                                .padding()
+                                .frame(maxWidth: .infinity)
                         }
                     }
-                    .padding()
                 }
+                .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.gray, lineWidth: 2)
                 )
-                .frame(width: 410, height: 400)
+                .frame(width: 410, height: 500)
                 .onAppear {
-                    courseViewModel.fetchExistingCourses()
+                    coViewModel.fetchCoursesAssignedTo(courseID: courseID)
                 }
-                Spacer()
+                
                 NavigationLink{
                     CLOS()
-                        .navigationBarBackButtonHidden()
+                        .navigationBarBackButtonHidden(true)
                 }label: {
-                    Text("CLOS")
+                    Image(systemName: "plus.app.fill")
+                        .bold()
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(Color.green)
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity , alignment: .trailing)
                 }
-                .foregroundColor(.black)
-                .padding()
-                .bold()
-                .frame(width: 100)
-                .background(Color.teal)
-                .cornerRadius(8)
-                .padding(.all)
                 
-                Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fc").resizable().ignoresSafeArea())
         }
+    }
+    private var backButton: some View {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(.blue)
+                    .imageScale(.large)
+            }
+        }
+    private func deleteAssignedCourse( courseId: Int,facultyId: Int) {
+        coViewModel.deleteAssignedCourse(courseId: courseId , facultyId: facultyId)
     }
 }
 struct CLOS: View { // Design 100% OK

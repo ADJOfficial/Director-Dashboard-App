@@ -9,32 +9,60 @@ import SwiftUI
 
 struct AssignCourse: View { // Design 100% ok
     
-    @State private var SelectedOption = 0
-    @State private var searchSubject = ""
-    var options = ["Sir Zahid" , "Sir Abid Jameel" , "Sir Shahid Rasheed"]
+    @StateObject private var coursesViewModel = CoursesViewModel()
+    var facultyID: Int
+    var courseID: Int
+    var facultyName: String
+    @State private var searchText = ""
+    @Environment(\.presentationMode) var presentationMode
+    @State private var selectedCourses: Set<Int> = []
    
+    var filteredcourse: [AllCourses] { // All Data Will Be Filter and show on Table
+        if searchText.isEmpty {
+            return coursesViewModel.existing
+        } else {
+            return coursesViewModel.existing.filter { faculty in
+                faculty.c_code.localizedCaseInsensitiveContains(searchText) ||
+                faculty.c_title.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+//                Spacer()
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+                Spacer()
+            }
+        }
+    }
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
        
         VStack {
             Text("Assign Course")
                 .bold()
-                .padding()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Semester: Fall 2024")
-                .foregroundColor(Color.white)
-            VStack{
-                Picker("" , selection: $SelectedOption){
-                    ForEach(0..<options.count) { index in
-                        Text(options[index])
-                    }
-                }
-                .frame(maxWidth: .infinity , alignment: .leading)
-                .padding(.horizontal)
-                .background(Color.white.opacity(0.8))
-                .cornerRadius(8)
-                Text("---------------")
+                Text("\(facultyName)")
                     .bold()
                     .padding()
                     .font(.title2)
@@ -43,26 +71,51 @@ struct AssignCourse: View { // Design 100% ok
                     .padding()
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity,alignment: .leading)
-                TextField("Search Subject", text: $searchSubject)
-                    .padding()
-                    .background(Color.white.opacity(0.8))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-            }
-            ScrollView{
-                HStack{
-                    Spacer()
-                    Image(systemName: "checkmark.square")
-                    Spacer()
-                    Text("Parallel & distributing Computing")
-                    Spacer()
+                
+                SearchBar(text: $searchText)
+            Spacer()
+            VStack{
+                ScrollView{
+                    ForEach(filteredcourse, id: \.self) { cr in
+                        HStack{
+                            
+                            Text(cr.c_title)
+                                .font(.headline)
+                                .foregroundColor(Color.white)
+                                .padding(.horizontal)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Button(action: {
+                                toggleCourseSelection(courseID: cr.c_id)
+                            }) {
+                                Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
+                                    .font(.title2)
+                                    .foregroundColor(Color.white)
+                                    .padding(.horizontal)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                            }
+                        }
+                        Divider()
+                            .background(Color.white)
+                            .padding(1)
+                    }
+                    if filteredcourse.isEmpty {
+                        Text("No Course Found")
+                            .font(.headline)
+                            .foregroundColor(.yellow)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                    }
                 }
-                .padding(.top)
-                .font(.title3)
-                .foregroundColor(Color.white)
             }
+//            .padding()
+            .frame(width: 410, height: 500)
+            .onAppear {
+                coursesViewModel.fetchExistingCourses()
+            }
+            Spacer()
+            
             Button("Save"){
-                // Add Logic for Backend to Store New Data
+                assignSelectedCourses()
             }
             .bold()
             .padding()
@@ -70,14 +123,98 @@ struct AssignCourse: View { // Design 100% ok
             .foregroundColor(.black)
             .background(Color.teal)
             .cornerRadius(8)
-            .padding(.all)
+            
         }
-        .background(Image("h").resizable().ignoresSafeArea())
+        .navigationBarItems(leading: backButton)
+        .background(Image("fc").resizable().ignoresSafeArea())
+    }
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    private func toggleCourseSelection(courseID: Int) {
+           if selectedCourses.contains(courseID) {
+               selectedCourses.remove(courseID)
+           } else {
+               selectedCourses.insert(courseID)
+           }
+       }
+    private func assignSelectedCourses() {
+        // Iterate over the selected courses
+        for courseID in selectedCourses {
+            // Make the API call to assign the course to the faculty
+            assignCourseToFaculty(courseID: courseID,facultyID: facultyID)
+        }
+
+        // Dismiss the view after saving
+//        presentationMode.wrappedValue.dismiss()
+    }
+
+//    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
+//        // Prepare the request URL
+//        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
+//
+//        // Prepare the request body
+//        let parameters: [String: Any] = [
+//            "courseID": courseID,
+//            "facultyID": facultyID
+//        ]
+//
+//        // Create the request
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+//
+//        // Send the request
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                print("Error: \(error)")
+//                // Handle the error as needed
+//            } else if let data = data {
+//                // Parse the response data if needed
+//                // Handle the response as needed
+//            }
+//        }.resume()
+//    }
+    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
+        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let parameters: [String: Any] = [
+            "courseID": courseID,
+            "facultyID": facultyID
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let message = responseJSON["message"] as? String {
+                // Login successful
+//                isLoggedIn = true
+                print(message)
+            } else {
+                // Invalid credentials
+//                showAlert = true
+            }
+        }.resume()
     }
 }
-
 struct AssignCourse_Previews: PreviewProvider {
     static var previews: some View {
-        AssignCourse()
+        AssignCourse(facultyID: 1, courseID: 1, facultyName: "")
     }
 }

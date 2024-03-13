@@ -335,7 +335,7 @@ struct EditFaculty: View { // Design 100% OK
             return
         }
 
-        let updatedFaculty = faculties(f_id: faculty.f_id, f_name: f_name, username: username , password: password ,status: faculty.status)
+        let updatedFaculty = faculties(f_id: faculty.f_id,c_id: faculty.c_id, f_name: f_name, username: username , password: password ,status: faculty.status)
 
         guard let encodedData = try? JSONEncoder().encode(updatedFaculty) else {
             return

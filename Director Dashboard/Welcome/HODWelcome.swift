@@ -58,7 +58,7 @@ struct HODWelcome: View { // Design 100% OK
                     .padding(.all)
                     
                     NavigationLink{
-                        AssignCourse()
+//                        AssignCourse()
                     } label: {
                         Text("Assign Course")
                     }

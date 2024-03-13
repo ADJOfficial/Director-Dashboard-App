@@ -11,6 +11,7 @@ import Foundation
 struct faculties: Hashable , Decodable  ,Encodable {
         
         var f_id: Int // To detect ID of That date to be get/edit
+        var c_id: Int
         var f_name: String
         var username: String
         var password: String

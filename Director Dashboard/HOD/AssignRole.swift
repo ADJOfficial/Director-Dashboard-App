@@ -77,7 +77,7 @@ struct AssignRole: View {
             .cornerRadius(8)
             .padding(.bottom)
         }
-        .background(Image("h").resizable().ignoresSafeArea())
+        .background(Image("fc").resizable().ignoresSafeArea())
     }
 }
 
