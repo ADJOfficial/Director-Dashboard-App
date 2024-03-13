@@ -24,10 +24,10 @@ struct ViewYourCourses: View { // Design 100% OK
 //                    .font(.title)
 //                    .foregroundColor(Color.white)
                 NavigationLink {
-                    Mail()
+                    Mail(fb_details: "")
                 } label: {
                     Image(systemName: "mail.fill")
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color.blue.opacity(0.7))
                 }
                 .padding()
                 .font(.largeTitle)
@@ -114,54 +114,234 @@ struct ViewYourCourses: View { // Design 100% OK
                 }
                 Spacer()
             }
-            .background(Image("fa").resizable().aspectRatio(contentMode: .fill).ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
 }
 
-struct Notification: Hashable , Codable { // Design 100% OK
-    var subject: String
-    var Comment: String
+struct Feedback: Hashable, Decodable, Encodable {
+    var fb_details: String
+    var isNew: Bool = false // Add isNew property
 }
 
-struct Mail: View { // Get All Data From Node MongoDB : Done
-    
-    @StateObject var viewModel = ViewModel()
-    @State private var isFetchingData = false
+class FeedbackViewModel: ObservableObject {
+    @Published var feedback: [Feedback] = []
+    @Published var selectedMessage: Feedback?
+    func fetchExistingFeedback() {
+        guard let url = URL(string: "http://localhost:4000/getfeedback") else {
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let data = data, error == nil else {
+                return
+            }
+            
+            do {
+                let fbs = try JSONDecoder().decode([Feedback].self, from: data)
+                DispatchQueue.main.async {
+                    self?.feedback = fbs.map { feedback in
+                        var updatedFeedback = feedback
+                        updatedFeedback.isNew = true
+                        return updatedFeedback
+                    }
+                    print("Fetched \(fbs.count) Feedbacks")
+                }
+            } catch {
+                print("Error While Getting Data")
+            }
+        }
+        task.resume()
+    }
+}
+
+struct Mail: View {
+    var fb_details: String
+    @StateObject var feedbackViewModel = FeedbackViewModel()
     
     var body: some View {
-        VStack{
-            Text("Notifications")
-                .bold()
-                .font(.largeTitle)
-                .foregroundColor(Color.white)
-            ScrollView {
+        NavigationView {
+            VStack {
+                Text("Notifications")
+                    .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
+                Spacer()
                 VStack {
-                    ForEach(viewModel.notif, id: \.self) { no in
-                        VStack{
-                            Text(no.subject)
-                                .bold()
-                                .font(.title3)
-                                .foregroundColor(Color.white)
-                                .frame(maxWidth: .infinity , alignment: .leading)
-                                .padding(.horizontal)
-                            Text(no.Comment)
-                                .foregroundColor(Color.white)
-                                .frame(maxWidth: .infinity , alignment: .leading)
-                                .padding(.horizontal)
-                                .frame(height: 20)
+                    ScrollView {
+                        ForEach(feedbackViewModel.feedback.indices, id: \.self) { index in
+                            let msg = feedbackViewModel.feedback[index]
+                            NavigationLink(destination: MessageDetails(message: msg.fb_details)) {
+                                HStack {
+                                    if msg.isNew {
+                                        Circle()
+                                            .foregroundColor(.blue)
+                                            .frame(width: 10, height: 10)
+                                    }
+                                    Text(msg.fb_details)
+                                        .font(.headline)
+                                        .foregroundColor(msg.isNew ? .white : .red)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .onAppear {
+                                if let selectedMessage = feedbackViewModel.selectedMessage, selectedMessage == msg {
+                                    feedbackViewModel.feedback[index].isNew = false
+                                }
+                            }
+                            .onChange(of: feedbackViewModel.selectedMessage) { newValue in
+                                if newValue == msg {
+                                    feedbackViewModel.feedback[index].isNew = false
+                                }
+                            }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
                         }
-                        .padding()
                     }
+                    Spacer()
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.orange.opacity(0.5), lineWidth: 2)
+                )
+                .frame(width: 420, height: 770)
+                .onAppear {
+                    feedbackViewModel.fetchExistingFeedback()
                 }
             }
-            .onAppear {
-                viewModel.fetchApiData()
-            }
+            .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
         }
-        .background(Image("fa").resizable().ignoresSafeArea())
     }
 }
+
+struct MessageDetails: View {
+    var message: String
+    
+    var body: some View {
+        Text(message)
+            .font(.headline)
+            .padding()
+    }
+}
+
+
+//struct Mail: View {
+//    var fb_details: String
+//    @StateObject var feedbackViewModel = FeedBackViewModel()
+//    @State private var selectedMessage: String?
+//
+//    var body: some View {
+//        NavigationView {
+//            VStack{
+//                Text("Notifications")
+//                    .bold()
+//                    .font(.largeTitle)
+//                    .foregroundColor(Color.white)
+//                Spacer()
+//                VStack{
+//                    ScrollView {
+//                        ForEach(feedbackViewModel.fb, id: \.self) { msg in
+//                            Button(action: {
+//                                selectedMessage = msg.fb_details
+//                            }) {
+//                                HStack {
+//                                    Text(msg.fb_details)
+//                                        .font(.headline)
+//                                        .foregroundColor(Color.white)
+//                                        .frame(maxWidth: .infinity, alignment: .leading)
+//                                }
+//                            }
+//                            Divider()
+//                                .background(Color.white)
+//                                .padding(1)
+//                        }
+//                    }
+//                    Spacer()
+//                }
+//                .padding()
+//                .background(
+//                    RoundedRectangle(cornerRadius: 20)
+//                        .stroke(Color.orange.opacity(0.5), lineWidth: 2)
+//                )
+//                .frame(width: 420, height: 770)
+//                .onAppear {
+//                    feedbackViewModel.fetchExistingFeedback()
+//                }
+//            }
+//            .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
+//            .background(
+//                NavigationLink(
+//                    destination: MessageDetails(message: selectedMessage ?? ""),
+//                    isActive: Binding<Bool>(
+//                        get: { selectedMessage != nil },
+//                        set: { _ in
+//                            selectedMessage = nil
+//                        }
+//                    )
+//                ) {
+//                    EmptyView()
+//                }
+//            )
+//        }
+//    }
+//}
+//
+//struct MessageDetails: View {
+//    var message: String
+//
+//    var body: some View {
+//        Text(message)
+//            .font(.headline)
+//            .padding()
+//    }
+//}
+
+// For FYP
+
+//struct Mail: View { // Get All Data From Node MongoDB : Done
+//
+//    var fb_details: String
+//    @StateObject var feedbackViewModel = FeedBackViewModel()
+//
+//    var body: some View {
+//        VStack{
+//            Text("Notifications")
+//                .bold()
+//                .font(.largeTitle)
+//                .foregroundColor(Color.white)
+//            Spacer()
+//            VStack{
+//                ScrollView {
+//                    ForEach(feedbackViewModel.fb, id: \.self) { msg in
+//                        HStack {
+//                            Text(msg.fb_details)
+//                                .font(.headline)
+//                                .foregroundColor(Color.white)
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                        }
+//                        Divider()
+//                            .background(Color.white)
+//                            .padding(1)
+//                    }
+//                }
+//                Spacer()
+//            }
+//            .padding()
+//            .background(
+//                RoundedRectangle(cornerRadius: 20)
+//                    .stroke(Color.orange.opacity(0.5), lineWidth: 2)
+//            )
+//            .frame(width: 420, height: 770)
+//            .onAppear {
+//                feedbackViewModel.fetchExistingFeedback()
+//            }
+//        }
+//        .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
+//    }
+//}
 
 struct Subject: View {
     
@@ -241,13 +421,13 @@ struct Subject: View {
                 }
                 Spacer()
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
 }
 
 struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
-        Subject()
+        Mail(fb_details: "")
     }
 }

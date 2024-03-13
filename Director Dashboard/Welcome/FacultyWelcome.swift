@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FacultyWelcome: View { // Design 100% OK
     
-//    let username: String
+    let username: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
        
@@ -20,10 +20,10 @@ struct FacultyWelcome: View { // Design 100% OK
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome :")
+                Text("Welcome \(username)")
                     .bold()
                     .padding()
-                    .font(.title)
+                    .font(.title2)
                     .frame(maxWidth: .infinity , alignment: .leading)
                     .padding(.horizontal)
                     .foregroundColor(Color.white)
@@ -39,7 +39,7 @@ struct FacultyWelcome: View { // Design 100% OK
                     .padding()
                     .frame(width: 150)
                     .foregroundColor(.black)
-                    .background(Color.green)
+                    .background(Color.green.opacity(0.7))
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -53,7 +53,7 @@ struct FacultyWelcome: View { // Design 100% OK
                     .padding()
                     .frame(width: 150)
                     .foregroundColor(.black)
-                    .background(Color.green)
+                    .background(Color.green.opacity(0.7))
                     .cornerRadius(8)
                     .padding(.all)
                     NavigationLink {
@@ -66,19 +66,32 @@ struct FacultyWelcome: View { // Design 100% OK
                     .padding()
                     .frame(width: 150)
                     .foregroundColor(.black)
-                    .background(Color.green)
+                    .background(Color.green.opacity(0.7))
                     .cornerRadius(8)
                     .padding(.all)
                 }
                 Spacer()
+                
+                NavigationLink{
+                    FacultyLogin()
+                        .navigationBarBackButtonHidden(true)
+                } label: {
+                    Text("Logout ? ")
+                }
+                .bold()
+                .padding()
+                .padding(.horizontal)
+                .foregroundColor(.teal)
+                .frame(maxWidth: .infinity , alignment: .trailing)
+                
             }
-            .background(Image("f").resizable().ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
 }
 
 struct FacultyWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        FacultyWelcome()
+        FacultyWelcome(username: "")
     }
 }

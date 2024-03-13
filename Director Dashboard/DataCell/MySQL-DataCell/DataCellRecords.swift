@@ -42,6 +42,7 @@ class FacultiesViewModel: ObservableObject {
                 let faculty = try JSONDecoder().decode([faculties].self, from: data)
                 DispatchQueue.main.async {
                     self?.remaining = faculty
+                    print("Fetched \(faculty.count) Faculties")
                 }
             }
             catch{

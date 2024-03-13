@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DirectorWelcome: View { // Design 100% Ok
     
-//    let username: String
+    let username: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
     
@@ -20,12 +20,12 @@ struct DirectorWelcome: View { // Design 100% Ok
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome")
+                Text("Welcome \(username)")
                     .bold()
                     .padding()
-                    .font(.title)
+                    .font(.title2)
                     .foregroundColor(Color.white)
-                    .padding(.all)
+                    .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 Spacer()
                 VStack {   
@@ -38,7 +38,7 @@ struct DirectorWelcome: View { // Design 100% Ok
                     .padding()
                     .bold()
                     .frame(width: 170)
-                    .background(Color.cyan)
+                    .background(Color.brown.opacity(0.7))
                     .cornerRadius(8)
                     .padding(.all)
                     NavigationLink {
@@ -50,13 +50,25 @@ struct DirectorWelcome: View { // Design 100% Ok
                     .padding()
                     .bold()
                     .frame(width: 170)
-                    .background(Color.cyan)
+                    .background(Color.brown.opacity(0.7))
                     .cornerRadius(8)
                     .padding(.all)
                 }
                 Spacer()
+                
+                NavigationLink{
+                    DirectorLogin()
+                        .navigationBarBackButtonHidden(true)
+                } label: {
+                    Text("Logout ? ")
+                }
+                .bold()
+                .padding()
+                .padding(.horizontal)
+                .foregroundColor(.teal)
+                .frame(maxWidth: .infinity , alignment: .trailing)
             }
-            .background(Image("fe").resizable().ignoresSafeArea())
+            .background(Image("ft").resizable().ignoresSafeArea())
         }
     }
 }
@@ -403,6 +415,6 @@ struct MakePaper: View {
 }
 struct DirectorWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        MakePaper()
+        DirectorWelcome(username: "")
     }
 }

@@ -1,246 +1,123 @@
-import SwiftUI
-////
-////  updatecheck.swift
-////  Director Dashboard
-////
-////  Created by ADJ on 07/03/2024.
-////
-//
 //import SwiftUI
 //
 //import SwiftUI
 //
-//struct editFaculty: Codable {
-//    let id: Int
-//    let fName: String
-//    let username: String
-//    let password: String
+//struct Coure: Codable  ,Hashable {
+//    let c_code: String
+//    let c_title: String
+//    let f_name: String
 //}
 //
-//struct UpdateFacultyView: View {
-//    @State private var facultyId: Int?
-//    @State private var fName = ""
-//    @State private var username = ""
-//    @State private var password = ""
-//    @State private var errorMessage = ""
-//
-//    var body: some View {
-//        VStack {
-//            if let facultyId = facultyId {
-//                Text("Faculty ID: \(facultyId)")
-//                    .font(.headline)
-//                    .padding()
-//            }
-//
-//            TextField("First Name", text: $fName)
-//                .textFieldStyle(RoundedBorderTextFieldStyle())
-//                .padding()
-//
-//            TextField("Username", text: $username)
-//                .textFieldStyle(RoundedBorderTextFieldStyle())
-//                .padding()
-//
-//            SecureField("Password", text: $password)
-//                .textFieldStyle(RoundedBorderTextFieldStyle())
-//                .padding()
-//
-//            Text(errorMessage)
-//                .foregroundColor(.red)
-//                .padding()
-//
-//            Button(action: updateFaculty) {
-//                Text("Update Faculty")
-//                    .font(.headline)
-//                    .foregroundColor(.white)
-//                    .padding()
-//                    .background(Color.blue)
-//                    .cornerRadius(10)
-//            }
-//        }
-//        .padding()
-//        .onAppear {
-//            // Simulate fetching faculty record from API
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                let faculty = editFaculty(id: 123, fName: "John", username: "john123", password: "password")
-//                facultyId = faculty.id
-//                fName = faculty.fName
-//                username = faculty.username
-//                password = faculty.password
-//            }
-//        }
-//    }
-//
-//    func updateFaculty() {
-//        guard let facultyId = facultyId else {
-//            errorMessage = "Invalid faculty ID"
+//class CouViewModel: ObservableObject {
+//    @Published var assignedCourses: [Coure] = []
+//    
+//    func fetchAssignedCourses(facultyID: Int) {
+//        guard let url = URL(string: "http://localhost:2000/FacultyAssignedCourse?f_id=\(facultyID)") else {
+//            print("Invalid URL")
 //            return
 //        }
-//
-//        let faculty = editFaculty(id: facultyId, fName: fName, username: username, password: password)
-//
-//        guard let jsonData = try? JSONEncoder().encode(faculty) else {
-//            errorMessage = "Error encoding faculty data"
-//            return
-//        }
-//
-//        guard let url = URL(string: "http://your-api-url/faculty/\(facultyId)") else {
-//            errorMessage = "Invalid URL"
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "PUT"
-//        request.httpBody = jsonData
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let data = data, let response = response as? HTTPURLResponse else {
-//                errorMessage = "Error updating faculty"
+//        
+//        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+//            if let error = error {
+//                print("Error fetching data: \(error.localizedDescription)")
 //                return
 //            }
-//
-//            if response.statusCode == 200 {
-//                errorMessage = "Faculty record updated successfully"
-//            } else if response.statusCode == 404 {
-//                errorMessage = "Faculty record not found"
-//            } else {
-//                errorMessage = "Error updating faculty"
+//            
+//            guard let data = data else {
+//                print("No data returned")
+//                return
 //            }
-//        }.resume()
+//            
+//            do {
+//                let courses = try JSONDecoder().decode([Coure].self, from: data)
+//                DispatchQueue.main.async {
+//                    self.assignedCourses = courses
+//                    print("Fetched \(courses.count) assigned courses for faculty ID: \(facultyID)")
+//                }
+//            } catch {
+//                print("Error decoding data: \(error.localizedDescription)")
+//            }
+//        }
+//        task.resume()
 //    }
 //}
 //
-//struct ContentView: View {
+////struct FacultyListView: View {
+////    let facul: [faculties]
+////
+////    var body: some View {
+////        ForEach(facul, id: \.self) { faculty in
+////            NavigationLink(destination: EyeAssignedCourses(facultyID: faculty.f_id)) {
+////                Text(faculty.f_name)
+////            }
+////        }
+////    }
+////}
+//
+//struct FacultyListView: View {
+//    @StateObject private var facultyViewModel = FacultiesViewModel()
+//    
 //    var body: some View {
-//        UpdateFacultyView()
+//        NavigationView{
+//            VStack{
+//                ForEach(facultyViewModel.remaining, id: \.self) { faculty in
+//                    NavigationLink(destination: EyeAssignedCourses(facultyID: faculty.f_id)) {
+//                        Image(systemName: "eye.fill")
+//                            .bold()
+//                            .font(.title3)
+//                            .foregroundColor(Color.orange)
+//                        
+//                    }
+//                    Text(faculty.f_name)
+//                }
+//            }
+//            .onAppear {
+//                facultyViewModel.fetchExistingFaculties()
+//            }
+//        }
 //    }
 //}
 //
-//struct Conten_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
-
-
-
-
-
-
-
-
-// Orignal One .....
-
-
-//
-//  Faculty.swift
-//  Director Dashboard
-//
-//  Created by ADJ on 13/01/2024.
-//
-
-//import SwiftUI
-//
-//struct Faculty: View {   // Design 100% OK
+//struct EyeAssignedCourses: View {
+//    @StateObject private var couViewModel = CouViewModel()
+//    var facultyID: Int
 //    
-//    @State private var isEnable = false
-//    @State private var f_name = ""
-//    @State private var username = ""
-//    @State private var password = ""
-//    @State private var search = ""
-//    @StateObject var facultiesViewModel = FacultiesViewModel()
-//    
-//    var body: some View { // Get All Data From Node MongoDB : Pending
+//    var body: some View {
 //        NavigationView {
 //            VStack {
-//                Text("Create Faculty")
-//                    .padding()
+//                Text("Assigned Courses")
 //                    .bold()
 //                    .font(.largeTitle)
 //                    .foregroundColor(Color.white)
-//                Text("Name")
+//                Spacer()
+//                Text("")
 //                    .bold()
-//                    .padding(.horizontal)
+//                    .padding()
 //                    .font(.title2)
+//                    .frame(maxWidth: .infinity, alignment: .center)
 //                    .foregroundColor(Color.white)
-//                    .frame(maxWidth: .infinity , alignment: .leading)
-//                TextField("Name" , text: $f_name)
-//                    .padding()
-//                    .background(Color.gray.opacity(0.8))
-//                    .cornerRadius(8)
-//                    .padding(.horizontal)
-//                Text("Username")
+//                Text("Assigned Courses")
 //                    .bold()
-//                    .padding(.horizontal)
-//                    .font(.title2)
+//                    .underline()
+//                    .font(.title3)
 //                    .foregroundColor(Color.white)
-//                    .frame(maxWidth: .infinity , alignment: .leading)
-//                TextField("Username" , text: $username)
-//                    .padding()
-//                    .background(Color.gray.opacity(0.8))
-//                    .cornerRadius(8)
-//                    .padding(.horizontal)
-//                Text("Password")
-//                    .bold()
-//                    .padding(.horizontal)
-//                    .font(.title2)
-//                    .foregroundColor(Color.white)
-//                    .frame(maxWidth: .infinity , alignment: .leading)
-//                SecureField("Password" , text: $password)
-//                    .padding()
-//                    .background(Color.gray.opacity(0.8))
-//                    .cornerRadius(8)
-//                    .padding(.horizontal)
-//                VStack{
-//                    Spacer()
-//                    Button("Create"){
-//                        createFaculty()
-//                    }
-//                    .bold()
-//                    .padding()
-//                    .frame(width: 150)
-//                    .foregroundColor(.black)
-//                    .background(Color.yellow)
-//                    .cornerRadius(8)
-//                    Spacer()
-//                    TextField("Search Teacher" , text: $search)
-//                        .padding()
-//                        .background(Color.gray.opacity(0.8))
-//                        .cornerRadius(8)
-//                        .frame(width: 300)
-//                    Spacer()
-//                }
 //                VStack {
-//                    ScrollView{
-//                        ForEach(facultiesViewModel.remaining , id:\ .self) { cr in
-//                            HStack{
-//                                Text(cr.f_name)
+//                    ScrollView {
+//                        ForEach(couViewModel.assignedCourses, id: \.self) { course in
+//                            HStack {
+//                                Spacer()
+//                                Text(course.c_code)
+//                                    .padding(.top)
 //                                    .font(.headline)
-//                                    .padding(.horizontal)
 //                                    .foregroundColor(Color.white)
-//                                Text(cr.username)
+//                                    .frame(maxWidth: .infinity, alignment: .leading)
+//                                Text(course.c_title)
+//                                    .padding(.top)
 //                                    .font(.headline)
-//                                    .padding(.horizontal)
 //                                    .foregroundColor(Color.white)
-//                                    .frame(maxWidth: .infinity , alignment: .center)
-//                                NavigationLink{
-//                                    EditFaculty()
-//                                        .navigationBarBackButtonHidden(true)
-//                                }label: {
-//                                    Image(systemName: "rectangle.and.pencil.and.ellipsis")
-//                                        .font(.title2)
-//                                        .foregroundColor(Color.orange)
-//                                }
-//                                Image(systemName: "nosign")
-//                                    .font(.title2)
-//                                    .foregroundColor(isEnable ? .green : .red)
-//                                    .onTapGesture {
-//                                        isEnable.toggle()
-//                                    }
+//                                    .frame(maxWidth: .infinity, alignment: .leading)
+//                                Spacer()
 //                            }
-//                            Divider()
-//                                .background(Color.white)
-//                            .padding(1)
 //                        }
 //                    }
 //                    .padding()
@@ -249,127 +126,26 @@ import SwiftUI
 //                    RoundedRectangle(cornerRadius: 20)
 //                        .stroke(Color.gray, lineWidth: 2)
 //                )
-//                .frame(width: 410 , height:250)
+//                .frame(width: 410, height: 400)
 //                .onAppear {
-//                    facultiesViewModel.fetchExistingFaculties()
+//                    couViewModel.fetchAssignedCourses(facultyID: facultyID)
 //                }
-//                Spacer()
+//                NavigationLink(destination: PlusAssignCourse()) {
+//                    Image(systemName: "plus.app.fill")
+//                        .bold()
+//                        .padding()
+//                        .font(.largeTitle)
+//                        .foregroundColor(Color.green)
+//                }
 //            }
-//            .background(Image("fw"))
+//            .background(Image("fc").resizable().ignoresSafeArea())
 //        }
-//    }
-//    func createFaculty() {
-//        guard let url = URL(string: "http://localhost:8000/addfaculty") else {
-//            return
-//        }
-//
-//        let user = [
-//            "f_name": f_name,
-//            "username": username,
-//            "password": password
-//        ] as [String : Any]
-//
-//        guard let jsonData = try? JSONSerialization.data(withJSONObject: user) else {
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.httpBody = jsonData
-//
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let data = data {
-//                do {
-//                    let result = try JSONSerialization.jsonObject(with: data)
-//                    print("Result from server:", result)
-//                } catch {
-//                    print("Error parsing JSON:", error)
-//                }
-//            } else if let error = error {
-//                print("Error making request:", error)
-//            }
-//        }.resume()
 //    }
 //}
 //
 //
-//
-//struct upFaculty: Codable {
-//    let f_name: String
-//    let username: String
-//    let password: String
-//}
-//
-//struct EditFaculty: View { // Design 100% OK
-//    
-//    @State private var f_name = ""
-//    @State private var username = ""
-//    @State private var password = ""
-//
-//    var body: some View { // Get All Data From Node MongoDB : Pending
-//        VStack {
-//            Text("Update Faculty")
-//                .padding()
-//                .bold()
-//                .font(.largeTitle)
-//                .foregroundColor(Color.white)
-//            Spacer()
-//            Text("Name")
-//                .bold()
-//                .padding(.horizontal)
-//                .font(.title2)
-//                .foregroundColor(Color.white)
-//                .frame(maxWidth: .infinity , alignment: .leading)
-//            TextField("Name" , text: $f_name)
-//                .padding()
-//                .background(Color.gray.opacity(0.8))
-//                .cornerRadius(8)
-//                .padding(.horizontal)
-//            Text("Username")
-//                .bold()
-//                .padding(.horizontal)
-//                .font(.title2)
-//                .foregroundColor(Color.white)
-//                .frame(maxWidth: .infinity , alignment: .leading)
-//            TextField("Username" , text: $username)
-//                .padding()
-//                .background(Color.gray.opacity(0.8))
-//                .cornerRadius(8)
-//                .padding(.horizontal)
-//            Text("Password")
-//                .bold()
-//                .padding(.horizontal)
-//                .font(.title2)
-//                .foregroundColor(Color.white)
-//                .frame(maxWidth: .infinity , alignment: .leading)
-//            SecureField("Password" , text: $password)
-//                .padding()
-//                .background(Color.gray.opacity(0.8))
-//                .cornerRadius(8)
-//                .padding(.horizontal)
-//            Spacer()
-//                Button("Update"){
-//                    updateFaculty()
-//                }
-//                .bold()
-//                .padding()
-//                .frame(width: 150)
-//                .foregroundColor(.black)
-//                .background(Color.yellow)
-//                .cornerRadius(8)
-//                .padding(.all)
-//        }
-//        .background(Image("fw"))
-//    }
-//    func updateFaculty() {
-//        
-//    }
-//}
-//struct Faculty_Previews: PreviewProvider {
+//struct E_Previews: PreviewProvider {
 //    static var previews: some View {
-//        Faculty()
+//        FacultyListView()
 //    }
 //}
-
-

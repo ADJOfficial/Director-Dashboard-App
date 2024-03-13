@@ -12,20 +12,14 @@ struct DirectorLogin: View {
     @State private var username = ""
     @State private var password = ""
     @State private var isLoggedIn = false
-    
+    @State private var showAlert = false
+
     var body: some View {
-    
         VStack{
             Text("Director")
                 .font(.largeTitle)
                 .bold()
                 .foregroundColor(Color.white)
-            Spacer()
-            Text("Welcome Dr Jameel")
-                .font(.title2)
-                .bold()
-                .foregroundColor(Color.white)
-                .padding(.leading,-170)
             Spacer()
             VStack(alignment: .leading){
                 Text("Username")
@@ -35,10 +29,10 @@ struct DirectorLogin: View {
                     .foregroundColor(Color.white)
                 TextField("Username", text: $username)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                
+
                 Text("Password")
                     .bold()
                     .font(.title3)
@@ -46,34 +40,60 @@ struct DirectorLogin: View {
                     .foregroundColor(Color.white)
                 SecureField("Password", text: $password)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                    .padding(.bottom,220)
             }
+            Spacer()
             Button("Login"){
                 login()
             }
             .foregroundColor(Color.black)
             .padding()
             .frame(width: 150, height: 60)
-            .background(Color.cyan)
+            .background(Color.brown.opacity(0.7))
             .cornerRadius(8)
+            
+//            Spacer()
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Invalid credentials"), message: Text("Please enter valid username and password"), dismissButton: .default(Text("OK")))
         }
         .fullScreenCover(isPresented: $isLoggedIn){
-            DirectorWelcome()
+           DirectorWelcome(username: username)
         }
         .background(Image("ft").resizable().ignoresSafeArea())
     }
-    
+
     func login() {
-        if username.uppercased() == "" &&  password == "" {
-            isLoggedIn = true
-            print("Login Successfull")
-        }
-        else {
-            print("Invalid Credentials")
-        }
+        let url = URL(string: "http://localhost:8000/loginMembers")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let parameters: [String: Any] = [
+            "username": username,
+            "password": password
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let message = responseJSON["message"] as? String {
+                // Login successful
+                isLoggedIn = true
+                print(message)
+            } else {
+                // Invalid credentials
+                showAlert = true
+            }
+        }.resume()
     }
 }
 

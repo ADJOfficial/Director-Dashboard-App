@@ -66,81 +66,81 @@ struct Course: View {   // Design 100% OK
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
+                
                 Text("Course Code")
                     .bold()
                     .padding(.horizontal)
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Course Code" , text: $c_code)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                    .overlay(
-                                            VStack(alignment: .leading, spacing: 0) {
-                                                if isCodeEmpty {
-                                                    Text("Required")
-                                                        .font(.caption)
-                                                        .foregroundColor(.red)
-                                                        .padding(.horizontal)
-                                                }
-                                                Spacer()
-                                            }
-                                        )
-                                        .onChange(of: c_code) { newValue in
-                                            isCodeEmpty = newValue.isEmpty
-                                        }
+                VStack{
+                    if isCodeEmpty {
+                        Text("Required*")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                    }
+                    TextField("Course Code" , text: $c_code)
+                        .padding()
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                }
+                .onChange(of: c_code) { newValue in
+                    isCodeEmpty = newValue.isEmpty
+                }
+                
                 Text("Course Title")
                     .bold()
                     .padding(.horizontal)
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Course Title" , text: $c_title)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                    .overlay(
-                                            VStack(alignment: .leading, spacing: 0) {
-                                                if isTitleEmpty {
-                                                    Text("Required")
-                                                        .font(.caption)
-                                                        .foregroundColor(.red)
-                                                        .padding(.horizontal)
-                                                }
-                                                Spacer()
-                                            }
-                                        )
-                                        .onChange(of: c_title) { newValue in
-                                            isTitleEmpty = newValue.isEmpty
-                                        }
+                VStack{
+                    if isCodeEmpty {
+                        Text("Required*")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                    }
+                    TextField("Course Title" , text: $c_title)
+                        .padding()
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                    
+                }
+                .onChange(of: c_title) { newValue in
+                    isTitleEmpty = newValue.isEmpty
+                }
+                
                 Text("Credit Hours")
                     .bold()
                     .padding(.horizontal)
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Credit Hours" , text: $cr_hours)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                    .overlay(
-                                            VStack(alignment: .leading, spacing: 0) {
-                                                if isHoursEmpty {
-                                                    Text("Required")
-                                                        .font(.caption)
-                                                        .foregroundColor(.red)
-                                                        .padding(.horizontal)
-                                                }
-                                                Spacer()
-                                            }
-                                        )
-                                        .onChange(of: cr_hours) { newValue in
-                                            isHoursEmpty = newValue.isEmpty
-                                        }
+                VStack{
+                    if isCodeEmpty {
+                        Text("Required*")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                    }
+                    TextField("Credit Hours" , text: $cr_hours)
+                        .padding()
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                    
+                }
+                .onChange(of: cr_hours) { newValue in
+                    isHoursEmpty = newValue.isEmpty
+                }
+                
                 VStack{
                     Spacer()
                     Button("Create "){

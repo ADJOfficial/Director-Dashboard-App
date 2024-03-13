@@ -9,55 +9,116 @@ import SwiftUI
 
 struct ViewCourses: View {    // Design 100% OK
     
-    @State private var search = ""
+    @State private var c_code = ""
+    @State private var c_title = ""
+    @State private var searchText = ""
+    @State private var searchResults: [AllCourses] = []
+    @StateObject private var coursesViewModel = CoursesViewModel()
+    
+    @State private var selectedCourseName: String? = nil
+    
+    var filteredCourses: [AllCourses] { // All Data Will Be Filter and show on Table
+        if searchText.isEmpty {
+            return coursesViewModel.existing
+        } else {
+            return coursesViewModel.existing.filter { faculty in
+                faculty.c_code.localizedCaseInsensitiveContains(searchText) ||
+                faculty.c_title.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+            }
+        }
+    }
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         NavigationView {
             VStack {
-                Text("Course Details")
+                Text("Faculty")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                TextField("Search Subject", text: $search)
+                //                Spacer()
+                SearchBar(text: $searchText)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                Spacer()
-                ScrollView{ // Get From Backend
-                    HStack{
-                        Spacer()
-                        Text("Parallel & distributing Computing")
-                            .font(.headline)
-                        Spacer()
-                        Text("CS-323")
-                        Spacer()
-                        NavigationLink{
-                            CourseAssigned()
-                                .navigationBarBackButtonHidden(true)
-                        }label: {
-                            Image(systemName: "eye.fill")
+                //                Spacer()
+                VStack{
+                    ScrollView {
+                        ForEach(filteredCourses.indices, id: \.self) { index in
+                            let cr = filteredCourses[index]
+                            HStack {
+                                Text(cr.c_title)
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                NavigationLink(destination: CourseAssigned(courseName: cr.c_title), tag: cr.c_title,selection: $selectedCourseName) {
+                                    Image(systemName: "eye.fill")
+                                        .bold()
+                                        .font(.title3)
+                                        .foregroundColor(Color.orange)
+                                }
+                            }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
                         }
-                        Spacer()
+                        if filteredCourses.isEmpty {
+                            Text("No Data Found")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                        }
                     }
-                    .padding()
-                    .foregroundColor(Color.white)
+                    Spacer()
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410, height: 700)
+                .onAppear {
+                    coursesViewModel.fetchExistingCourses()
                 }
             }
-            .background(Image("h").resizable().ignoresSafeArea())
+            .background(Image("fc") .resizable().ignoresSafeArea())
         }
     }
 }
 
 struct CourseAssigned: View { // Design 100% OK
     
-    @State private var selectedOptions = 0
-    @StateObject private var courseViewModel = CourseViewModel()
+    let courseName: String
+//    let courseCode: String
+//    @State private var selectedOptions = 0
+    @StateObject private var courseViewModel = CoursesViewModel()
     var options = ["Sir Naveed Ashraf" , "Sir Abid Jameel" , "Ma'am Zoya" , "Sir Zeeshan"]
     
     var body: some View { // Get All Data From Node MongoDB : Pending
-        
         NavigationView{
             VStack {
                 Text("Course Assigned")
@@ -65,37 +126,43 @@ struct CourseAssigned: View { // Design 100% OK
                     .padding()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                Text("Parallel & Distributing Computing")
+                Spacer()
+                Text("\(courseName)")
                     .bold()
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
                     .font(.title2)
                     .foregroundColor(Color.white)
-                Text("Course Code  CS-323")
-                    .bold()
-                    .padding(.horizontal)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity , alignment: .leading)
-                    .foregroundColor(Color.white)
-                
+//                Text("Course Code  CS-323")
+//                    .bold()
+//                    .padding(.horizontal)
+//                    .font(.headline)
+//                    .frame(maxWidth: .infinity , alignment: .leading)
+//                    .foregroundColor(Color.white)
+
                     Text("Assigned To")
                         .bold()
                         .padding()
                         .underline()
                         .font(.title3)
                         .foregroundColor(Color.white)
-                
+
                 VStack{
                     ScrollView{
-                        ForEach(courseViewModel.courses , id:\ .self) { cr in
+                        ForEach(courseViewModel.existing , id:\ .self) { cr in
                             HStack{
                                 Spacer()
-                                Text(cr.course) // Teacher Names From DB
+                                Text(cr.c_code)
                                     .padding(.top)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                Image(systemName: "delete.right.fill") // Add logic To Delete
+                                Text(cr.c_title)
+                                    .padding(.top)
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity , alignment: .leading)
+                                Image(systemName: "delete.right.fill")
                                     .font(.title3)
                                     .foregroundColor(Color.red)
                                 Spacer()
@@ -103,10 +170,16 @@ struct CourseAssigned: View { // Design 100% OK
                         }
                     }
                     .padding()
-                    .onAppear {
-                        courseViewModel.fetchExistingCourse()
-                    }
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410, height: 400)
+                .onAppear {
+                    courseViewModel.fetchExistingCourses()
+                }
+                Spacer()
                 NavigationLink{
                     CLOS()
                         .navigationBarBackButtonHidden()
@@ -120,8 +193,10 @@ struct CourseAssigned: View { // Design 100% OK
                 .background(Color.teal)
                 .cornerRadius(8)
                 .padding(.all)
+                
+                Spacer()
             }
-            .background(Image("h").resizable().ignoresSafeArea())
+            .background(Image("fc").resizable().ignoresSafeArea())
         }
     }
 }
@@ -204,8 +279,8 @@ struct CLOS: View { // Design 100% OK
     }
 }
 
-struct ViewCouses: PreviewProvider {
+struct ViewCourses_Previews: PreviewProvider {
     static var previews: some View {
-        ViewCourses()
+       ViewCourses()
     }
 }

@@ -33,8 +33,10 @@
 		44A041E32B53B11400AF79AD /* Topics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A041E22B53B11400AF79AD /* Topics.swift */; };
 		44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A786512B4F24A600C55B7A /* Dashboard.swift */; };
 		44A7CB642B53001F00314DD8 /* VerifiedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */; };
-		44BA72172B99A4B300812049 /* FacultyRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA72162B99A4B300812049 /* FacultyRecords.swift */; };
+		44BA72172B99A4B300812049 /* DataCellRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA72162B99A4B300812049 /* DataCellRecords.swift */; };
 		44BA72192B99AC0B00812049 /* updatecheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA72182B99AC0B00812049 /* updatecheck.swift */; };
+		44BA721C2BA042A100812049 /* HODRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA721B2BA042A100812049 /* HODRecords.swift */; };
+		44BA721F2BA0F70200812049 /* FacultyRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA721E2BA0F70200812049 /* FacultyRecords.swift */; };
 		44BCB4F02B5A3E2300FDC33B /* chek.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BCB4EF2B5A3E2300FDC33B /* chek.swift */; };
 		44BCB4F22B5B816A00FDC33B /* AssignRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BCB4F12B5B816A00FDC33B /* AssignRole.swift */; };
 		44C5C0202B52440200702538 /* ViewCourses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5C01F2B52440200702538 /* ViewCourses.swift */; };
@@ -74,8 +76,10 @@
 		44A041E22B53B11400AF79AD /* Topics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Topics.swift; sourceTree = "<group>"; };
 		44A786512B4F24A600C55B7A /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
 		44A7CB632B53001F00314DD8 /* VerifiedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifiedPapers.swift; sourceTree = "<group>"; };
-		44BA72162B99A4B300812049 /* FacultyRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyRecords.swift; sourceTree = "<group>"; };
+		44BA72162B99A4B300812049 /* DataCellRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellRecords.swift; sourceTree = "<group>"; };
 		44BA72182B99AC0B00812049 /* updatecheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = updatecheck.swift; sourceTree = "<group>"; };
+		44BA721B2BA042A100812049 /* HODRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HODRecords.swift; sourceTree = "<group>"; };
+		44BA721E2BA0F70200812049 /* FacultyRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyRecords.swift; sourceTree = "<group>"; };
 		44BCB4EF2B5A3E2300FDC33B /* chek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chek.swift; sourceTree = "<group>"; };
 		44BCB4F12B5B816A00FDC33B /* AssignRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignRole.swift; sourceTree = "<group>"; };
 		44C5C01F2B52440200702538 /* ViewCourses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCourses.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 		44A041D22B53929C00AF79AD /* Faculty */ = {
 			isa = PBXGroup;
 			children = (
+				44BA721D2BA0F6C600812049 /* MySQL-Faculty */,
 				44A041D52B53A11B00AF79AD /* Subject */,
 				44A041D32B5392DD00AF79AD /* ViewYourCourses.swift */,
 				44A041E02B53A6B400AF79AD /* SetCLOs.swift */,
@@ -209,16 +214,33 @@
 		44BA72152B99763000812049 /* MySQL-DataCell */ = {
 			isa = PBXGroup;
 			children = (
-				44BA72162B99A4B300812049 /* FacultyRecords.swift */,
+				44BA72162B99A4B300812049 /* DataCellRecords.swift */,
 			);
 			path = "MySQL-DataCell";
+			sourceTree = "<group>";
+		};
+		44BA721A2BA0428500812049 /* MySQL-HOD */ = {
+			isa = PBXGroup;
+			children = (
+				44BA721B2BA042A100812049 /* HODRecords.swift */,
+			);
+			path = "MySQL-HOD";
+			sourceTree = "<group>";
+		};
+		44BA721D2BA0F6C600812049 /* MySQL-Faculty */ = {
+			isa = PBXGroup;
+			children = (
+				44BA721E2BA0F70200812049 /* FacultyRecords.swift */,
+			);
+			path = "MySQL-Faculty";
 			sourceTree = "<group>";
 		};
 		44C5C01E2B5243D500702538 /* HOD */ = {
 			isa = PBXGroup;
 			children = (
-				44C5C01F2B52440200702538 /* ViewCourses.swift */,
+				44BA721A2BA0428500812049 /* MySQL-HOD */,
 				44C5C0212B52445800702538 /* FacultyDetails.swift */,
+				44C5C01F2B52440200702538 /* ViewCourses.swift */,
 				44C5C0232B5244E900702538 /* AssignCourses.swift */,
 				44C5C0252B52451E00702538 /* GridView.swift */,
 				44BCB4F12B5B816A00FDC33B /* AssignRole.swift */,
@@ -328,6 +350,7 @@
 				44C5C0202B52440200702538 /* ViewCourses.swift in Sources */,
 				44A041E12B53A6B400AF79AD /* SetCLOs.swift in Sources */,
 				445083922B48E95C00707476 /* NotificationModel.swift in Sources */,
+				44BA721C2BA042A100812049 /* HODRecords.swift in Sources */,
 				44C5C0242B5244E900702538 /* AssignCourses.swift in Sources */,
 				445083982B48E9C500707476 /* HODWelcome.swift in Sources */,
 				44A041DB2B53A21900AF79AD /* ViewCLOs.swift in Sources */,
@@ -335,9 +358,10 @@
 				445083832B48E8EF00707476 /* Login.swift in Sources */,
 				44C5C0222B52445800702538 /* FacultyDetails.swift in Sources */,
 				44C5C02F2B52971600702538 /* Courses.swift in Sources */,
+				44BA721F2BA0F70200812049 /* FacultyRecords.swift in Sources */,
 				445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */,
 				44BCB4F02B5A3E2300FDC33B /* chek.swift in Sources */,
-				44BA72172B99A4B300812049 /* FacultyRecords.swift in Sources */,
+				44BA72172B99A4B300812049 /* DataCellRecords.swift in Sources */,
 				44A041E32B53B11400AF79AD /* Topics.swift in Sources */,
 				44BA72192B99AC0B00812049 /* updatecheck.swift in Sources */,
 				44C5C0262B52451E00702538 /* GridView.swift in Sources */,

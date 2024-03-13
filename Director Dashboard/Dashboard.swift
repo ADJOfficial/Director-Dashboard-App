@@ -49,19 +49,19 @@ struct Dashboard: View {
                             .padding(.all)
                             .blur(radius: animate ? 0 : 10)
                     }
-                    NavigationLink{
-                        HODLogin()
-                    }label: {
-                        Text("HOD")
-                            .foregroundColor(.black)
-                            .padding()
-                            .bold()
-                            .frame(width: 150)
-                            .background(Color.white)
-                            .cornerRadius(20)
-                            .padding(.all)
-                            .blur(radius: animate ? 0 : 10)
-                    }
+//                    NavigationLink{
+//                        HODLogin()
+//                    }label: {
+//                        Text("HOD")
+//                            .foregroundColor(.black)
+//                            .padding()
+//                            .bold()
+//                            .frame(width: 150)
+//                            .background(Color.white)
+//                            .cornerRadius(20)
+//                            .padding(.all)
+//                            .blur(radius: animate ? 0 : 10)
+//                    }
                     NavigationLink{
                         FacultyLogin()
                     }label: {

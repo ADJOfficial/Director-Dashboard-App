@@ -11,46 +11,36 @@ struct FacultyLogin: View { // Design 100% OK
     
     @State private var username = ""
     @State private var password = ""
-//    @State private var name = ""
-    @State private var loginStatus = ""
     @State private var isLoggedIn = false
-    
-    var body: some View { // Get All Data From Node MongoDB : Done
-      
+    @State private var showAlert = false
+
+    var body: some View {
         VStack{
             Text("Faculty")
-                .bold()
                 .font(.largeTitle)
-                .foregroundColor(Color.white)
-            Spacer()
-            Text("Faculty  Login")
                 .bold()
-                .padding()
-                .font(.title2)
-                .frame(maxWidth: .infinity , alignment: .leading)
-                .padding(.horizontal)
                 .foregroundColor(Color.white)
             Spacer()
             VStack(alignment: .leading){
                 Text("Username")
                     .bold()
                     .font(.title3)
-                    .padding(.horizontal)
+                    .padding(.leading)
                     .foregroundColor(Color.white)
                 TextField("Username", text: $username)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
-                
+
                 Text("Password")
                     .bold()
                     .font(.title3)
-                    .padding(.horizontal)
+                    .padding(.leading)
                     .foregroundColor(Color.white)
-                TextField("Password", text: $password)
+                SecureField("Password", text: $password)
                     .padding()
-                    .background(Color.gray.opacity(0.8))
+                    .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
             }
@@ -58,53 +48,50 @@ struct FacultyLogin: View { // Design 100% OK
             Button("Login"){
                 login()
             }
-            .bold()
+            .foregroundColor(Color.black)
             .padding()
-            .frame(width: 150)
-            .foregroundColor(.black)
-            .background(Color.green)
+            .frame(width: 150, height: 60)
+            .background(Color.green.opacity(0.7))
             .cornerRadius(8)
-            Spacer()
+            
+//            Spacer()
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Invalid credentials"), message: Text("Please enter valid username and password"), dismissButton: .default(Text("OK")))
         }
         .fullScreenCover(isPresented: $isLoggedIn){
-            FacultyWelcome()
+           FacultyWelcome(username: username)
         }
         .background(Image("fiii").resizable().ignoresSafeArea())
     }
-    
+
     func login() {
-        guard let url = URL(string: "http://localhost:1000/fams") else {
-            return
-        }
-
-        let user = ["username": username, "password": password]
-
+        let url = URL(string: "http://localhost:8000/loginMembers")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: user, options: .prettyPrinted)
-        } catch let error {
-            print(error.localizedDescription)
-            return
-        }
-
+        
+        let parameters: [String: Any] = [
+            "username": username,
+            "password": password
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "Unknown error")
+            guard let data = data else {
+                print("Error: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
-
-            if let responseString = String(data: data, encoding: .utf8) {
-                DispatchQueue.main.async {
-                    loginStatus = responseString
-                    isLoggedIn = responseString == "Login successful"// Update isLoggedIn based on the Response
-//                    print("Login successful")
-                }
-            }
-            else{
-                print("Invalid Credentials")
+            
+            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let message = responseJSON["message"] as? String {
+                // Login successful
+                isLoggedIn = true
+                print(message)
+            } else {
+                // Invalid credentials
+                showAlert = true
             }
         }.resume()
     }

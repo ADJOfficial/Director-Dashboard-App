@@ -9,8 +9,47 @@ import SwiftUI
 
 struct FacultyDetails: View { // Designed 100% OK
     
-    @StateObject private var courseViewModel = CourseViewModel()
-    @State private var search = ""
+    @State private var f_name = ""
+    @State private var searchText = ""
+    @State private var searchResults: [faculties] = []
+    @StateObject private var facultiesViewModel = FacultiesViewModel()
+    
+//    @State private var selectedFacultyName: String? = nil
+    
+    var filteredFaculties: [faculties] { // All Data Will Be Filter and show on Table
+        if searchText.isEmpty {
+            return facultiesViewModel.remaining
+        } else {
+            return facultiesViewModel.remaining.filter { faculty in
+                faculty.f_name.localizedCaseInsensitiveContains(searchText) ||
+                faculty.username.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+            }
+        }
+    }
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         NavigationView {
@@ -19,51 +58,153 @@ struct FacultyDetails: View { // Designed 100% OK
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                    Text("Teacher :")
-                        .padding()
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-                    TextField("Search Faculty", text: $search)
-                        .padding()
-                        .background(Color.gray.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.horizontal)
+                //                Spacer()
+                SearchBar(text: $searchText)
+                    .padding()
+                //                Spacer()
                 VStack{
-                    ScrollView{
-                        ForEach(courseViewModel.courses , id:\ .self) { cr in
+                    ScrollView {
+                        ForEach(filteredFaculties, id: \.self) { cr in
+//                            let cr = filteredFaculties[index]
                             HStack{
-                                Spacer()
-                                Text(cr.course)
-                                    .padding(.top)
+                                Text(cr.f_name)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                NavigationLink {
-                                    EyeAssignedCousres()
-                                        .navigationBarBackButtonHidden(true)
-                                } label:{
+                                
+                                NavigationLink(destination: EyeAssignedCousres(facultyID: cr.f_id, facultyName: cr.f_name)) {
                                     Image(systemName: "eye.fill")
+                                        .bold()
                                         .font(.title3)
-                                        .foregroundColor(Color.green)
+                                        .foregroundColor(Color.orange)
                                 }
-                                Spacer()
+                                
                             }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
+                        }
+                        if filteredFaculties.isEmpty {
+                            Text("No Data Found")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
                         }
                     }
-                    .padding()
-                    .onAppear {
-                        courseViewModel.fetchExistingCourse()
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410 , height:700)
+                .onAppear {
+                    facultiesViewModel.fetchExistingFaculties()
+                }
+                Spacer()
+            }
+            .background(Image("fc") .resizable().ignoresSafeArea())
+        }
+    }
+}
+
+struct Coure: Codable  ,Hashable {
+    let f_id: Int
+    let c_id: Int
+    let c_code: String
+    let c_title: String
+    let f_name: String
+}
+
+class CouViewModel: ObservableObject {
+    @Published var assignedCourses: [Coure] = []
+    
+    func fetchAssignedCourses(facultyID: Int) {
+        guard let url = URL(string: "http://localhost:2000/FacultyAssignedCourse?f_id=\(facultyID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned")
+                return
+            }
+            
+            do {
+                let courses = try JSONDecoder().decode([Coure].self, from: data)
+                DispatchQueue.main.async {
+                    self.assignedCourses = courses
+                    print("Fetched \(courses.count) assigned courses for faculty ID: \(facultyID)")
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }
+    func deleteAssignedCourse(facultyId: Int, courseId: Int) {
+        // Perform the deletion using an API call or database query
+        deleteAssignedCourseFromServer(facultyId: facultyId, courseId: courseId) { success in
+            if success {
+                // Remove the deleted assigned course from the array
+                DispatchQueue.main.async {
+                    if let index = self.assignedCourses.firstIndex(where: { $0.f_id == facultyId && $0.c_id == courseId }) {
+                        self.assignedCourses.remove(at: index)
                     }
                 }
+            } else {
+                // Handle error
+                print("Failed to delete assigned course")
             }
-            .background(Image("h"))
         }
+    }
+
+    private func deleteAssignedCourseFromServer(facultyId: Int, courseId: Int, completion: @escaping (Bool) -> Void) {
+        // Make the API call or database query to delete the assigned course
+        // You can use URLSession or Alamofire to make the HTTP request
+        
+        // Example using URLSession
+        guard let url = URL(string: "http://localhost:2000/assigncourse/\(facultyId)/\(courseId)") else {
+            completion(false)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error deleting assigned course:", error)
+                completion(false)
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(false)
+                return
+            }
+            
+            if httpResponse.statusCode == 200 {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }.resume()
     }
 }
 
 struct EyeAssignedCousres: View {  // Design 100% ok
     
-    @StateObject private var courseViewModel = CourseViewModel()
+    @StateObject private var couViewModel = CouViewModel()
+    var facultyID: Int
+    var facultyName: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         
@@ -73,86 +214,126 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                Text("Semester: Fall 2024")
-                    .padding()
-                    .foregroundColor(Color.white)
-                Text("Sir Umer Farooq")
+                Spacer()
+                Text("\(facultyName)")
                     .bold()
                     .padding()
                     .font(.title2)
-                    .frame(maxWidth: .infinity , alignment: .leading)
+                    .frame(maxWidth: .infinity , alignment: .center)
                     .foregroundColor(Color.white)  
                 Text("Assigned Courses")
-                    .bold()
                     .underline()
-                    .font(.title3)
+                    .font(.title2)
                     .foregroundColor(Color.white)
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity , alignment: .leading)
                 VStack{
                     ScrollView{
-                        ForEach(courseViewModel.courses , id:\ .self) { cr in
+                        ForEach(couViewModel.assignedCourses, id: \.self) { cr in
                             HStack{
-                                Spacer()
-                                Text(cr.course)
-                                    .padding(.top)
+                                Text(cr.c_title)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                Image(systemName: "delete.right.fill")
+                                Text(cr.c_code)
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity , alignment: .center)
+                                Image(systemName: "trash.fill")
                                     .font(.title3)
                                     .foregroundColor(Color.red)
-                                Spacer()
+                                    .onTapGesture {
+                                        deleteAssignedCourse(facultyId: cr.f_id, courseId: cr.c_id)
+                                    }
                             }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
+                        }
+                        if couViewModel.assignedCourses.isEmpty {
+                            Text("\(facultyName) have no Assigned Courses Yet !")
+//                                .font(.headline)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.yellow)
+                                .padding()
+                                .frame(maxWidth: .infinity)
                         }
                     }
-                    .padding()
-                    .onAppear {
-                        courseViewModel.fetchExistingCourse()
-                    }
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.gray, lineWidth: 2)
+                )
+                .frame(width: 410, height: 500)
+                .onAppear {
+                    couViewModel.fetchAssignedCourses(facultyID: facultyID)
                 }
                 NavigationLink{
-                    PlusAssignCourse()
-                        .navigationBarBackButtonHidden(true)
+//                    PlusAssignCourse()
+//                        .navigationBarBackButtonHidden(true)
                 }label: {
                     Image(systemName: "plus.app.fill")
                         .bold()
                         .padding()
                         .font(.largeTitle)
                         .foregroundColor(Color.green)
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity , alignment: .trailing)
                 }
+//                Spacer()
             }
-            .background(Image("h"))
+            .background(Image("fc").resizable().ignoresSafeArea())
         }
     }
+    private func deleteAssignedCourse(facultyId: Int, courseId: Int) {
+            couViewModel.deleteAssignedCourse(facultyId: facultyId, courseId: courseId)
+        }
 }
+
 
 struct PlusAssignCourse: View { // Design 100% ok
     
-    @State private var SelectedOption = 0
-    @State private var searchSubject = ""
-    var options = ["Sir Zahid" , "Sir Abid Jameel" , "Sir Shahid Rasheed"]
+    @StateObject private var couViewModel = CouViewModel()
+    var facultyID: Int
+    var facultyName: String
+    @State private var searchText = ""
    
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+//                Spacer()
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+                Spacer()
+            }
+        }
+    }
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
        
         VStack {
             Text("Assign Course")
                 .bold()
-                .padding()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Semester: Fall 2024")
-                .foregroundColor(Color.white)
-            VStack{
-                Picker("" , selection: $SelectedOption){
-                    ForEach(0..<options.count) { index in
-                        Text(options[index])
-                    }
-                }
-                .frame(maxWidth: .infinity , alignment: .leading)
-                .padding(.horizontal)
-                .background(Color.white.opacity(0.8))
-                .cornerRadius(8)
-                Text("Sir Umer Farooq")
+                Text("\(facultyName)")
                     .bold()
                     .padding()
                     .font(.title2)
@@ -161,25 +342,54 @@ struct PlusAssignCourse: View { // Design 100% ok
                     .padding()
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity,alignment: .leading)
-                TextField("Search Subject", text: $searchSubject)
-                    .padding()
-                    .background(Color.white.opacity(0.8))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
+                
+                SearchBar(text: $searchText)
+            VStack{
+//                ScrollView{
+//                    ForEach(couViewModel.assignedCourses, id: \.self) { cr in
+//                        HStack{
+//                            Text(cr.c_title)
+//                                .font(.headline)
+//                                .foregroundColor(Color.white)
+//                                .frame(maxWidth: .infinity , alignment: .leading)
+//                            Text(cr.c_code)
+//                                .font(.headline)
+//                                .foregroundColor(Color.white)
+//                                .frame(maxWidth: .infinity , alignment: .center)
+//                            Image(systemName: "trash.fill")
+//                                .font(.title3)
+//                                .foregroundColor(Color.red)
+//                                .onTapGesture {
+//                                    deleteAssignedCourse(facultyId: cr.f_id, courseId: cr.c_id)
+//                                }
+//                        }
+//                        Divider()
+//                            .background(Color.white)
+//                            .padding(1)
+//                    }
+//                    if couViewModel.assignedCourses.isEmpty {
+//                        Text("\(facultyName) have no Assigned Courses Yet !")
+////                                .font(.headline)
+//                            .multilineTextAlignment(.center)
+//                            .foregroundColor(.yellow)
+//                            .padding()
+//                            .frame(maxWidth: .infinity)
+//                    }
+//                }
             }
-            ScrollView{
-                HStack{
-                    Spacer()
-                    Image(systemName: "checkmark.square")
-                    Spacer()
-                    Text("Parallel & distributing Computing")
-                    Spacer()
-                }
-                .padding(.top)
-                .font(.title3)
-                .foregroundColor(Color.white)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.gray, lineWidth: 2)
+            )
+            .frame(width: 410, height: 500)
+            .onAppear {
+                couViewModel.fetchAssignedCourses(facultyID: facultyID)
             }
-            Button("Save Changes"){
+
+            Spacer()
+            
+            Button("Save"){
                 // Add Logic for Backend to Store New Data
             }
             .bold()
@@ -188,14 +398,14 @@ struct PlusAssignCourse: View { // Design 100% ok
             .foregroundColor(.black)
             .background(Color.teal)
             .cornerRadius(8)
-            .padding(.all)
+            
         }
-        .background(Image("h"))
+        .background(Image("fc").resizable().ignoresSafeArea())
     }
 }
 
 struct FacultyDetails_Previews: PreviewProvider {
     static var previews: some View {
-        FacultyDetails()
+        PlusAssignCourse(facultyID: 1, facultyName: "String")
     }
 }
