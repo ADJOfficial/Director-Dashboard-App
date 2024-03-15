@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		442E08782BA4F5EA00907B7D /* UploadedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08772BA4F5EA00907B7D /* UploadedPapers.swift */; };
+		442E087A2BA4F65E00907B7D /* DirectorRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08792BA4F65E00907B7D /* DirectorRecords.swift */; };
 		445068E62B93391000D1427A /* CT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445068E52B93391000D1427A /* CT.swift */; };
 		445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083802B48E8EF00707476 /* Director_DashboardApp.swift */; };
 		445083832B48E8EF00707476 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083822B48E8EF00707476 /* Login.swift */; };
@@ -49,6 +51,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		442E08772BA4F5EA00907B7D /* UploadedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadedPapers.swift; sourceTree = "<group>"; };
+		442E08792BA4F65E00907B7D /* DirectorRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorRecords.swift; sourceTree = "<group>"; };
 		445068E52B93391000D1427A /* CT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CT.swift; sourceTree = "<group>"; };
 		4450837D2B48E8EF00707476 /* Director Dashboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Director Dashboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		445083802B48E8EF00707476 /* Director_DashboardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Director_DashboardApp.swift; sourceTree = "<group>"; };
@@ -102,6 +106,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		442E08762BA4F5CD00907B7D /* Director */ = {
+			isa = PBXGroup;
+			children = (
+				442E087B2BA4F90500907B7D /* MySQL-Director */,
+				442E08772BA4F5EA00907B7D /* UploadedPapers.swift */,
+			);
+			path = Director;
+			sourceTree = "<group>";
+		};
+		442E087B2BA4F90500907B7D /* MySQL-Director */ = {
+			isa = PBXGroup;
+			children = (
+				442E08792BA4F65E00907B7D /* DirectorRecords.swift */,
+			);
+			path = "MySQL-Director";
+			sourceTree = "<group>";
+		};
 		445083742B48E8EF00707476 = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +142,7 @@
 		4450837F2B48E8EF00707476 /* Director Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				442E08762BA4F5CD00907B7D /* Director */,
 				44A041D22B53929C00AF79AD /* Faculty */,
 				44C5C0272B5291AC00702538 /* DataCell */,
 				44C5C01E2B5243D500702538 /* HOD */,
@@ -347,7 +369,9 @@
 				44A041D72B53A1F600AF79AD /* ViewTopics.swift in Sources */,
 				449BA1332B4FF187009473F6 /* FacultyLogin.swift in Sources */,
 				449BA12F2B4FF159009473F6 /* DirectorLogin.swift in Sources */,
+				442E087A2BA4F65E00907B7D /* DirectorRecords.swift in Sources */,
 				44C5C0202B52440200702538 /* ViewCourses.swift in Sources */,
+				442E08782BA4F5EA00907B7D /* UploadedPapers.swift in Sources */,
 				44A041E12B53A6B400AF79AD /* SetCLOs.swift in Sources */,
 				445083922B48E95C00707476 /* NotificationModel.swift in Sources */,
 				44BA721C2BA042A100812049 /* HODRecords.swift in Sources */,

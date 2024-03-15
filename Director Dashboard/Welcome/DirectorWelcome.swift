@@ -30,7 +30,7 @@ struct DirectorWelcome: View { // Design 100% Ok
                 Spacer()
                 VStack {   
                     NavigationLink {
-                        UploadPapers()
+//                        UploadPapers(body:)
                     } label: {
                         Text("Upload Papers")
                     }
@@ -111,79 +111,6 @@ struct Comments: View { // Design 100% Ok
             Spacer()
         }
         .background(Image("fii").resizable().ignoresSafeArea())
-    }
-}
-
-struct UploadPapers: View {
-    
-    @StateObject private var courseViewModel = CourseViewModel()
-    @State private var search = ""
-    @State private var course = ""
-    @State private var code = ""
-
-    var body: some View {
-        NavigationView {
-            VStack{
-                Text("Uploaded Papers")
-                    .bold()
-                    .font(.largeTitle)
-                    .foregroundColor(Color.white)
-                Spacer()
-                TextField("Search By Subject...",text: $search)
-                    .padding()
-                    .background(Color.gray.opacity(0.8))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                Spacer()
-                VStack {
-                    HStack {
-                        Spacer()
-                        Text("Courses")
-                            .bold()
-                            .font(.title2)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Spacer()
-                        Text("Code")
-                            .bold()
-                            .font(.title2)
-                            .frame(maxWidth: .infinity , alignment: .center)
-                        Spacer()
-                    }
-                    .padding()
-                    ScrollView {
-                        ForEach(courseViewModel.courses , id:\ .self) { cr in
-                            HStack{
-                                Spacer()
-                                Text(cr.course)
-                                    .frame(maxWidth: .infinity , alignment: .leading)
-                                Spacer()
-                                Text(cr.code)
-                                    .padding(.horizontal)
-                                    .frame(maxWidth: .infinity , alignment: .trailing)
-                                Spacer()
-                                NavigationLink {
-                                    Eye()
-                                        .navigationBarBackButtonHidden(true)
-                                } label:{
-                                    Image(systemName: "eye.fill")
-                                        .padding(.horizontal)
-                                        .font(.title3)
-                                        .foregroundColor(Color.orange)
-                                }
-                            }
-                            .padding(1)
-                        }
-                    }
-                }
-                .frame(height: 400)
-                .background(Color.white.opacity(0.8))
-                .cornerRadius(8)
-                .onAppear {
-                    courseViewModel.fetchExistingCourse()
-                }
-            }
-            .background(Image("fii").resizable().ignoresSafeArea())
-        }
     }
 }
 

@@ -13,6 +13,7 @@ struct DirectorLogin: View {
     @State private var password = ""
     @State private var isLoggedIn = false
     @State private var showAlert = false
+    @State private var showPassword: Bool = false
 
     var body: some View {
         VStack{
@@ -38,11 +39,31 @@ struct DirectorLogin: View {
                     .font(.title3)
                     .padding(.leading)
                     .foregroundColor(Color.white)
-                SecureField("Password", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
+                VStack {
+                    if showPassword {
+                        TextField("Password", text: $password)
+                            .padding()
+                            .background(Color.gray.opacity(1))
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                    } else {
+                        SecureField("Password", text: $password)
+                            .padding()
+                            .background(Color.gray.opacity(1))
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                    }
+                    
+                    Button(action: {
+                        showPassword.toggle()
+                    }) {
+                        Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                            .padding()
+                            .font(.title3)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                            .foregroundColor(.gray)
+                    }
+                }
             }
             Spacer()
             Button("Login"){
@@ -66,7 +87,7 @@ struct DirectorLogin: View {
     }
 
     func login() {
-        let url = URL(string: "http://localhost:8000/loginMembers")!
+        let url = URL(string: "http://localhost:8000/LoginAllMembers")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
