@@ -11,7 +11,7 @@ import Foundation
 struct faculties: Hashable , Decodable  ,Encodable {
         
         var f_id: Int // To detect ID of That date to be get/edit
-        var c_id: Int
+//        var c_id: Int?
         var f_name: String
         var username: String
         var password: String
@@ -24,7 +24,7 @@ class FacultiesViewModel: ObservableObject {
     @Published var f_id: [Int] = [] // To get ID
     
     func fetchExistingFaculties() {
-        guard let url = URL(string: "http://localhost:8000/allfaculty")
+        guard let url = URL(string: "http://localhost:8000/showexistingfaculties")
                 
         else{
             return
@@ -72,7 +72,7 @@ class CoursesViewModel: ObservableObject {
     @Published var existing: [AllCourses] = []
 
     func fetchExistingCourses() {
-        guard let url = URL(string: "http://localhost:8000/allcourse") else {
+        guard let url = URL(string: "http://localhost:8000/showexistingcourse") else {
             print("Invalid URL")
             return
         }
@@ -118,7 +118,7 @@ class PaperViewModel: ObservableObject {
     
     func fetchExistingPapers() { // it fetches all Papers whether Printed or Print
         
-        guard let url = URL(string: "http://localhost:8000/GetApprovedPapers") else {
+        guard let url = URL(string: "http://localhost:8000/getapprovedpapers") else {
             print("Invalid URL")
             return
         }
@@ -150,7 +150,7 @@ class PaperViewModel: ObservableObject {
     
     func fetchPrintedPapers() { // it fetches Only Printed Papers
         
-        guard let url = URL(string: "http://localhost:8000/showPrintedPapers") else {
+        guard let url = URL(string: "http://localhost:8000/showprintedpapers") else {
             print("Invalid URL")
             return
         }

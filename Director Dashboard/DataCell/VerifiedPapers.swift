@@ -107,7 +107,7 @@ struct VerifiedPapers: View { // Design 100% OK
         let paper = filteredPapers[index]
         let newStatus = paper.status == "Print" ? "Print" : "Printed"
         
-        guard let url = URL(string: "http://localhost:8000/updatePaperStatus/\(paper.p_id)") else {
+        guard let url = URL(string: "http://localhost:8000/updatepaperstatus/\(paper.p_id)") else {
             return
         }
         

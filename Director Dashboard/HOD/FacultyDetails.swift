@@ -13,6 +13,7 @@ struct FacultyDetails: View { // Designed 100% OK
     @State private var searchText = ""
     @StateObject private var facultiesViewModel = FacultiesViewModel()
     
+    
     var filteredFaculties: [faculties] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
             return facultiesViewModel.remaining
@@ -61,8 +62,8 @@ struct FacultyDetails: View { // Designed 100% OK
                 //                Spacer()
                 VStack{
                     ScrollView {
-                        ForEach(filteredFaculties, id: \.self) { cr in
-//                            let cr = filteredFaculties[index]
+                        ForEach(filteredFaculties.indices, id: \.self) { index in
+                            let cr = filteredFaculties[index]
                             HStack{
                                 Text(cr.f_name)
                                     .font(.headline)
@@ -70,7 +71,7 @@ struct FacultyDetails: View { // Designed 100% OK
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 
                                 NavigationLink{
-                                    EyeAssignedCousres(facultyID: cr.f_id,courseID: cr.c_id, facultyName: cr.f_name)
+                                    EyeAssignedCousres(facultyID: cr.f_id,courseID: cr.f_id, facultyName: cr.f_name)
                                         .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "eye.fill")
@@ -294,6 +295,7 @@ struct PlusAssignCourse: View { // Design 100% ok
                                 .frame(maxWidth: .infinity , alignment: .leading)
                             Button(action: {
                                 toggleCourseSelection(courseID: cr.c_id)
+                                assignCourseToFaculty(courseID: courseID, facultyID: facultyID)
                             }) {
                                 Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
                                     .font(.title2)
@@ -315,22 +317,11 @@ struct PlusAssignCourse: View { // Design 100% ok
                     }
                 }
             }
-//            .padding()
             .frame(width: 410, height: 500)
             .onAppear {
                 coursesViewModel.fetchExistingCourses()
             }
             Spacer()
-            
-            Button("Save"){
-                assignSelectedCourses()
-            }
-            .bold()
-            .padding()
-            .frame(width: 150)
-            .foregroundColor(.black)
-            .background(Color.teal)
-            .cornerRadius(8)
             
         }
         .navigationBarItems(leading: backButton)
@@ -358,10 +349,89 @@ struct PlusAssignCourse: View { // Design 100% ok
             // Make the API call to assign the course to the faculty
             assignCourseToFaculty(courseID: courseID,facultyID: facultyID)
         }
-
-        // Dismiss the view after saving
-//        presentationMode.wrappedValue.dismiss()
     }
+    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
+        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let parameters: [String: Any] = [
+            "f_id": facultyID,
+            "c_id": courseID
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error: \(error)")
+                // Handle the error as needed
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                // Handle the absence of data as needed
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    if let message = json["message"] as? String {
+                        print(message)
+                        // Update the UI or perform any other action based on the message
+                    }
+                } else {
+                    print("Invalid JSON response")
+                    // Handle the invalid JSON response as needed
+                }
+            } catch {
+                print("Error parsing JSON response: \(error)")
+                // Handle the JSON parsing error as needed
+            }
+        }.resume()
+    }
+//    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
+//        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//
+//        let parameters: [String: Any] = [
+//            "courseID": courseID,
+//            "facultyID": facultyID
+//        ]
+//
+//        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            guard let data = data else {
+//                print("Error: \(error?.localizedDescription ?? "Unknown error")")
+//                return
+//            }
+//
+//            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+//               let message = responseJSON["message"] as? String {
+//                print("Fetched \(courses.count) assigned courses for faculty ID: \(facultyID)")
+//                print(message)
+//            } else {
+////                print("Error decoding data: \(error.localizedDescription)")
+//            }
+//        }.resume()
+//    }
+}
+
+struct FacultyDetails_Previews: PreviewProvider {
+    static var previews: some View {
+        FacultyDetails()
+    }
+}
+
+
+
+
+
 
 //    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
 //        // Prepare the request URL
@@ -390,41 +460,3 @@ struct PlusAssignCourse: View { // Design 100% ok
 //            }
 //        }.resume()
 //    }
-    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
-        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let parameters: [String: Any] = [
-            "courseID": courseID,
-            "facultyID": facultyID
-        ]
-        
-        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let message = responseJSON["message"] as? String {
-                // Login successful
-//                isLoggedIn = true
-                print(message)
-            } else {
-                // Invalid credentials
-//                showAlert = true
-            }
-        }.resume()
-    }
-}
-
-struct FacultyDetails_Previews: PreviewProvider {
-    static var previews: some View {
-//        PlusAssignCourse(facultyID: 1, facultyName: "String")
-        FacultyDetails()
-    }
-}

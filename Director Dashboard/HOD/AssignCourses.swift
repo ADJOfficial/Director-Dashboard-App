@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AssignCourse: View { // Design 100% ok
     
+    @StateObject private var facultiesViewModel = FacultiesViewModel()
     @StateObject private var coursesViewModel = CoursesViewModel()
     var facultyID: Int
     var courseID: Int
@@ -16,8 +17,14 @@ struct AssignCourse: View { // Design 100% ok
     @State private var searchText = ""
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedCourses: Set<Int> = []
-   
-    var filteredcourse: [AllCourses] { // All Data Will Be Filter and show on Table
+    @State private var isDropdownOpen = false
+    @State private var selectedCourse: faculties?
+
+    
+    
+    @State private var selectedCourseName: String? = nil
+    
+    var filteredCourses: [AllCourses] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
             return coursesViewModel.existing
         } else {
@@ -34,95 +41,130 @@ struct AssignCourse: View { // Design 100% ok
         
         var body: some View {
             HStack {
-//                Spacer()
                 TextField("Search", text: $text)
                     .padding()
                     .frame(width: 247 , height: 40)
                     .background(Color.gray.opacity(1))
                     .cornerRadius(8) // Set the corner radius to round the corners
                     .padding(.horizontal)
-
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 Button(action: {
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.gray)
+//                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .opacity(text.isEmpty ? 0 : 1)
-                Spacer()
             }
         }
     }
     
     var body: some View { // Get All Data From Node MongoDB : Pending
-       
+        
         VStack {
             Text("Assign Course")
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-                Text("\(facultyName)")
+            HStack {
+                Button(action: {
+                    isDropdownOpen.toggle()
+                }) {
+                    Text(selectedCourse?.f_name ?? "Select Teacher >")
+                        .padding()
+                        .background(Color.teal.opacity(0.9))
+//                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .foregroundColor(.black)
+                        .cornerRadius(8)
+                }
+                .padding()
+                
+                if isDropdownOpen {
+                    ScrollView {
+                        VStack {
+                            ForEach(facultiesViewModel.remaining, id: \.self) { course in
+                                Button(action: {
+                                    selectedCourse = course
+                                    isDropdownOpen.toggle()
+                                }) {
+                                    Text(course.f_name)
+                                        .foregroundColor(Color.white)
+                                }
+                                Divider()
+                                    .background(Color.white)
+                                    .padding(1)
+                            }
+                            
+                        }
+                        .padding()
+                        .frame(width: 200)
+                    }
+                    .background(Color.gray.opacity(0.5))
+                    .cornerRadius(20)
+                    .frame(height: 150)
+                    
+                    
+                }
+            }
+            .onAppear {
+                facultiesViewModel.fetchExistingFaculties()
+            }
+            Text("\(selectedCourse?.f_name ?? "")")
+                .padding()
+                .foregroundColor(Color.white)
+            Spacer()
+            VStack{
+                Text("Assign Course")
                     .bold()
                     .padding()
-                    .font(.title2)
-                    .foregroundColor(Color.white)
-                Text("Subject")
-                    .padding()
+                    .font(.title3)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity,alignment: .leading)
                 
                 SearchBar(text: $searchText)
-            Spacer()
-            VStack{
-                ScrollView{
-                    ForEach(filteredcourse, id: \.self) { cr in
-                        HStack{
-                            
-                            Text(cr.c_title)
-                                .font(.headline)
-                                .foregroundColor(Color.white)
-                                .padding(.horizontal)
-                                .frame(maxWidth: .infinity , alignment: .leading)
-                            Button(action: {
-                                toggleCourseSelection(courseID: cr.c_id)
-                            }) {
+                    .padding(1)
+//                Spacer()
+                VStack{
+                    ScrollView {
+                        ForEach(filteredCourses, id: \.self) { cr in
+                            HStack {
+                                Text(cr.c_title)
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
                                     .font(.title2)
                                     .foregroundColor(Color.white)
                                     .padding(.horizontal)
                                     .frame(maxWidth: .infinity, alignment: .trailing)
+                                
                             }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
                         }
-                        Divider()
-                            .background(Color.white)
-                            .padding(1)
-                    }
-                    if filteredcourse.isEmpty {
-                        Text("No Course Found")
-                            .font(.headline)
-                            .foregroundColor(.yellow)
-                            .padding()
-                            .frame(maxWidth: .infinity)
+                        if filteredCourses.isEmpty {
+                            Text("No Data Found")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                )
+                .frame(width: 410, height: 430)
+                .onAppear {
+                    coursesViewModel.fetchExistingCourses()
+                }
+//                Spacer()
             }
-//            .padding()
-            .frame(width: 410, height: 500)
-            .onAppear {
-                coursesViewModel.fetchExistingCourses()
-            }
-            Spacer()
-            
-            Button("Save"){
-                assignSelectedCourses()
-            }
-            .bold()
-            .padding()
-            .frame(width: 150)
-            .foregroundColor(.black)
-            .background(Color.teal)
-            .cornerRadius(8)
             
         }
         .navigationBarItems(leading: backButton)

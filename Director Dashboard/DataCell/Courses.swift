@@ -222,7 +222,7 @@ struct Course: View {   // Design 100% OK
         let course = filteredCourses[index]
         let newStatus = course.status == "enable" ? "disable" : "enable"
 
-        guard let url = URL(string: "http://localhost:8000/EDcourse/\(course.c_id)") else {
+        guard let url = URL(string: "http://localhost:8000/enabledisablecourse/\(course.c_id)") else {
             return
         }
 
@@ -257,7 +257,7 @@ struct Course: View {   // Design 100% OK
         }
     }
     func createCourse() {
-        guard let url = URL(string: "http://localhost:8000/addcourse") else {
+        guard let url = URL(string: "http://localhost:8000/addnewcourse") else {
             return
         }
 
@@ -372,7 +372,7 @@ struct EditCourse: View { // Design 100% OK
         .background(Image("fw"))
     }
     func updateCourse() {
-            guard let url = URL(string: "http://localhost:8000/course/\(course.c_id)") else {
+            guard let url = URL(string: "http://localhost:8000/updateanycourse/\(course.c_id)") else {
                 print("Invalid URL")
                 return
             }

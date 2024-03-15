@@ -194,7 +194,7 @@ struct Faculty: View {   // Design 100% OK
         let faculty = filteredFaculties[index]
         let newStatus = faculty.status == "enable" ? "disable" : "enable"
         
-        guard let url = URL(string: "http://localhost:8000/EDfaculty/\(faculty.f_id)") else {
+        guard let url = URL(string: "http://localhost:8000/enabledisablefaculty/\(faculty.f_id)") else {
             return
         }
         
@@ -219,7 +219,7 @@ struct Faculty: View {   // Design 100% OK
         }.resume()
     }
     func createFaculty() {
-        guard let url = URL(string: "http://localhost:8000/addfaculty") else {
+        guard let url = URL(string: "http://localhost:8000/addnewfaculty") else {
             return
         }
 
@@ -331,11 +331,11 @@ struct EditFaculty: View { // Design 100% OK
         .background(Image("fw"))
     }
     func updateFaculty() {
-        guard let url = URL(string: "http://localhost:8000/faculty/\(faculty.f_id)") else {
+        guard let url = URL(string: "http://localhost:8000/updateanyfaculty/\(faculty.f_id)") else {
             return
         }
 
-        let updatedFaculty = faculties(f_id: faculty.f_id,c_id: faculty.c_id, f_name: f_name, username: username , password: password ,status: faculty.status)
+        let updatedFaculty = faculties(f_id: faculty.f_id, f_name: f_name, username: username , password: password ,status: faculty.status)
 
         guard let encodedData = try? JSONEncoder().encode(updatedFaculty) else {
             return

@@ -118,6 +118,7 @@ struct Courer: Codable  ,Hashable {
     let c_code: String
     let c_title: String
     let f_name: String
+//    var role: String
     
 }
 
