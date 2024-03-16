@@ -30,7 +30,7 @@ struct DirectorWelcome: View { // Design 100% Ok
                 Spacer()
                 VStack {   
                     NavigationLink {
-//                        UploadPapers(body:)
+                        UploadedPapers()
                     } label: {
                         Text("Upload Papers")
                     }
@@ -70,47 +70,6 @@ struct DirectorWelcome: View { // Design 100% Ok
             }
             .background(Image("ft").resizable().ignoresSafeArea())
         }
-    }
-}
-
-struct Comments: View { // Design 100% Ok
-    
-    @State private var comment: String = ""
-    
-    var body: some View { // Get All Data From Node MongoDB : Pending
-        
-        VStack {
-            Text("Comments")
-                .bold()
-                .font(.largeTitle)
-                .foregroundColor(Color.white)
-            Spacer()
-            Text("Feedback")
-                .bold()
-                .font(.title)
-                .foregroundColor(Color.white)
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity , alignment: .leading)
-            ZStack(alignment: .bottomTrailing) {
-                TextEditor(text: $comment)
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                    .frame(height: 400)
-                HStack {
-                    Spacer()
-                    Image(systemName: "paperplane.fill")
-                        .padding()
-                        .font(.largeTitle)
-                        .foregroundColor(Color.green)
-                }
-            }
-            .padding()
-            Spacer()
-        }
-        .background(Image("fii").resizable().ignoresSafeArea())
     }
 }
 
@@ -201,93 +160,6 @@ struct ApprovedPapers: View {
     }
 }
 
-struct Eye: View { // Design 100% Ok
-    
-    var body: some View { // Get All Data From Node MongoDB : Pending
-    
-        NavigationView {
-            VStack{
-                Text("Paper Information")
-                    .bold()
-                    .font(.largeTitle)
-                    .foregroundColor(Color.white)
-                Spacer()
-                Text("Communication Skills")
-                    .bold()
-                    .font(.title2)
-                    .padding(.horizontal)
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity , alignment: .leading)
-                Text("Code: CS-502")
-                    .bold()
-                    .font(.headline)
-                    .padding(.horizontal)
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity , alignment: .leading)
-                NavigationLink {
-                    Comments()
-                        .navigationBarBackButtonHidden(true)
-                } label: {
-                    Image(systemName: "text.bubble.fill")
-                        .font(.largeTitle)
-                        .padding(.horizontal)
-                        .foregroundColor(Color.green)
-                        .frame(maxWidth: .infinity , alignment: .trailing)
-                }
-                Spacer()
-                VStack(alignment: .leading){
-                    Text("Teacher ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Course Title ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Course Code ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Date of Exam ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Duration ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Degree ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Term ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Year ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Total Marks ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                    Text("Questions ")
-                        .padding(5)
-                        .foregroundColor(Color.white)
-                }
-                .bold()
-                .font(.title3)
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity , alignment: .leading)
-                Spacer()
-                NavigationLink {
-                    MakePaper()
-                        .navigationBarBackButtonHidden(true)
-                }label: {
-                    Text("View Paper")
-                }
-                .foregroundColor(.black)
-                .padding()
-                .background(Color.cyan)
-                .cornerRadius(8)
-                Spacer()
-            }
-            .background(Image("fii").resizable().ignoresSafeArea())
-        }
-    }
-}
 
 struct MakePaper: View {
     

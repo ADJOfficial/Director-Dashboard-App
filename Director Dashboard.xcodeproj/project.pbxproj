@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		442E08782BA4F5EA00907B7D /* UploadedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08772BA4F5EA00907B7D /* UploadedPapers.swift */; };
 		442E087A2BA4F65E00907B7D /* DirectorRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08792BA4F65E00907B7D /* DirectorRecords.swift */; };
+		442E087F2BA622D400907B7D /* PaperMaking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E087E2BA622D400907B7D /* PaperMaking.swift */; };
 		445068E62B93391000D1427A /* CT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445068E52B93391000D1427A /* CT.swift */; };
 		445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083802B48E8EF00707476 /* Director_DashboardApp.swift */; };
 		445083832B48E8EF00707476 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083822B48E8EF00707476 /* Login.swift */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		442E08772BA4F5EA00907B7D /* UploadedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadedPapers.swift; sourceTree = "<group>"; };
 		442E08792BA4F65E00907B7D /* DirectorRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorRecords.swift; sourceTree = "<group>"; };
+		442E087E2BA622D400907B7D /* PaperMaking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperMaking.swift; sourceTree = "<group>"; };
 		445068E52B93391000D1427A /* CT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CT.swift; sourceTree = "<group>"; };
 		4450837D2B48E8EF00707476 /* Director Dashboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Director Dashboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		445083802B48E8EF00707476 /* Director_DashboardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Director_DashboardApp.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			children = (
 				442E087B2BA4F90500907B7D /* MySQL-Director */,
 				442E08772BA4F5EA00907B7D /* UploadedPapers.swift */,
+				442E087E2BA622D400907B7D /* PaperMaking.swift */,
 			);
 			path = Director;
 			sourceTree = "<group>";
@@ -387,6 +390,7 @@
 				44BCB4F02B5A3E2300FDC33B /* chek.swift in Sources */,
 				44BA72172B99A4B300812049 /* DataCellRecords.swift in Sources */,
 				44A041E32B53B11400AF79AD /* Topics.swift in Sources */,
+				442E087F2BA622D400907B7D /* PaperMaking.swift in Sources */,
 				44BA72192B99AC0B00812049 /* updatecheck.swift in Sources */,
 				44C5C0262B52451E00702538 /* GridView.swift in Sources */,
 				445083942B48E98A00707476 /* FacultyWelcome.swift in Sources */,
