@@ -24,7 +24,7 @@ struct ViewYourCourses: View { // Design 100% OK
 //                    .font(.title)
 //                    .foregroundColor(Color.white)
                 NavigationLink {
-                    Mail(fb_details: "")
+//                    ma
                 } label: {
                     Image(systemName: "mail.fill")
                         .foregroundColor(Color.blue.opacity(0.7))
@@ -121,33 +121,41 @@ struct ViewYourCourses: View { // Design 100% OK
 
 struct Feedback: Hashable, Decodable, Encodable {
     var fb_details: String
-    var isNew: Bool = false // Add isNew property
+    var c_title: String
+    var c_code: String
+    var f_name: String
+    var q_id: Int
+    var p_id: Int
+//    var isNew: Bool
 }
 
 class FeedbackViewModel: ObservableObject {
     @Published var feedback: [Feedback] = []
-    @Published var selectedMessage: Feedback?
+//    @Published var selectedMessage: Feedback?
     func fetchExistingFeedback() {
-        guard let url = URL(string: "http://localhost:4000/getfeedback") else {
+        guard let url = URL(string: "http://localhost:4000/getfeedback")
+                
+        else{
             return
         }
-        
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            guard let data = data, error == nil else {
+            
+            guard let data = data , error == nil
+                    
+            else {
                 return
             }
             
-            do {
-                let fbs = try JSONDecoder().decode([Feedback].self, from: data)
+            // Convert to JSON
+            
+            do{
+                let faculty = try JSONDecoder().decode([Feedback].self, from: data)
                 DispatchQueue.main.async {
-                    self?.feedback = fbs.map { feedback in
-                        var updatedFeedback = feedback
-                        updatedFeedback.isNew = true
-                        return updatedFeedback
-                    }
-                    print("Fetched \(fbs.count) Feedbacks")
+                    self?.feedback = faculty
+                    print("Fetched \(faculty.count) Faculties")
                 }
-            } catch {
+            }
+            catch{
                 print("Error While Getting Data")
             }
         }
@@ -156,7 +164,13 @@ class FeedbackViewModel: ObservableObject {
 }
 
 struct Mail: View {
+    
     var fb_details: String
+    var c_title: String
+    var c_code: String
+    var f_name: String
+    var q_id: Int
+    var p_id: Int
     @StateObject var feedbackViewModel = FeedbackViewModel()
     
     var body: some View {
@@ -171,43 +185,35 @@ struct Mail: View {
                     ScrollView {
                         ForEach(feedbackViewModel.feedback.indices, id: \.self) { index in
                             let msg = feedbackViewModel.feedback[index]
-                            NavigationLink(destination: MessageDetails(message: msg.fb_details)) {
-                                HStack {
-                                    if msg.isNew {
-                                        Circle()
-                                            .foregroundColor(.blue)
-                                            .frame(width: 10, height: 10)
-                                    }
+                            VStack {
+                                HStack{
+                                    Text(msg.c_title)
+//                                        .font(.headline)
+                                        .foregroundColor(Color.yellow)
+                                        .padding(.horizontal)
+                                    Text(msg.c_code)
+//                                        .font(.headline)
+                                        .foregroundColor(Color.yellow)
+                                        .padding(.horizontal)
+                                }
+                                .padding(5)
                                     Text(msg.fb_details)
                                         .font(.headline)
-                                        .foregroundColor(msg.isNew ? .white : .red)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .onAppear {
-                                if let selectedMessage = feedbackViewModel.selectedMessage, selectedMessage == msg {
-                                    feedbackViewModel.feedback[index].isNew = false
-                                }
-                            }
-                            .onChange(of: feedbackViewModel.selectedMessage) { newValue in
-                                if newValue == msg {
-                                    feedbackViewModel.feedback[index].isNew = false
-                                }
+                                        .foregroundColor(Color.white)
+                                        .padding(.horizontal)
                             }
                             Divider()
                                 .background(Color.white)
-                                .padding(1)
+                                .padding(2)
                         }
                     }
-                    Spacer()
                 }
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.orange.opacity(0.5), lineWidth: 2)
+                        .stroke(Color.orange.opacity(0.5), lineWidth: 1)
                 )
-                .frame(width: 420, height: 770)
+                .frame(height: 770)
                 .onAppear {
                     feedbackViewModel.fetchExistingFeedback()
                 }
@@ -428,6 +434,6 @@ struct Subject: View {
 
 struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
-        Mail(fb_details: "")
+        Mail(fb_details: "", c_title: "", c_code: "", f_name: "", q_id: 1, p_id: 1)
     }
 }

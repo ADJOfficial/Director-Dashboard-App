@@ -13,7 +13,7 @@ struct UploadedPapers: View {
     @State private var searchText = ""
     @State private var searchResults: [GetUploadedPaper] = []
     @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
-    @StateObject private var coursesViewModel = CoursesViewModel()
+//    @StateObject private var coursesViewModel = CoursesViewModel()
     
     var filteredPapers: [GetUploadedPaper] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
@@ -77,7 +77,7 @@ struct UploadedPapers: View {
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .center)
                                 NavigationLink{
-                                    EyeViewPaperHeader(p_id: cr.p_id, c_title: cr.c_title, c_code: cr.c_code, duration: cr.duration, degree: cr.degree, t_marks: cr.t_marks, term: cr.term, year: cr.year, exam_date: cr.exam_date, semester: cr.semester, status: cr.status)
+                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, q_id: cr.q_id)
                                         .navigationBarBackButtonHidden(false)
                                 }label: {
                                     Image(systemName: "eye.fill")
@@ -118,18 +118,24 @@ struct UploadedPapers: View {
 }
 
 struct EyeViewPaperHeader: View { // Design 100% Ok
-    
-    let p_id: Int
-    let c_title: String
-    let c_code: String
+
+    var p_id:Int
+    var f_id: Int
+    var f_name: String
+    var c_id: Int
+    var c_title: String
+    var c_code: String
+    var exam_date: String
     var duration: Int
     var degree: String
-    var t_marks: Int
-    var term : String
+    var term: String
     var year: Int
-    var exam_date: String
-    var semester: String
-    var status: String
+    var t_marks: Int
+    var q_id: Int
+//    var q_text: String
+//    var q_marks: Int
+//    var q_difficulty: String
+//    var status: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
     
@@ -153,7 +159,7 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 NavigationLink {
-                    Comments(p_id:p_id, c_title: c_title, c_code: c_code)
+                    Comments(f_id: f_id, c_id: c_id, p_id: p_id, q_id: q_id)
                         .navigationBarBackButtonHidden(true)
                 } label: {
                     Image(systemName: "text.bubble.fill")
@@ -170,6 +176,11 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                             .foregroundColor(Color.white)
                             .padding(.horizontal)
                             .frame(maxWidth: .infinity , alignment: .leading)
+                        Text("\(f_name)")
+                            .padding(1)
+                            .foregroundColor(Color.white)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
                     }
                     HStack{
                         Text("Course Title :")
@@ -273,7 +284,7 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                             .foregroundColor(Color.white)
                             .padding(.horizontal)
                             .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(c_title)")
+                        Text("\(q_id)")
                             .padding(1)
                             .foregroundColor(Color.white)
                             .padding(.horizontal)
@@ -286,7 +297,7 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                 .frame(maxWidth: .infinity , alignment: .leading)
                 Spacer()
                 NavigationLink {
-                    PaperMaking(c_title: c_title, exam_date: exam_date, degree: degree, f_name: c_title, c_code: c_code, duration: duration, t_marks: t_marks)
+                    PaperMaking(paperID: p_id, q_id: q_id, p_id: p_id, c_id: c_id, c_code: c_code, c_title: c_title, f_id: f_id, f_name: f_name, exam_date: exam_date, degree: degree, duration: duration, t_marks: t_marks)
                         .navigationBarBackButtonHidden(true)
                 }label: {
                     Text("View Paper")
@@ -304,9 +315,10 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
 
 struct Comments: View { // Design 100% Ok
     
+    var f_id: Int
+    var c_id: Int
     var p_id: Int
-    var c_title: String
-    var c_code: String
+    var q_id: Int
     @State private var fb_details: String = ""
     
     var body: some View { // Get All Data From Node MongoDB : Pending
@@ -354,7 +366,10 @@ struct Comments: View { // Design 100% Ok
         }
 
         let user = [
+            "f_id": f_id,
+            "c_id": c_id,
             "p_id": p_id,
+            "q_id": q_id,
             "fb_details": fb_details
         ] as [String : Any]
 
