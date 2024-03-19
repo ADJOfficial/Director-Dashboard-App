@@ -24,11 +24,16 @@ struct PaperMaking: View {
     var c_title: String
     var f_id: Int
     var f_name: String
+    var clo_text: String
+    var t_name: String
     
     var exam_date: String
     var degree: String
     var duration: Int
     var t_marks: Int
+    
+    @State private var isAccepted = false // For Accept All CheckMark
+    @State private var showApprovedPaperButton = false
     
     @State private var q_text = ""
     @State private var fb_details = ""
@@ -90,10 +95,23 @@ struct PaperMaking: View {
                     .font(.headline)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .trailing)
-                Image(systemName: "checkmark.square.fill")
-                    .font(.title2)
-                    .foregroundColor(Color.white)
-                    .padding(.horizontal)
+                Button(action: {
+                    isAccepted.toggle()
+                    if isAccepted {
+                               selectedButton = "Approved"
+                               updateAllQuestionStatus(q_verification: "Approved")
+                           } else {
+                               selectedButton = nil
+                               updateAllQuestionStatus(q_verification: "")
+                               selectedButton = ""
+                           }
+                           updateApprovedPaperButtonVisibility()
+                }) {
+                    Image(systemName: isAccepted ? "checkmark.square.fill" : "square")
+                        .font(.title2)
+                        .foregroundColor(Color.green)
+                        .padding(.horizontal)
+                }
             }
             VStack{
                 ScrollView{
@@ -123,7 +141,7 @@ struct PaperMaking: View {
                                         q_text = assignedFaculty.q_text
                                     }
                             }
-                            Text("[ \(assignedFaculty.q_difficulty) ,\(assignedFaculty.q_marks)]")
+                            Text("[ \(assignedFaculty.q_difficulty) ,\(assignedFaculty.q_marks) , \(assignedFaculty.clo_text)]")
                                 .font(.title3)
                                 .padding(.horizontal)
                                 .foregroundColor(Color.white)
@@ -133,6 +151,7 @@ struct PaperMaking: View {
                                 Button(action: {
                                     selectedButton = "Approved"
                                     updateQuestionStatus(questionId: assignedFaculty.q_id, q_verification: "Approved")
+                                    updateApprovedPaperButtonVisibility()
                                 }) {
                                     Image(systemName: selectedButton == "Approved" ? "largecircle.fill.circle" : "circle")
                                         .foregroundColor(selectedButton == "Approved" ? .green : .gray)
@@ -142,11 +161,13 @@ struct PaperMaking: View {
                                 }
                                 .onTapGesture {
                                     selectedButton = selectedButton == "Approved" ? "" : "Approved"
+                                    updateApprovedPaperButtonVisibility()
                                 }
                                 
                                 Button(action: {
                                     selectedButton = "Rejected"
                                     updateQuestionStatus(questionId: assignedFaculty.q_id, q_verification: "Rejected")
+                                    updateApprovedPaperButtonVisibility()
                                 }) {
                                     Image(systemName: selectedButton == "Rejected" ? "largecircle.fill.circle" : "circle")
                                         .foregroundColor(selectedButton == "Rejected" ? .red : .gray)
@@ -156,6 +177,7 @@ struct PaperMaking: View {
                                 }
                                 .onTapGesture {
                                     selectedButton = selectedButton == "Rejected" ? "" : "Rejected"
+                                    updateApprovedPaperButtonVisibility()
                                 }
                             }
                             .padding()
@@ -192,27 +214,51 @@ struct PaperMaking: View {
                 questionViewModel.getPaperQuestions(paperID: p_id)
             }
             Spacer()
-            
-            Button("View Topics"){
-//                createFeedback()
+            HStack{
+                Spacer()
+                NavigationLink {
+                    PaperTopic(t_name: t_name , c_title: c_title , c_code: c_code)
+                }label: {
+                    Text("View Topics")
+                }
+                .bold()
+                .padding()
+                .frame(width: 150)
+                .foregroundColor(.black)
+                .background(Color.cyan)
+                .cornerRadius(8)
+                Spacer()
+                Button("Approved") {
+                    updateApprovedPaperButtonVisibility()
+                }
+                .bold()
+                .padding()
+                .frame(width: 150)
+                .foregroundColor(.black)
+                .background(Color.green)
+                .cornerRadius(8)
+                .opacity(showApprovedPaperButton ? 1 : 0)
+                Spacer()
             }
-            .bold()
-            .padding()
-            .frame(width: 150)
-            .foregroundColor(.black)
-            .background(Color.cyan)
-            .cornerRadius(8)
+            
         }
         .background(Image("fw").resizable().ignoresSafeArea())
     }
     
+    func updateAllQuestionStatus(q_verification: String) {
+        for index in 0..<questionViewModel.uploadedQuestions.count {
+            let questionId = questionViewModel.uploadedQuestions[index].q_id
+            updateQuestionStatus(questionId: questionId, q_verification: q_verification)
+        }
+    }
+    
     private func updateQuestionStatus(questionId: Int, q_verification: String) {
         var qVerificationValue: String
-        if q_verification == "" {
-            qVerificationValue = "Pending"
-        } else {
-            qVerificationValue = q_verification
-        }
+           if q_verification.isEmpty {
+               qVerificationValue = "Pending"
+           } else {
+               qVerificationValue = q_verification
+           }
         
         let url = URL(string: "http://localhost:3000/updatequestionstatus/\(questionId)")!
         let parameters = ["q_verification": qVerificationValue]
@@ -277,6 +323,16 @@ struct PaperMaking: View {
             }
         }.resume()
     }
+    private func updateApprovedPaperButtonVisibility() {
+        let allApproved = questionViewModel.uploadedQuestions.allSatisfy { assignedFaculty in
+            selectedButton == "Approved" || selectedButton == nil
+        }
+        let anyRejected = questionViewModel.uploadedQuestions.contains { assignedFaculty in
+            selectedButton == "Rejected"
+        }
+        
+        showApprovedPaperButton = allApproved && !anyRejected
+    }
 }
 
 struct AcceptRejectRadioButton: View { // For Radio Button
@@ -296,54 +352,98 @@ struct AcceptRejectRadioButton: View { // For Radio Button
     }
 }
 
-struct PaperMaking_Previews: PreviewProvider {
-    static var previews: some View {
-        PaperMaking(paperID: 2, q_id: 2, p_id: 1, c_id: 1, c_code: "String", c_title: "String", f_id: 1, f_name: "", exam_date: "", degree: "", duration: 1, t_marks: 1)
+
+
+
+struct PaperTopic: View { // For Radio Button
+    
+    var t_name : String
+    var c_title: String
+    var c_code: String
+    
+    var body: some View {
+        
+        VStack {
+            Text("Paper Topic")
+                .bold()
+                .font(.largeTitle)
+                .foregroundColor(Color.white)
+            Spacer()
+            
+            Text(c_title)
+                .bold()
+                .font(.title2)
+                .padding(.horizontal)
+                .foregroundColor(Color.white)
+                .frame(maxWidth: .infinity , alignment: .leading)
+            Text(c_code)
+                .font(.headline)
+                .padding(.horizontal)
+                .foregroundColor(Color.white)
+                .frame(maxWidth: .infinity , alignment: .leading)
+            Spacer()
+            VStack{
+                ScrollView {
+                    HStack{
+                        Text(t_name)
+                            .font(.headline)
+                            .foregroundColor(Color.white)
+                            .frame(maxWidth: .infinity , alignment: .center)
+                    }
+                    Divider()
+                        .background(Color.white)
+                        .padding(1)
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.orange.opacity(0.7), lineWidth: 1)
+            )
+            .frame(height:600)
+        }
+        .background(Image("fw").resizable().ignoresSafeArea())
     }
 }
 
+struct AdditionalQuestions: View { // For Radio Button
+    
+//    var t_name : String
+    
+    var body: some View {
+        
+        VStack {
+            Text("Additional Questions")
+                .bold()
+                .font(.largeTitle)
+                .foregroundColor(Color.white)
+            Spacer()
+            VStack{
+                ScrollView {
+                    HStack{
+                        Text("")
+                            .font(.headline)
+                            .foregroundColor(Color.white)
+                            .frame(maxWidth: .infinity , alignment: .center)
+                    }
+                    Divider()
+                        .background(Color.white)
+                        .padding(1)
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.orange.opacity(0.7), lineWidth: 1)
+            )
+            .frame(height:700)
+        }
+        .background(Image("fw").resizable().ignoresSafeArea())
+    }
+}
 
-
-//struct QuestionStatusView: View {
-//    @State private var selectedButtons: [String] = []
-//
-//    var body: some View {
-//        VStack {
-//            ForEach(0..<selectedButtons.count, id: \.self) { index in
-//                HStack {
-//                    Button(action: {
-//                        selectedButtons[index] = "Approved"
-//                        updateQuestionStatus(questionId: assignedFaculty.q_id, q_verification: "Approved", index: index)
-//                    }) {
-//                        Image(systemName: selectedButtons[index] == "Approved" ? "largecircle.fill.circle" : "circle")
-//                            .foregroundColor(selectedButtons[index] == "Approved" ? .green : .gray)
-//                        Text("Approved")
-//                            .font(.title3)
-//                            .foregroundColor(selectedButtons[index] == "Approved" ? .green : .gray)
-//                    }
-//
-//                    Button(action: {
-//                        selectedButtons[index] = "Rejected"
-//                        updateQuestionStatus(questionId: assignedFaculty.q_id, q_verification: "Rejected", index: index)
-//                    }) {
-//                        Image(systemName: selectedButtons[index] == "Rejected" ? "largecircle.fill.circle" : "circle")
-//                            .foregroundColor(selectedButtons[index] == "Rejected" ? .red : .gray)
-//                        Text("Rejected")
-//                            .font(.title3)
-//                            .foregroundColor(selectedButtons[index] == "Rejected" ? .red : .gray)
-//                    }
-//                }
-//            }
-//        }
-//        .padding()
-//        .onAppear {
-//            // Fetch records from the backend and set the selectedButtons array
-//            // Example:
-//            // selectedButtons = ["", "", ""] // Assuming 3 records
-//        }
-//    }
-//
-//    private func updateQuestionStatus(questionId: Int, q_verification: String, index: Int) {
-//        // Rest of the code remains the same
-//    }
-//}
+struct PaperTopic_Previews: PreviewProvider {
+    static var previews: some View {
+        PaperTopic(t_name: "", c_title: "", c_code: "")
+    }
+}

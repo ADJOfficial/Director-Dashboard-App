@@ -77,7 +77,7 @@ struct UploadedPapers: View {
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .center)
                                 NavigationLink{
-                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, q_id: cr.q_id)
+                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, q_id: cr.q_id ,clo_text: cr.clo_text, t_name: cr.t_name )
                                         .navigationBarBackButtonHidden(false)
                                 }label: {
                                     Image(systemName: "eye.fill")
@@ -132,6 +132,8 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
     var year: Int
     var t_marks: Int
     var q_id: Int
+    var clo_text: String
+    var t_name: String
 //    var q_text: String
 //    var q_marks: Int
 //    var q_difficulty: String
@@ -297,7 +299,7 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                 .frame(maxWidth: .infinity , alignment: .leading)
                 Spacer()
                 NavigationLink {
-                    PaperMaking(paperID: p_id, q_id: q_id, p_id: p_id, c_id: c_id, c_code: c_code, c_title: c_title, f_id: f_id, f_name: f_name, exam_date: exam_date, degree: degree, duration: duration, t_marks: t_marks)
+                    PaperMaking(paperID: p_id, q_id: q_id, p_id: p_id, c_id: c_id, c_code: c_code, c_title: c_title, f_id: f_id, f_name: f_name, clo_text: clo_text, t_name: t_name, exam_date: exam_date, degree: degree, duration: duration, t_marks: t_marks)
                         .navigationBarBackButtonHidden(true)
                 }label: {
                     Text("View Paper")
