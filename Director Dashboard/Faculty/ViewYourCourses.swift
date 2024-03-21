@@ -9,7 +9,11 @@ import SwiftUI
 
 struct ViewYourCourses: View { // Design 100% OK
     
-    
+    var f_id: Int
+    var c_id: Int
+    var c_code: String
+    var c_title: String
+    var f_name: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         
@@ -19,10 +23,6 @@ struct ViewYourCourses: View { // Design 100% OK
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-//                Text("Welcome ")
-//                    .bold()
-//                    .font(.title)
-//                    .foregroundColor(Color.white)
                 NavigationLink {
 //                    ma
                 } label: {
@@ -53,7 +53,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         .padding()
                         .bold()
                         .frame(width: 150)
-                        .background(Color.green)
+                        .background(Color.green.opacity(0.8))
                         .cornerRadius(8)
                         .padding(.all)
                         
@@ -69,7 +69,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         .padding()
                         .bold()
                         .frame(width: 150)
-                        .background(Color.green)
+                        .background(Color.green.opacity(0.8))
                         .cornerRadius(8)
                         .padding(.all)
                         
@@ -89,7 +89,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         .padding()
                         .bold()
                         .frame(width: 150)
-                        .background(Color.green)
+                        .background(Color.green.opacity(0.8))
                         .cornerRadius(8)
                         .padding(.all)
                         
@@ -105,7 +105,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         .padding()
                         .bold()
                         .frame(width: 150)
-                        .background(Color.green)
+                        .background(Color.green.opacity(0.8))
                         .cornerRadius(8)
                         .padding(.all)
                         
@@ -434,6 +434,7 @@ struct Subject: View {
 
 struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
-        Mail(fb_details: "", c_title: "", c_code: "", f_name: "", q_id: 1, p_id: 1)
+//        Mail(fb_details: "", c_title: "", c_code: "", f_name: "", q_id: 1, p_id: 1)
+        ViewYourCourses(f_id: 1, c_id: 1, c_code: "", c_title: "", f_name: "")
     }
 }

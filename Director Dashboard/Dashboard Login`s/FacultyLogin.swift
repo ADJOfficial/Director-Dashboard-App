@@ -7,21 +7,23 @@
 
 import SwiftUI
 
-struct FacultyLogin: View { // Design 100% OK
+struct FacultyLogin: View {
     
     @State private var username = ""
     @State private var password = ""
     @State private var isLoggedIn = false
     @State private var showAlert = false
 
+    @StateObject private var facultiesViewModel = FacultiesViewModel()
+
     var body: some View {
-        VStack{
+        VStack {
             Text("Faculty")
                 .font(.largeTitle)
                 .bold()
                 .foregroundColor(Color.white)
             Spacer()
-            VStack(alignment: .leading){
+            VStack(alignment: .leading) {
                 Text("Username")
                     .bold()
                     .font(.title3)
@@ -38,62 +40,46 @@ struct FacultyLogin: View { // Design 100% OK
                     .font(.title3)
                     .padding(.leading)
                     .foregroundColor(Color.white)
-                SecureField("Password", text: $password)
+                TextField("Password", text: $password)
                     .padding()
                     .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .padding(.horizontal)
             }
             Spacer()
-            Button("Login"){
+            Button(action: {
                 login()
+            }) {
+                Text("Login")
+                    .foregroundColor(Color.black)
+                    .padding()
+                    .frame(width: 150, height: 60)
+                    .background(Color.green.opacity(0.7))
+                    .cornerRadius(8)
             }
-            .foregroundColor(Color.black)
-            .padding()
-            .frame(width: 150, height: 60)
-            .background(Color.green.opacity(0.7))
-            .cornerRadius(8)
-            
-//            Spacer()
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Invalid credentials"), message: Text("Please enter valid username and password"), dismissButton: .default(Text("OK")))
-        }
-        .fullScreenCover(isPresented: $isLoggedIn){
-           FacultyWelcome(username: username)
+            .onAppear {
+                facultiesViewModel.fetchExistingFaculties()
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Invalid credentials"), message: Text("Please enter valid username and password"), dismissButton: .default(Text("OK")))
+            }
+            .fullScreenCover(isPresented: $isLoggedIn) {
+                if let faculty = facultiesViewModel.remaining.first(where: { $0.username == username }) {
+                    FacultyWelcome(facultyName: faculty.f_name, f_id: faculty.f_id)
+                }
+            }
         }
         .background(Image("fiii").resizable().ignoresSafeArea())
     }
 
     func login() {
-        let url = URL(string: "http://localhost:8000/loginMembers")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let parameters: [String: Any] = [
-            "username": username,
-            "password": password
-        ]
-        
-        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let message = responseJSON["message"] as? String {
-                // Login successful
-                isLoggedIn = true
-                print(message)
+        facultiesViewModel.login(username: username, password: password) { isLoggedIn in
+            if isLoggedIn {
+                self.isLoggedIn = true
             } else {
-                // Invalid credentials
                 showAlert = true
             }
-        }.resume()
+        }
     }
 }
 

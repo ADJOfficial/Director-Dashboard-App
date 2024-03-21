@@ -58,7 +58,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .padding(.all)
                     
                     NavigationLink{
-                        VerifiedPapers()
+                        ApprovedPaper()
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Papers")

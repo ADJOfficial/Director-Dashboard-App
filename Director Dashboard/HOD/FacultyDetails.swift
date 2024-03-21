@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FacultyDetails: View { // Designed 100% OK
     
-    @State private var f_name = ""
+//    @State private var f_name = ""
     @State private var searchText = ""
     @StateObject private var facultiesViewModel = FacultiesViewModel()
     

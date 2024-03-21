@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+
 struct FacultyWelcome: View { // Design 100% OK
     
-    let username: String
+    var facultyName: String
+    var f_id: Int
     
     var body: some View { // Get All Data From Node MongoDB : Pending
        
@@ -20,7 +22,14 @@ struct FacultyWelcome: View { // Design 100% OK
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome \(username)")
+                Text("Welcome \(facultyName)")
+                    .bold()
+                    .padding()
+                    .font(.title2)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                    .padding(.horizontal)
+                    .foregroundColor(Color.white)
+                Text("\(f_id)")
                     .bold()
                     .padding()
                     .font(.title2)
@@ -30,7 +39,7 @@ struct FacultyWelcome: View { // Design 100% OK
                 Spacer()
                 VStack{
                     NavigationLink {
-                        ViewYourCourses()
+                        ViewYourCourses(f_id: 1, c_id: 1, c_code: "", c_title: "", f_name: "")
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Courses")
@@ -39,7 +48,7 @@ struct FacultyWelcome: View { // Design 100% OK
                     .padding()
                     .frame(width: 150)
                     .foregroundColor(.black)
-                    .background(Color.green.opacity(0.7))
+                    .background(Color.green.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.all)
                     
@@ -53,7 +62,7 @@ struct FacultyWelcome: View { // Design 100% OK
                     .padding()
                     .frame(width: 150)
                     .foregroundColor(.black)
-                    .background(Color.green.opacity(0.7))
+                    .background(Color.green.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.all)
                     NavigationLink {
@@ -66,7 +75,7 @@ struct FacultyWelcome: View { // Design 100% OK
                     .padding()
                     .frame(width: 150)
                     .foregroundColor(.black)
-                    .background(Color.green.opacity(0.7))
+                    .background(Color.green.opacity(0.8))
                     .cornerRadius(8)
                     .padding(.all)
                 }
@@ -92,6 +101,6 @@ struct FacultyWelcome: View { // Design 100% OK
 
 struct FacultyWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        FacultyWelcome(username: "")
+        FacultyWelcome(facultyName: "" ,f_id: 1)
     }
 }

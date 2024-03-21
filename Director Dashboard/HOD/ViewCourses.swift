@@ -278,18 +278,18 @@ struct CourseAssignedTo: View {  // Design 100% ok
                     coViewModel.fetchCoursesAssignedTo(courseID: courseID)
                 }
                 
-                NavigationLink{
+                NavigationLink {
                     CLOS()
                         .navigationBarBackButtonHidden(true)
                 }label: {
-                    Image(systemName: "plus.app.fill")
-                        .bold()
-                        .padding()
-                        .font(.largeTitle)
-                        .foregroundColor(Color.green)
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity , alignment: .trailing)
+                    Text("View Topics")
                 }
+                .bold()
+                .padding()
+                .frame(width: 150)
+                .foregroundColor(.black)
+                .background(Color.cyan)
+                .cornerRadius(8)
                 
             }
             .navigationBarItems(leading: backButton)
@@ -384,7 +384,7 @@ struct CLOS: View { // Design 100% OK
                 Spacer()
             }
         }
-        .background(Image("h").resizable().ignoresSafeArea())
+        .background(Image("fc").resizable().ignoresSafeArea())
     }
 }
 

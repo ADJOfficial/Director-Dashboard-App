@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct VerifiedPapers: View { // Design 100% OK
+struct ApprovedPaper: View { // Design 100% OK
     
     @State private var searchText = ""
     @StateObject private var paperViewModel = PaperViewModel()
@@ -135,6 +135,6 @@ struct VerifiedPapers: View { // Design 100% OK
 
 struct VerifiedPapers_Previews: PreviewProvider {
     static var previews: some View {
-        VerifiedPapers()
+        ApprovedPaper()
     }
 }

@@ -16,6 +16,7 @@ struct faculties: Hashable , Decodable  ,Encodable {
         var username: String
         var password: String
         var status: String
+//        var c_id: Int
 }
 
 class FacultiesViewModel: ObservableObject {
@@ -52,6 +53,38 @@ class FacultiesViewModel: ObservableObject {
         }
         task.resume()
     }
+    func login(username: String, password: String, completion: @escaping (Bool) -> Void) {
+            let url = URL(string: "http://localhost:8000/LoginAllMembers")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters: [String: Any] = [
+                "username": username,
+                "password": password
+            ]
+            
+            request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                    completion(false)
+                    return
+                }
+                
+                if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let message = responseJSON["message"] as? String {
+                    // Login successful
+                    completion(true)
+                    print(message)
+                } else {
+                    // Invalid credentials
+                    completion(false)
+//                    showAlert = true
+                }
+            }.resume()
+        }
 }
 
 
