@@ -7,48 +7,130 @@
 ////
 import Foundation
 
-struct feedback: Hashable , Decodable  ,Encodable {
+//struct feedback: Hashable , Decodable  ,Encodable {
+//
+//        var fb_details: String
+//}
+//
+//class FeedBackViewModel: ObservableObject {
+//
+//    @Published var fb: [feedback] = []
+//    //    @Published var f_id: [Int] = [] // To get ID
+//
+//    func fetchExistingFeedback() {
+//        guard let url = URL(string: "http://localhost:4000/getfeedback")
+//
+//        else{
+//            return
+//        }
+//        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+//
+//            guard let data = data , error == nil
+//
+//            else {
+//                return
+//            }
+//
+//            // Convert to JSON
+//
+//            do{
+//                let fbs = try JSONDecoder().decode([feedback].self, from: data)
+//                DispatchQueue.main.async {
+//                    self?.fb = fbs
+//                    print("Fetched \(fbs.count) Faculties")
+//                }
+//            }
+//            catch{
+//                print("Error While Getting Data")
+//            }
+//        }
+//        task.resume()
+//    }
+////    func markAsRead(_ feedback: feedback) {
+////        if let index = fb.firstIndex(of: feedback) {
+////            fb[index].isRead = true
+////        }
+////    }
+//}
 
-        var fb_details: String
+
+struct Feedback: Hashable, Decodable, Encodable {
+    var fb_details: String
+    var f_id: Int
+    var c_id: Int
+    var c_title: String
+    var c_code: String
+    var f_name: String
+    var q_id: Int
+    var p_id: Int
 }
 
-class FeedBackViewModel: ObservableObject {
-
-    @Published var fb: [feedback] = []
-    //    @Published var f_id: [Int] = [] // To get ID
-
-    func fetchExistingFeedback() {
-        guard let url = URL(string: "http://localhost:4000/getfeedback")
-
-        else{
+class FeedbackViewModel: ObservableObject {
+    @Published var feedback: [Feedback] = []
+    
+    func fetchExistingFeedback(facultyID: Int, courseID: Int) {
+        guard let url = URL(string: "http://localhost:4000/getfeedback?facultyID=\(facultyID)&courseID=\(courseID)") else {
             return
         }
+        
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-
-            guard let data = data , error == nil
-
-            else {
+            guard let data = data, error == nil else {
                 return
             }
-
-            // Convert to JSON
-
-            do{
-                let fbs = try JSONDecoder().decode([feedback].self, from: data)
+            
+            do {
+                let feedback = try JSONDecoder().decode([Feedback].self, from: data)
                 DispatchQueue.main.async {
-                    self?.fb = fbs
-                    print("Fetched \(fbs.count) Faculties")
+                    self?.feedback = feedback
+                    print("Fetched \(feedback.count) feedbacks")
                 }
-            }
-            catch{
-                print("Error While Getting Data")
+            } catch {
+                print("Error while getting data: \(error)")
             }
         }
+        
         task.resume()
     }
-//    func markAsRead(_ feedback: feedback) {
-//        if let index = fb.firstIndex(of: feedback) {
-//            fb[index].isRead = true
-//        }
-//    }
 }
+
+struct Topic: Hashable , Decodable  ,Encodable {
+
+    var t_id: Int
+    var t_name: String
+}
+
+class TopicViewModel: ObservableObject {
+
+    @Published var existing: [Topic] = []
+
+    func getPaperQuestions(courseID: Int) {
+        guard let url = URL(string: "http://localhost:4000/getcoursetopics/\(courseID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let questions = try decoder.decode([Topic].self, from: data)
+                DispatchQueue.main.async {
+                    self.existing = questions
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        .resume()
+    }
+}
+

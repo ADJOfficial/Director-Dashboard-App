@@ -29,17 +29,10 @@ struct FacultyWelcome: View { // Design 100% OK
                     .frame(maxWidth: .infinity , alignment: .leading)
                     .padding(.horizontal)
                     .foregroundColor(Color.white)
-                Text("\(f_id)")
-                    .bold()
-                    .padding()
-                    .font(.title2)
-                    .frame(maxWidth: .infinity , alignment: .leading)
-                    .padding(.horizontal)
-                    .foregroundColor(Color.white)
                 Spacer()
                 VStack{
                     NavigationLink {
-                        ViewYourCourses(f_id: 1, c_id: 1, c_code: "", c_title: "", f_name: "")
+                        ViewYourCourses(f_id: f_id, f_name: facultyName, c_id: 0, c_title: "", c_code: "")
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Courses")
@@ -101,6 +94,6 @@ struct FacultyWelcome: View { // Design 100% OK
 
 struct FacultyWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        FacultyWelcome(facultyName: "" ,f_id: 1)
+        FacultyWelcome(facultyName: "", f_id: 0)
     }
 }

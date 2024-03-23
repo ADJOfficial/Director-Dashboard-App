@@ -33,7 +33,7 @@ struct GetUploadedPaper: Hashable , Decodable  ,Encodable {
 class UploadedPaperViewModel: ObservableObject {
     
     @Published var uploaded: [GetUploadedPaper] = []
-//    @Published var c_id: [Int] = [] // To get ID
+    //    @Published var c_id: [Int] = [] // To get ID
     
     func fetchExistingPapers() {
         guard let url = URL(string: "http://localhost:3000/getuploadedpapers")
@@ -64,7 +64,33 @@ class UploadedPaperViewModel: ObservableObject {
         }
         task.resume()
     }
-    
+    func fetchPaperStatus(paperId: Int, completion: @escaping (String?) -> Void) {
+        guard let url = URL(string: "http://localhost:3000/getpaperstatus?p_id=\(paperId)") else {
+            completion(nil)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(nil)
+                return
+            }
+            
+            do {
+                let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let status = result?["status"] as? String {
+                    completion(status)
+                } else if let error = result?["error"] as? String {
+                    print("Error: \(error)")
+                    completion(nil)
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+                completion(nil)
+            }
+        }
+        task.resume()
+    }
 }
 
 

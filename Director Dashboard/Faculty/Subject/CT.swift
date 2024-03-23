@@ -128,7 +128,7 @@ struct CoveredTopics: View { // Design 100% complete
                 Spacer()
                 
                 NavigationLink {
-                    SetPaper()
+//                    SetPaper(f)
                     //                    .navigationBarBackButtonHidden(true)
                 } label: {
                     Text("Paper Setting")

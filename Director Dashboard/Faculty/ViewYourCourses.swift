@@ -10,10 +10,12 @@ import SwiftUI
 struct ViewYourCourses: View { // Design 100% OK
     
     var f_id: Int
-    var c_id: Int
-    var c_code: String
-    var c_title: String
     var f_name: String
+    var c_id: Int
+    var c_title: String
+    var c_code: String
+    
+    @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         
@@ -24,7 +26,7 @@ struct ViewYourCourses: View { // Design 100% OK
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 NavigationLink {
-//                    ma
+                    Mail(fb_details: "", f_id: f_id, c_id: c_id, c_title: c_title, c_code: c_code, f_name: f_name, q_id: 0, p_id: 0)
                 } label: {
                     Image(systemName: "mail.fill")
                         .foregroundColor(Color.blue.opacity(0.7))
@@ -34,83 +36,50 @@ struct ViewYourCourses: View { // Design 100% OK
                 .frame(maxWidth: .infinity , alignment: .trailing)
                 .padding(.horizontal)
                 Spacer()
-                Text("Subjects ")
-                    .bold()
+                Text("\(f_name) Assigned Courses")
+//                    .bold()
                     .padding()
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 VStack{
-                    HStack{
-                        Spacer()
-                        NavigationLink {
-                            Subject()
-//                                .navigationBarBackButtonHidden(true)
-                        } label: {
-                            Text("Programming Fundamental")
+                    ScrollView{
+                        ForEach(assignedcoursesViewModel.assignedCourses, id: \.self) { cr in
+                            HStack{
+                                NavigationLink{
+                                    Subject(f_id: f_id, f_name: f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code)
+                                }label: {
+                                    Text(cr.c_title)
+                                        .foregroundColor(.black)
+                                        .padding()
+                                        .bold()
+                                        .frame(width: 170)
+                                        .background(Color.green.opacity(0.8))
+                                        .cornerRadius(8)
+                                        .padding(.all)
+                                }
+                            }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
                         }
-                        .foregroundColor(.black)
-                        .padding()
-                        .bold()
-                        .frame(width: 150)
-                        .background(Color.green.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.all)
-                        
-                        Spacer()
-                        
-                        NavigationLink {
-                            Subject()
-//                                .navigationBarBackButtonHidden(true)
-                        } label: {
-                            Text("Web Technology")
+                        if assignedcoursesViewModel.assignedCourses.isEmpty {
+                            Text("No Assigned Coursess Found")
+                                .font(.headline)
+                                .foregroundColor(.orange)
+                                .padding()
+                                .frame(maxWidth: .infinity)
                         }
-                        .foregroundColor(.black)
-                        .padding()
-                        .bold()
-                        .frame(width: 150)
-                        .background(Color.green.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.all)
-                        
-                        Spacer()
                     }
-                    HStack{
-                        
-                        Spacer()
-                        
-                        NavigationLink {
-                            Subject()
-//                                .navigationBarBackButtonHidden(true)
-                        } label: {
-                            Text("Software Engennring")
-                        }
-                        .foregroundColor(.black)
-                        .padding()
-                        .bold()
-                        .frame(width: 150)
-                        .background(Color.green.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.all)
-                        
-                        Spacer()
-                        
-                        NavigationLink {
-                            Subject()
-//                                .navigationBarBackButtonHidden(true)
-                        } label: {
-                            Text("Operation Research")
-                        }
-                        .foregroundColor(.black)
-                        .padding()
-                        .bold()
-                        .frame(width: 150)
-                        .background(Color.green.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.all)
-                        
-                        Spacer()
-                    }
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.green.opacity(0.5), lineWidth: 1)
+                )
+                .frame(height: 600)
+                .onAppear {
+                    assignedcoursesViewModel.fetchAssignedCourses(facultyID: f_id)
                 }
                 Spacer()
             }
@@ -119,237 +88,13 @@ struct ViewYourCourses: View { // Design 100% OK
     }
 }
 
-struct Feedback: Hashable, Decodable, Encodable {
-    var fb_details: String
-    var c_title: String
-    var c_code: String
-    var f_name: String
-    var q_id: Int
-    var p_id: Int
-//    var isNew: Bool
-}
-
-class FeedbackViewModel: ObservableObject {
-    @Published var feedback: [Feedback] = []
-//    @Published var selectedMessage: Feedback?
-    func fetchExistingFeedback() {
-        guard let url = URL(string: "http://localhost:4000/getfeedback")
-                
-        else{
-            return
-        }
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            
-            guard let data = data , error == nil
-                    
-            else {
-                return
-            }
-            
-            // Convert to JSON
-            
-            do{
-                let faculty = try JSONDecoder().decode([Feedback].self, from: data)
-                DispatchQueue.main.async {
-                    self?.feedback = faculty
-                    print("Fetched \(faculty.count) Faculties")
-                }
-            }
-            catch{
-                print("Error While Getting Data")
-            }
-        }
-        task.resume()
-    }
-}
-
-struct Mail: View {
-    
-    var fb_details: String
-    var c_title: String
-    var c_code: String
-    var f_name: String
-    var q_id: Int
-    var p_id: Int
-    @StateObject var feedbackViewModel = FeedbackViewModel()
-    
-    var body: some View {
-        NavigationView {
-            VStack {
-                Text("Notifications")
-                    .bold()
-                    .font(.largeTitle)
-                    .foregroundColor(Color.white)
-                Spacer()
-                VStack {
-                    ScrollView {
-                        ForEach(feedbackViewModel.feedback.indices, id: \.self) { index in
-                            let msg = feedbackViewModel.feedback[index]
-                            VStack {
-                                HStack{
-                                    Text(msg.c_title)
-//                                        .font(.headline)
-                                        .foregroundColor(Color.yellow)
-                                        .padding(.horizontal)
-                                    Text(msg.c_code)
-//                                        .font(.headline)
-                                        .foregroundColor(Color.yellow)
-                                        .padding(.horizontal)
-                                }
-                                .padding(5)
-                                    Text(msg.fb_details)
-                                        .font(.headline)
-                                        .foregroundColor(Color.white)
-                                        .padding(.horizontal)
-                            }
-                            Divider()
-                                .background(Color.white)
-                                .padding(2)
-                        }
-                    }
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.orange.opacity(0.5), lineWidth: 1)
-                )
-                .frame(height: 770)
-                .onAppear {
-                    feedbackViewModel.fetchExistingFeedback()
-                }
-            }
-            .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
-        }
-    }
-}
-
-struct MessageDetails: View {
-    var message: String
-    
-    var body: some View {
-        Text(message)
-            .font(.headline)
-            .padding()
-    }
-}
-
-
-//struct Mail: View {
-//    var fb_details: String
-//    @StateObject var feedbackViewModel = FeedBackViewModel()
-//    @State private var selectedMessage: String?
-//
-//    var body: some View {
-//        NavigationView {
-//            VStack{
-//                Text("Notifications")
-//                    .bold()
-//                    .font(.largeTitle)
-//                    .foregroundColor(Color.white)
-//                Spacer()
-//                VStack{
-//                    ScrollView {
-//                        ForEach(feedbackViewModel.fb, id: \.self) { msg in
-//                            Button(action: {
-//                                selectedMessage = msg.fb_details
-//                            }) {
-//                                HStack {
-//                                    Text(msg.fb_details)
-//                                        .font(.headline)
-//                                        .foregroundColor(Color.white)
-//                                        .frame(maxWidth: .infinity, alignment: .leading)
-//                                }
-//                            }
-//                            Divider()
-//                                .background(Color.white)
-//                                .padding(1)
-//                        }
-//                    }
-//                    Spacer()
-//                }
-//                .padding()
-//                .background(
-//                    RoundedRectangle(cornerRadius: 20)
-//                        .stroke(Color.orange.opacity(0.5), lineWidth: 2)
-//                )
-//                .frame(width: 420, height: 770)
-//                .onAppear {
-//                    feedbackViewModel.fetchExistingFeedback()
-//                }
-//            }
-//            .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
-//            .background(
-//                NavigationLink(
-//                    destination: MessageDetails(message: selectedMessage ?? ""),
-//                    isActive: Binding<Bool>(
-//                        get: { selectedMessage != nil },
-//                        set: { _ in
-//                            selectedMessage = nil
-//                        }
-//                    )
-//                ) {
-//                    EmptyView()
-//                }
-//            )
-//        }
-//    }
-//}
-//
-//struct MessageDetails: View {
-//    var message: String
-//
-//    var body: some View {
-//        Text(message)
-//            .font(.headline)
-//            .padding()
-//    }
-//}
-
-// For FYP
-
-//struct Mail: View { // Get All Data From Node MongoDB : Done
-//
-//    var fb_details: String
-//    @StateObject var feedbackViewModel = FeedBackViewModel()
-//
-//    var body: some View {
-//        VStack{
-//            Text("Notifications")
-//                .bold()
-//                .font(.largeTitle)
-//                .foregroundColor(Color.white)
-//            Spacer()
-//            VStack{
-//                ScrollView {
-//                    ForEach(feedbackViewModel.fb, id: \.self) { msg in
-//                        HStack {
-//                            Text(msg.fb_details)
-//                                .font(.headline)
-//                                .foregroundColor(Color.white)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                        }
-//                        Divider()
-//                            .background(Color.white)
-//                            .padding(1)
-//                    }
-//                }
-//                Spacer()
-//            }
-//            .padding()
-//            .background(
-//                RoundedRectangle(cornerRadius: 20)
-//                    .stroke(Color.orange.opacity(0.5), lineWidth: 2)
-//            )
-//            .frame(width: 420, height: 770)
-//            .onAppear {
-//                feedbackViewModel.fetchExistingFeedback()
-//            }
-//        }
-//        .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
-//    }
-//}
-
 struct Subject: View {
+    
+    var f_id: Int
+    var f_name: String
+    var c_id: Int
+    var c_title: String
+    var c_code: String
     
     var body: some View {
         
@@ -360,13 +105,13 @@ struct Subject: View {
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Programming Fundamental")
+                Text("\(c_title)")
                     .bold()
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .leading)
                     .font(.title2)
                     .foregroundColor(Color.white)
-                Text("Course Code  CS-323")
+                Text("\(c_code)")
                     .padding(.horizontal)
                     .font(.title3)
                     .frame(maxWidth: .infinity , alignment: .leading)
@@ -400,7 +145,7 @@ struct Subject: View {
                     .padding(.all)
                     
                     NavigationLink{
-                        SetPaper()
+                        SetPaper(f_id: f_id , f_name: f_name , c_id: c_id , c_title: c_title , c_code: c_code , p_id: 1)
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Set Paper")
@@ -435,6 +180,77 @@ struct Subject: View {
 struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
 //        Mail(fb_details: "", c_title: "", c_code: "", f_name: "", q_id: 1, p_id: 1)
-        ViewYourCourses(f_id: 1, c_id: 1, c_code: "", c_title: "", f_name: "")
+//        ViewYourCourses(f_id: 0, c_id: 0, c_code: "", c_title: "", f_name: "")
+        Subject(f_id: 1, f_name: "", c_id: 1, c_title: "", c_code: "")
+    }
+}
+
+
+
+struct Mail: View {
+    
+    var fb_details: String
+    var f_id: Int
+    var c_id: Int
+    var c_title: String
+    var c_code: String
+    var f_name: String
+    var q_id: Int
+    var p_id: Int
+    
+    @StateObject var feedbackViewModel = FeedbackViewModel()
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                Text("Notifications")
+                    .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
+                Spacer()
+                VStack {
+                    ScrollView {
+                        ForEach(feedbackViewModel.feedback.indices, id: \.self) { index in
+                            let msg = feedbackViewModel.feedback[index]
+                            VStack {
+                                HStack{
+                                    Text(msg.c_title)
+                                        .foregroundColor(Color.yellow)
+                                        .padding(.horizontal)
+                                    Text(msg.c_code)
+                                        .foregroundColor(Color.yellow)
+                                        .padding(.horizontal)
+                                }
+                                .padding(5)
+                                    Text(msg.fb_details)
+                                        .font(.headline)
+                                        .foregroundColor(Color.white)
+                                        .padding(.horizontal)
+                            }
+                            Divider()
+                                .background(Color.white)
+                                .padding(2)
+                        }
+                        if feedbackViewModel.feedback.isEmpty {
+                            Text("No Mail Found")
+                                .font(.headline)
+                                .foregroundColor(.orange)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.green.opacity(0.5), lineWidth: 1)
+                )
+                .frame(height: 770)
+                .onAppear {
+                    feedbackViewModel.fetchExistingFeedback(facultyID: f_id, courseID: c_id)
+                }
+            }
+            .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
+        }
     }
 }

@@ -112,7 +112,7 @@ struct FacultyDetails: View { // Designed 100% OK
 
 struct EyeAssignedCousres: View {  // Design 100% ok
     
-    @StateObject private var couViewModel = CouViewModel()
+    @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
     var facultyID: Int
     var courseID: Int
     var facultyName: String
@@ -142,7 +142,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                     .frame(maxWidth: .infinity , alignment: .leading)
                 VStack{
                     ScrollView{
-                        ForEach(couViewModel.assignedCourses, id: \.self) { cr in
+                        ForEach(assignedcoursesViewModel.assignedCourses, id: \.self) { cr in
                             HStack{
                                 Text(cr.c_title)
                                     .font(.headline)
@@ -163,7 +163,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                                 .background(Color.white)
                                 .padding(1)
                         }
-                        if couViewModel.assignedCourses.isEmpty {
+                        if assignedcoursesViewModel.assignedCourses.isEmpty {
                             Text("\(facultyName) have no Assigned Courses Yet !")
                             //                                .font(.headline)
                                 .multilineTextAlignment(.center)
@@ -180,7 +180,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                 )
                 .frame(width: 410, height: 500)
                 .onAppear {
-                    couViewModel.fetchAssignedCourses(facultyID: facultyID)
+                    assignedcoursesViewModel.fetchAssignedCourses(facultyID: facultyID)
                 }
                 
                 NavigationLink{
@@ -211,7 +211,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
             }
         }
     private func deleteAssignedCourse(facultyId: Int, courseId: Int) {
-        couViewModel.deleteAssignedCourse(facultyId: facultyId, courseId: courseId)
+        assignedcoursesViewModel.deleteAssignedCourse(facultyId: facultyId, courseId: courseId)
     }
 }
 

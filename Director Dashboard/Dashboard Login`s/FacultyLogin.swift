@@ -65,7 +65,7 @@ struct FacultyLogin: View {
             }
             .fullScreenCover(isPresented: $isLoggedIn) {
                 if let faculty = facultiesViewModel.remaining.first(where: { $0.username == username }) {
-                    FacultyWelcome(facultyName: faculty.f_name, f_id: faculty.f_id)
+                    FacultyWelcome(facultyName: faculty.f_name , f_id: faculty.f_id)
                 }
             }
         }

@@ -180,7 +180,7 @@ class CoViewModel: ObservableObject {
         // You can use URLSession or Alamofire to make the HTTP request
         
         // Example using URLSession
-        guard let url = URL(string: "http://localhost:2000/DeleteAssignedF/\(courseId)/\(facultyId)") else {
+        guard let url = URL(string: "http://localhost:2000/DeleteAssignedFaculty/\(courseId)/\(facultyId)") else {
             completion(false)
             return
         }

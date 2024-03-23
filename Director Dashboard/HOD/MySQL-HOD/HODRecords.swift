@@ -7,7 +7,7 @@
 //
 import Foundation
 
-struct Coure: Codable  ,Hashable {
+struct ACTF: Codable  ,Hashable {
     let f_id: Int
     let c_id: Int
     let c_code: String
@@ -16,8 +16,9 @@ struct Coure: Codable  ,Hashable {
     
 }
 
-class CouViewModel: ObservableObject {
-    @Published var assignedCourses: [Coure] = []
+class AssignedCoursesViewModel: ObservableObject {
+    
+    @Published var assignedCourses: [ACTF] = []
     
     func fetchAssignedCourses(facultyID: Int) {
         guard let url = URL(string: "http://localhost:2000/FacultyAssignedCourse?f_id=\(facultyID)") else {
@@ -41,7 +42,7 @@ class CouViewModel: ObservableObject {
                         }
             
             do {
-                let courses = try JSONDecoder().decode([Coure].self, from: data)
+                let courses = try JSONDecoder().decode([ACTF].self, from: data)
                 DispatchQueue.main.async {
                     self.assignedCourses = courses
                     print("Fetched \(courses.count) assigned courses for faculty ID: \(facultyID)")
@@ -74,7 +75,7 @@ class CouViewModel: ObservableObject {
         // You can use URLSession or Alamofire to make the HTTP request
         
         // Example using URLSession
-        guard let url = URL(string: "http://localhost:2000/DeleteAssignedCF/\(facultyId)/\(courseId)") else {
+        guard let url = URL(string: "http://localhost:2000/DeleteAssignedCourse/\(facultyId)/\(courseId)") else {
             completion(false)
             return
         }

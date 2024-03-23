@@ -13,40 +13,29 @@ struct LoginView: View {
     @State private var loginMessage = ""
     @State private var isLoggedIn = false
     @State private var name = ""
+    
+    @State private var selectedtopic = 0
+    @StateObject private var  topicViewModel = TopicViewModel()
 
     var body: some View {
+        
         NavigationView {
             VStack {
-                Text("Login")
-                    .font(.largeTitle)
-                    .padding()
-
-                TextField("Username", text: $username)
-                    .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                TextField("Password", text: $password)
-                    .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                NavigationLink(destination: WelcomeView(name: $name), isActive: $isLoggedIn) {
-                    EmptyView()
+                Picker(selection: $selectedtopic, label: Text("")) {
+                    ForEach(topicViewModel.existing, id: \.t_id) { topic in
+                        Text(topic.t_name)
+                            .tag(topic.t_id)
+                    }
                 }
-
-                Button(action: {
-                    loginUser()
-                }) {
-                    Text("Login")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                .accentColor(Color.green)
+                .onChange(of: Optional(selectedtopic)) { selectedTopicID in
+                    if let selectedTopicID = selectedTopicID {
+                        print("Selected topic ID: \(selectedTopicID)")
+                    }
                 }
-                .padding()
-
-                Text(loginMessage)
-                    .foregroundColor(.red)
-                    .padding()
+            }
+            .onAppear{
+                topicViewModel.getPaperQuestions(courseID: 1)
             }
             .padding()
             .navigationTitle("Login")

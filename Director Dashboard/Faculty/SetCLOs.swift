@@ -9,9 +9,7 @@ import SwiftUI
 
 struct SetCLOs: View { // Design 100% OK
     
-    @State private var name = ""
-    @State private var username = ""
-    @State private var password = ""
+    @State private var cloText = ""
     @State private var selectedOptions = 0
     var options = ["CS", "WT" , "SNA" , "SE" , "Isl" , "SRE"]
     
@@ -43,63 +41,85 @@ struct SetCLOs: View { // Design 100% OK
                 .frame(maxWidth: .infinity , alignment: .center)
                 .padding(.horizontal)
                 .cornerRadius(8)
-                Spacer()
+//                Spacer()
                 VStack{
-                    Text("CLO-1")
+                    Text("CLO Description")
                         .padding(.horizontal)
                         .font(.headline)
                         .foregroundColor(Color.white)
                         .frame(maxWidth: .infinity , alignment: .leading)
-                    TextField("Create CLO-1" , text: $name)
-                        .padding()
+                    TextEditor(text: $cloText)
                         .background(Color.gray.opacity(0.8))
                         .cornerRadius(8)
-                        .padding(.horizontal)
-                    Text("CLO-2")
-                        .padding(.horizontal)
-                        .font(.headline)
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-                    TextField("Create CLO-2" , text: $username)
-                        .padding()
-                        .background(Color.gray.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.horizontal)
-                    Text("CLO-3")
-                        .padding(.horizontal)
-                        .font(.headline)
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-                    SecureField("Create CLO-3" , text: $password)
-                        .padding()
-                        .background(Color.gray.opacity(0.8))
-                        .cornerRadius(8)
-                        .padding(.horizontal)
-                    Text("CLO-4")
-                        .padding(.horizontal)
-                        .font(.headline)
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
-                    SecureField("Create CLO-4" , text: $password)
-                        .padding()
-                        .background(Color.gray.opacity(0.8))
-                        .cornerRadius(8)
+                        .frame(height: 100)
                         .padding(.horizontal)
                 }
-                    Spacer()
-                    Button("Create"){
+                .padding()
+//                    Spacer()
+                    Button("Add"){
                         saveCLOs()
                     }
                     .bold()
                     .padding()
-                    .frame(width: 150)
+                    .frame(width: 80)
                     .foregroundColor(.black)
                     .background(Color.green)
                     .cornerRadius(8)
-                    Spacer()
+//                    Spacer()
+                
+                VStack{
+                    ScrollView {
+//                        ForEach(filteredFaculties.indices, id: \.self) { index in
+//                            let cr = filteredFaculties[index]
+//                            HStack{
+//                                Text(cr.f_name)
+//                                    .font(.headline)
+//                                    .foregroundColor(Color.white)
+//                                    .frame(maxWidth: .infinity , alignment: .leading)
+//                                Text(cr.username)
+//                                    .font(.headline)
+//                                    .padding(.horizontal)
+//                                    .foregroundColor(Color.white)
+//                                    .frame(maxWidth: .infinity , alignment: .center)
+//
+//                                NavigationLink(destination: EditFaculty(faculty: cr)) {
+//                                    Image(systemName: "square.and.pencil.circle")
+//                                        .bold()
+//                                        .font(.title)
+//                                        .foregroundColor(Color.orange)
+//                                }
+//                                Image(systemName: isFacultyEnabled(index) ? "checkmark.circle.fill" : "nosign")
+//                                    .font(.title2)
+//                                    .foregroundColor(isFacultyEnabled(index) ? .green : .red)
+//                                    .onTapGesture {
+//                                        toggleFacultyStatus(index)
+//                                    }
+//                            }
+//                            Divider()
+//                                .background(Color.white)
+//                                .padding(1)
+                        }
+//                        if filteredFaculties.isEmpty {
+//                            Text("No Data Found")
+//                                .font(.headline)
+//                                .foregroundColor(.white)
+//                                .padding()
+//                                .frame(maxWidth: .infinity)
+//                        }
+                    
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.green.opacity(0.5), lineWidth: 1)
+                )
+                .frame(height:450)
+                .onAppear {
+//                    facultiesViewModel.fetchExistingFaculties()
+                }
                 
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
     func saveCLOs() {
