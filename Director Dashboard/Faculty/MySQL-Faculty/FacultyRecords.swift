@@ -97,13 +97,14 @@ struct Topic: Hashable , Decodable  ,Encodable {
 
     var t_id: Int
     var t_name: String
+    var status: String
 }
 
 class TopicViewModel: ObservableObject {
 
     @Published var existing: [Topic] = []
 
-    func getPaperQuestions(courseID: Int) {
+    func getCourseTopic(courseID: Int) {
         guard let url = URL(string: "http://localhost:4000/getcoursetopics/\(courseID)") else {
             print("Invalid URL")
             return
@@ -134,3 +135,88 @@ class TopicViewModel: ObservableObject {
     }
 }
 
+struct SubTopic: Hashable , Decodable  ,Encodable {
+
+    var st_id: Int
+    var st_name: String
+    var status: String
+}
+
+class SubTopicViewModel: ObservableObject {
+
+    @Published var existing: [SubTopic] = []
+
+    func getTopicSubTopic(topicID: Int) {
+        guard let url = URL(string: "http://localhost:4000/getsubtopic/\(topicID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let questions = try decoder.decode([SubTopic].self, from: data)
+                DispatchQueue.main.async {
+                    self.existing = questions
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        .resume()
+    }
+}
+
+
+struct CLO: Hashable , Decodable  ,Encodable {
+
+    var clo_id: Int
+    var clo_text: String
+    var status: String
+    
+}
+
+class CLOViewModel: ObservableObject {
+
+    @Published var existing: [CLO] = []
+
+    func getCLO(courseID: Int) {
+        guard let url = URL(string: "http://localhost:4000/getclo/\(courseID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let questions = try decoder.decode([CLO].self, from: data)
+                DispatchQueue.main.async {
+                    self.existing = questions
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        .resume()
+    }
+}

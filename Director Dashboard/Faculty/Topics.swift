@@ -93,8 +93,8 @@ struct Topics: View { // Design 100% Ok
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 NavigationLink{
-                                    EditSubTopics()
-                                        .navigationBarBackButtonHidden(true)
+//                                    EditSubTopics()
+//                                        .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
                                         .font(.title2)
@@ -106,7 +106,7 @@ struct Topics: View { // Design 100% Ok
 //                                        .padding(.horizontal)
                                         .foregroundColor(Color.red)
                                 NavigationLink{
-                                    AddSubTopics()
+//                                    AddSubTopics()
                                 }label: {
                                     Image(systemName: "plus.rectangle.fill.on.rectangle.fill")
                                         .font(.title3)

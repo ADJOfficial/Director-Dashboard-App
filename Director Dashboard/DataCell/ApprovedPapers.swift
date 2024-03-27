@@ -92,7 +92,7 @@ struct ApprovedPaper: View { // Design 100% OK
                 )
                 .frame(width: 410 , height:700)
                 .onAppear {
-                    paperViewModel.fetchExistingPapers()
+                    paperViewModel.fetchApprovedPapers()
                 }
                 Spacer()
             }

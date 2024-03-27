@@ -35,7 +35,7 @@ struct LoginView: View {
                 }
             }
             .onAppear{
-                topicViewModel.getPaperQuestions(courseID: 1)
+                topicViewModel.getCourseTopic(courseID: 1)
             }
             .padding()
             .navigationTitle("Login")

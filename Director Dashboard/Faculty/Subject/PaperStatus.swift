@@ -8,63 +8,93 @@
 import SwiftUI
 
 struct PaperStatus: View { // Design 100% Ok
-    @State private var search = ""
     
+    @State private var searchText = ""
+    @StateObject private var paperViewModel = PaperViewModel()
+    
+    var filteredPapers: [Paper] { // All Data Will Be Filter and show on Table
+        if searchText.isEmpty {
+            return paperViewModel.existingPapers
+        } else {
+            return paperViewModel.existingPapers.filter { paper in
+                paper.p_name.localizedCaseInsensitiveContains(searchText) ||
+                paper.status.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+            }
+        }
+    }
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         NavigationView {
             VStack {
-                Text("Paper Status")
+                Text("Approved Papers")
                     .bold()
                     .padding()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
-                TextField("Search Paper", text: $search)
-                    .padding()
-                    .background(Color.gray.opacity(0.8))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
+                Spacer()
+                SearchBar(text: $searchText)
+                Spacer()
                 VStack{
-                    HStack{
-                        Spacer()
-                        Text("Courses")
-                            .bold()
-                            .padding()
-                            .font(.title2)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                            .padding(.horizontal)
-                            .foregroundColor(Color.white)
-                        Spacer()
-                        Text("Status")
-                            .bold()
-                            .font(.title2)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                            .padding(.horizontal)
-                            .foregroundColor(Color.white)
-                        Spacer()
-                    }
-                    ScrollView{ // Get From Backend
-                        HStack{
-                            Spacer()
-                            Text("Parallel & distributing Computing")
-                                .bold()
-                                .font(.headline)
-                                .frame(maxWidth: .infinity , alignment: .center)
-                                .foregroundColor(Color.white)
-                            Spacer()
-                            Text("Pending")
-                                .bold()
-                                .font(.headline)
-                                .frame(maxWidth: .infinity , alignment: .trailing)
-                                .padding(.horizontal)
-                                .foregroundColor(Color.red)
-                            Spacer()
+                    ScrollView {
+                        ForEach(filteredPapers.indices, id: \.self) { index in
+                            let cr = filteredPapers[index]
+                            HStack{
+                                Text(cr.p_name)
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity , alignment: .leading)
+                                Text(cr.status)
+                                    .font(.headline)
+                                    .foregroundColor(cr.status == "Pending" ? Color.yellow : Color.green)
+                                    .frame(maxWidth: .infinity , alignment: .trailing)
+                            }
+                            Divider()
+                                .background(Color.white)
+                                .padding(1)
                         }
-                        .foregroundColor(Color.white)
+                        if filteredPapers.isEmpty {
+                            Text("No Approved Paper Found")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                        }
                     }
                 }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.green.opacity(0.5), lineWidth: 1)
+                )
+                .frame(height:700)
+                .onAppear {
+                    paperViewModel.fetchExistingPapers()
+                }
+                Spacer()
             }
-            .background(Image("fa").resizable().ignoresSafeArea())
+            .background(Image("fiii").resizable().ignoresSafeArea())
         }
     }
 }

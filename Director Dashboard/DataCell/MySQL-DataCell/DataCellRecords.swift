@@ -147,9 +147,10 @@ struct Paper: Hashable, Codable {
 }
 
 class PaperViewModel: ObservableObject {
+    
     @Published var existingPapers: [Paper] = []
     
-    func fetchExistingPapers() { // it fetches all Papers whether Printed or Print
+    func fetchApprovedPapers() { // it fetches all Papers where Status = "Approved"
         
         guard let url = URL(string: "http://localhost:8000/getapprovedpapers") else {
             print("Invalid URL")
@@ -184,6 +185,38 @@ class PaperViewModel: ObservableObject {
     func fetchPrintedPapers() { // it fetches Only Printed Papers
         
         guard let url = URL(string: "http://localhost:8000/showprintedpapers") else {
+            print("Invalid URL")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned")
+                return
+            }
+            
+            do {
+                let papers = try JSONDecoder().decode([Paper].self, from: data)
+                DispatchQueue.main.async {
+                    self?.existingPapers = papers
+                    print("Fetched \(papers.count) papers")
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }
+    
+    
+    func fetchExistingPapers() { // it fetches Only All Papers P_name and Their Status
+        
+        guard let url = URL(string: "http://localhost:8000/getexistingpapers") else {
             print("Invalid URL")
             return
         }

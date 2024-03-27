@@ -14,9 +14,11 @@ struct ViewYourCourses: View { // Design 100% OK
     var c_id: Int
     var c_title: String
     var c_code: String
-    
+    var p_id: Int
+//    var t_id: Int
+    @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
     @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
-    
+    @StateObject private var  topicViewModel = TopicViewModel()
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         NavigationView {
@@ -47,7 +49,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         ForEach(assignedcoursesViewModel.assignedCourses, id: \.self) { cr in
                             HStack{
                                 NavigationLink{
-                                    Subject(f_id: f_id, f_name: f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code)
+                                    Subject(f_id: f_id, f_name: f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code , p_id: p_id)
                                 }label: {
                                     Text(cr.c_title)
                                         .foregroundColor(.black)
@@ -95,7 +97,9 @@ struct Subject: View {
     var c_id: Int
     var c_title: String
     var c_code: String
-    
+    var p_id: Int
+//    var t_id: Int
+    @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
     var body: some View {
         
         NavigationView{
@@ -119,7 +123,7 @@ struct Subject: View {
                 Spacer()
                 VStack{
                     NavigationLink{
-                        CoveredTopics()
+                        ViewTopics(f_id: f_id, c_id: c_id, c_title: c_title)
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("View Topics")
@@ -132,7 +136,7 @@ struct Subject: View {
                     .padding(.all)
                     
                     NavigationLink{
-                        ViewCLOs()
+                        ViewCLOs(f_id: f_id, c_id: c_id, c_title: c_title)
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("View CLOs")
@@ -145,7 +149,7 @@ struct Subject: View {
                     .padding(.all)
                     
                     NavigationLink{
-                        SetPaper(f_id: f_id , f_name: f_name , c_id: c_id , c_title: c_title , c_code: c_code , p_id: 1)
+                        SetPaper(f_id: f_id , f_name: f_name , c_id: c_id , c_title: c_title , c_code: c_code , p_id: p_id)
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Set Paper")
@@ -181,7 +185,7 @@ struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
 //        Mail(fb_details: "", c_title: "", c_code: "", f_name: "", q_id: 1, p_id: 1)
 //        ViewYourCourses(f_id: 0, c_id: 0, c_code: "", c_title: "", f_name: "")
-        Subject(f_id: 1, f_name: "", c_id: 1, c_title: "", c_code: "")
+        Subject(f_id: 1, f_name: "", c_id: 0, c_title: "", c_code: "" , p_id: 0)
     }
 }
 

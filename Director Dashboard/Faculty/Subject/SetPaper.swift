@@ -28,17 +28,13 @@ struct SetPaper: View {
     var c_code: String
     
     var p_id: Int
+//    var t_id: Int
+    
 //    var status: String
     
     @State private var isChecked = false
     @State private var semIsChecked = false
     @State private var paperSetting = PaperTextFields(paperName: "", examDate: "", duration: 0, degree: "", totalMarks: 0)
-    
-//    @State private var paperName = ""
-//    @State private var examDate = ""
-//    @State private var duration = ""
-//    @State private var degree = ""
-//    @State private var totalMarks = ""
     @State private var totalQuestions = ""
     @State private var selectedSemRadioButton: String? = nil
     @State private var selectedTermRadioButton: String? = nil
@@ -49,7 +45,6 @@ struct SetPaper: View {
     @State private var paperStatus: String = ""
     
     @State private var showAlert = false
-    
     
     var body: some View {
         NavigationView {
@@ -444,7 +439,7 @@ struct StartMakingPaper: View {
     
     @State private var questions = ""
     
-    
+    @StateObject private var questionViewModel = QuestionViewModel()
     @StateObject private var  topicViewModel = TopicViewModel()
     
     var body: some View {
@@ -545,6 +540,7 @@ struct StartMakingPaper: View {
                                     .tag(topic.t_id)
                             }
                         }
+                        .pickerStyle(.wheel)
                         .accentColor(Color.green)
                         .onChange(of: Optional(selectedtopic)) { selectedTopicID in
                             if let selectedTopicID = selectedTopicID {
@@ -586,9 +582,39 @@ struct StartMakingPaper: View {
                             }
                         Spacer()
                     }
+                    Divider()
+                        .background(Color.white)
+                        .padding(1)
+                    
+                    VStack{
+                        ScrollView {
+                            ForEach(questionViewModel.uploadedQuestions, id: \.self) { cr in
+                                HStack{
+                                    Text(cr.q_text)
+                                        .font(.headline)
+                                        .foregroundColor(Color.white)
+                                        .frame(maxWidth: .infinity , alignment: .leading)
+                                    Text("[ \(cr.q_difficulty) ,\(cr.q_marks)]") //  , \(assignedFaculty.clo_text)
+                                        .font(.title3)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.white)
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                    
+                                    //                                    NavigationLink(destination: EditFaculty(faculty: cr)) {
+                                    //                                        Image(systemName: "square.and.pencil.circle")
+                                    //                                            .bold()
+                                    //                                            .font(.title)
+                                    //                                            .foregroundColor(Color.orange)
+                                }
+                            }
+                        }
+                    }
+                    .onAppear{
+                        questionViewModel.getPaperQuestions(paperID: p_id)
+                    }
                 }
                 .onAppear{
-                    topicViewModel.getPaperQuestions(courseID: c_id)
+                    topicViewModel.getCourseTopic(courseID: c_id)
                 }
             }
             .padding()
@@ -598,7 +624,7 @@ struct StartMakingPaper: View {
             )
             Spacer()
         }
-        .background(Image("fiii").resizable().aspectRatio(contentMode: .fill).ignoresSafeArea())
+        .background(Image("fiii").resizable().ignoresSafeArea())
         .sheet(isPresented: $isShowingImagePicker) {
             ImagePickerView(result: handleImagePickerResult)
         }
@@ -752,6 +778,6 @@ struct ImagePickerView: UIViewControllerRepresentable {
 
 struct SetPaper_Previews: PreviewProvider {
     static var previews: some View {
-        SetPaper(f_id: 1, f_name: "", c_id: 1, c_title: "", c_code: "", p_id: 1)
+        SetPaper(f_id: 0, f_name: "", c_id: 0, c_title: "", c_code: "", p_id: 0)
     }
 }

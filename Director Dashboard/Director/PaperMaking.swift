@@ -143,7 +143,7 @@ struct PaperMaking: View {
                                             q_text = assignedFaculty.q_text
                                         }
                                 }
-                                Text("[ \(assignedFaculty.q_difficulty) ,\(assignedFaculty.q_marks) , \(assignedFaculty.clo_text)]")
+                                Text("[ \(assignedFaculty.q_difficulty) ,\(assignedFaculty.q_marks)]") //  , \(assignedFaculty.clo_text)
                                     .font(.title3)
                                     .padding(.horizontal)
                                     .foregroundColor(Color.white)

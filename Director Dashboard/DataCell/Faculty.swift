@@ -129,7 +129,7 @@ struct Faculty: View {   // Design 100% OK
                                         .foregroundColor(Color.orange)
                                 }
                                 Image(systemName: isFacultyEnabled(index) ? "checkmark.circle.fill" : "nosign")
-                                    .font(.title2)
+                                    .font(.title)
                                     .foregroundColor(isFacultyEnabled(index) ? .green : .red)
                                     .onTapGesture {
                                         toggleFacultyStatus(index)

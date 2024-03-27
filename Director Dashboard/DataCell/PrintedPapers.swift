@@ -88,7 +88,7 @@ struct PrintedPapers: View {
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.gray, lineWidth: 2)
                 )
-                .frame(width: 410 , height:700)
+                .frame(height:700)
                 .onAppear {
                     paperViewModel.fetchPrintedPapers()
                 }

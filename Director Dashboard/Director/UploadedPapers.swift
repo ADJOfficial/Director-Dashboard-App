@@ -77,7 +77,7 @@ struct UploadedPapers: View {
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .center)
                                 NavigationLink{
-                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, q_id: cr.q_id ,clo_text: cr.clo_text, t_name: cr.t_name )
+                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, q_id: 0 ,clo_text: "", t_name: "" )
                                         .navigationBarBackButtonHidden(false)
                                 }label: {
                                     Image(systemName: "eye.fill")

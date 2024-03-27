@@ -24,9 +24,10 @@ struct GetUploadedPaper: Hashable , Decodable  ,Encodable {
     var c_code: String
     var f_id: Int
     var f_name: String
-    var q_id: Int
-    var clo_text: String
-    var t_name: String
+//    var q_id: Int
+//    var t_id: Int
+//    var clo_text: String
+//    var t_name: String
     
 }
 
@@ -102,14 +103,14 @@ struct GetPaperQuestions: Hashable, Decodable, Encodable {
     var q_marks: Int
     var q_difficulty: String
     var q_verification: String
-    var parent_topic_id: Int
+//    var parent_topic_id: Int
     var c_id: Int
     var c_code: String
     var c_title: String
     var f_id: Int
     var f_name: String
-    var clo_text: String
-    var t_name: String
+//    var clo_text: String
+//    var t_name: String
 }
 
 class QuestionViewModel: ObservableObject {
