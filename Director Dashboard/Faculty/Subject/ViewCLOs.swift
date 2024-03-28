@@ -13,12 +13,16 @@ struct ViewCLOs: View { // Design 100% Ok
     var f_id: Int
     var c_id: Int
     var c_title: String
+//    var clo_id: Int
+//    var clo_text: String
     
-    @State private var CLOName = ""
+    @State private var Clo_text = ""
     @State private var searchText = ""
     @StateObject private var cloViewModel = CLOViewModel()
     
-    var filteredCLO: [CLO] { // All Data Will Be Filter and show on Table
+    @State private var showAlert = false
+    
+    var filteredClo: [CLO] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
             return cloViewModel.existing
         } else {
@@ -43,7 +47,9 @@ struct ViewCLOs: View { // Design 100% Ok
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -55,7 +61,7 @@ struct ViewCLOs: View { // Design 100% Ok
         
         NavigationView {
             VStack {
-                Text("CLOs")
+                Text("CLO")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
@@ -67,10 +73,9 @@ struct ViewCLOs: View { // Design 100% Ok
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 Text("\(c_title)")
-                    .bold()
+                    .font(.title3)
                     .padding()
-                    .frame(maxWidth: .infinity , alignment: .leading)
-                    .font(.title2)
+                    .frame(maxWidth: .infinity , alignment: .center)
                     .foregroundColor(Color.white)
 //                Spacer()
                 
@@ -79,7 +84,7 @@ struct ViewCLOs: View { // Design 100% Ok
                         .font(.headline)
                         .foregroundColor(Color.white)
                         .frame(maxWidth: .infinity , alignment: .leading)
-                    TextField("Enter CLO Description" , text: $CLOName)
+                    TextField("Enter CLO Description" , text: $Clo_text)
                         .padding()
                         .foregroundColor(Color.black)
                         .background(Color.gray.opacity(1))
@@ -94,7 +99,8 @@ struct ViewCLOs: View { // Design 100% Ok
                     .padding(.horizontal)
                     .frame(maxWidth: .infinity , alignment: .trailing)
                     .onTapGesture {
-//                            createQuestion()
+                            createCLO()
+                            showAlert
                     }
                 
                 SearchBar(text: $searchText)
@@ -102,34 +108,34 @@ struct ViewCLOs: View { // Design 100% Ok
                 
                 VStack {
                     ScrollView{
-                        ForEach(filteredCLO.indices , id:\ .self) { index in
-                            let cr = filteredCLO[index]
+                        ForEach(filteredClo.indices , id:\ .self) { index in
+                            let cr = filteredClo[index]
                             HStack{
                                 Text(cr.clo_text)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 NavigationLink{
-                                    //                                    EditTopics(f_id: f_id, c_id: c_id , c_title: c_title, topic: cr)
-                                    //                                        .navigationBarBackButtonHidden(true)
+                                    EditCLO(f_id: f_id, c_id: c_id, c_title: c_title, clo: cr)
+//                                        .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "square.and.pencil.circle")
                                         .font(.title)
                                         .foregroundColor(Color.orange)
                                         .frame(maxWidth: .infinity , alignment: .trailing)
                                 }
-                                Image(systemName: isCLOEnabled(index) ? "checkmark.circle.fill" : "nosign")
+                                Image(systemName: isCloEnabled(index) ? "checkmark.circle.fill" : "nosign")
                                     .font(.title)
-                                    .foregroundColor(isCLOEnabled(index) ? .green : .red)
+                                    .foregroundColor(isCloEnabled(index) ? .green : .red)
                                     .onTapGesture {
-                                        toggleCLOStatus(index)
+                                        toggleCloStatus(index)
                                     }
                             }
                             Divider()
                                 .background(Color.white)
                             .padding(1)
                         }
-                        if filteredCLO.isEmpty {
+                        if filteredClo.isEmpty {
                             Text("No CLO Found For Course - \(c_title)")
                                 .font(.headline)
                                 .foregroundColor(.orange)
@@ -141,25 +147,64 @@ struct ViewCLOs: View { // Design 100% Ok
                 }
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.green.opacity(0.5), lineWidth: 1)
+                        .stroke(Color.green.opacity(0.5), lineWidth: 2)
                 )
                 .frame(height:400)
                 .onAppear {
-                    cloViewModel.getCLO(courseID: 3)
+                    cloViewModel.getCourseCLO(courseID: c_id)
                 }
+                
             }
             .background(Image("fiii").resizable().ignoresSafeArea())
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Congratulations"), message: Text("CLO Created Successfully"), dismissButton: .default(Text("OK")))
+            }
         }
     }
-    func saveCLOs() {
-        
+
+    func createCLO() {
+        guard let url = URL(string: "http://localhost:4000/addCLO") else {
+            return
+        }
+
+        let user = [
+            "c_id": c_id,
+            "clo_text": Clo_text
+        ] as [String : Any]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: user) else {
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                do {
+                    let result = try JSONSerialization.jsonObject(with: data)
+                    print("Result from server:", result)
+                    cloViewModel.getCourseCLO(courseID: c_id) // Refresh faculties after creating a new one
+                    showAlert = true
+                    DispatchQueue.main.async {
+                        Clo_text = ""
+                    }
+                } catch {
+                    print("Error parsing JSON:", error)
+                }
+            } else if let error = error {
+                print("Error making request:", error)
+            }
+        }.resume()
     }
     
-    func isCLOEnabled(_ index: Int) -> Bool {
-        return filteredCLO[index].status == "Enable"
+    func isCloEnabled(_ index: Int) -> Bool {
+        return filteredClo[index].status == "Enable"
     }
-    func toggleCLOStatus(_ index: Int) {
-        let topic = filteredCLO[index]
+    func toggleCloStatus(_ index: Int) {
+        let topic = filteredClo[index]
         let newStatus = topic.status == "Enable" ? "Disable" : "Enable"
         
         guard let url = URL(string: "http://localhost:4000/enabledisableclo/\(topic.clo_id)") else {
@@ -180,16 +225,123 @@ struct ViewCLOs: View { // Design 100% Ok
                 print("Error updating Topic status: \(error.localizedDescription)")
             } else if let data = data {
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("Topic status updated successfully: \(responseString)")
-                    cloViewModel.getCLO(courseID: c_id)
+                    print("CLO status updated successfully: \(responseString)")
+                    cloViewModel.getCourseCLO(courseID: c_id)
                 }
             }
         }.resume()
     }
 }
 
+struct EditCLO: View { // Design 100% Ok
+    
+    var f_id: Int
+    var c_id: Int
+    var c_title: String
+    
+    var clo: CLO
+    
+    @State private var clo_text = ""
+    @StateObject private var cloViewModel = CLOViewModel()
+    
+    @State private var showAlert = false
+    
+    var body: some View { // Get All Data From Node MongoDB : Pending
+       
+        NavigationView {
+            VStack {
+                Text("Update CLO")
+                    .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(Color.white)
+                Spacer()
+                Text("Course")
+                    .bold()
+                    .padding(.horizontal)
+                    .font(.title2)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                Text("\(c_title)")
+                    .font(.title3)
+                    .padding()
+                    .frame(maxWidth: .infinity , alignment: .center)
+                    .foregroundColor(Color.white)
+                Text("Desccription")
+                    .padding(.horizontal)
+                    .font(.headline)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                TextField("Enter CLO Description" , text: $clo_text)
+                    .padding()
+                    .foregroundColor(Color.black)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    .onAppear {
+                        clo_text = clo.clo_text
+                    }
+                Spacer()
+                Button("Update"){
+                    updateClo()
+                    showAlert
+                }
+                .bold()
+                .padding()
+                .frame(width: 150)
+                .foregroundColor(.black)
+                .background(Color.green)
+                .cornerRadius(8)
+                .padding(.all)
+            }
+            .background(Image("fiii").resizable().ignoresSafeArea())
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Congratulations"), message: Text("CLO Updated Successfully"), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+    func updateClo() {
+        guard let url = URL(string: "http://localhost:4000/updateanyclo/\(clo.clo_id)") else {
+            return
+        }
+
+        let updatedSubtopic = CLO(clo_id: clo.clo_id, clo_text: clo_text, status: clo.status)
+
+        guard let encodedData = try? JSONEncoder().encode(updatedSubtopic) else {
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = encodedData
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error while updating subtopic: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            print("Response Data: \(String(data: data, encoding: .utf8) ?? "")")
+
+            do {
+                    let responseJSON = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    if let message = responseJSON?["message"] as? String, message == "CLO record updated successfully" {
+                        print("CLO updated successfully")
+                        showAlert = true
+                    } else {
+                        print("Error: CLO record not updated")
+                    }
+                } catch {
+                    print("Error while decoding response data: \(error)")
+                }
+        }
+        task.resume()
+    }
+}
+
+
 struct ViewCLOs_Previews: PreviewProvider {
     static var previews: some View {
-        ViewCLOs(f_id: 0, c_id: 0, c_title: "")
+        ViewCLOs(f_id: 0, c_id: 3, c_title: "")
     }
 }

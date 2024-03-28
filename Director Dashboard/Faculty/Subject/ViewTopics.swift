@@ -45,7 +45,9 @@ struct ViewTopics: View { // Design 100% Ok
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -387,7 +389,6 @@ struct AddSubTopics: View { // Design 100% Ok
     var c_title: String
     var t_id: Int
     var t_name: String
-//    var topic: Topic
     
     @State private var st_name = ""
     @State private var searchText = ""
@@ -420,8 +421,9 @@ struct AddSubTopics: View { // Design 100% Ok
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                        .frame(maxWidth: .infinity , alignment: .leading)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -539,42 +541,6 @@ struct AddSubTopics: View { // Design 100% Ok
         }
     }
     
-    func saveSubTopic() {
-        
-    }
-    
-    func isSubTopicEnabled(_ index: Int) -> Bool {
-        return filteredSubTopics[index].status == "Enable"
-    }
-    func toggleSubTopicStatus(_ index: Int) {
-        let topic = filteredSubTopics[index]
-        let newStatus = topic.status == "Enable" ? "Disable" : "Enable"
-        
-        guard let url = URL(string: "http://localhost:4000/enabledisablesubtopic/\(topic.st_id)") else {
-            return
-        }
-        
-        guard let jsonData = try? JSONEncoder().encode(["status": newStatus]) else {
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error updating Topic status: \(error.localizedDescription)")
-            } else if let data = data {
-                if let responseString = String(data: data, encoding: .utf8) {
-                    print("Topic status updated successfully: \(responseString)")
-                    subtopicViewModel.getTopicSubTopic(topicID: t_id)
-                }
-            }
-        }.resume()
-    }
-    
     func createSubTopic() {
         guard let url = URL(string: "http://localhost:4000/addSubtopic") else {
             return
@@ -609,6 +575,38 @@ struct AddSubTopics: View { // Design 100% Ok
                 }
             } else if let error = error {
                 print("Error making request:", error)
+            }
+        }.resume()
+    }
+    
+    func isSubTopicEnabled(_ index: Int) -> Bool {
+        return filteredSubTopics[index].status == "Enable"
+    }
+    func toggleSubTopicStatus(_ index: Int) {
+        let topic = filteredSubTopics[index]
+        let newStatus = topic.status == "Enable" ? "Disable" : "Enable"
+        
+        guard let url = URL(string: "http://localhost:4000/enabledisablesubtopic/\(topic.st_id)") else {
+            return
+        }
+        
+        guard let jsonData = try? JSONEncoder().encode(["status": newStatus]) else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error updating Topic status: \(error.localizedDescription)")
+            } else if let data = data {
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Topic status updated successfully: \(responseString)")
+                    subtopicViewModel.getTopicSubTopic(topicID: t_id)
+                }
             }
         }.resume()
     }

@@ -190,7 +190,7 @@ class CLOViewModel: ObservableObject {
 
     @Published var existing: [CLO] = []
 
-    func getCLO(courseID: Int) {
+    func getCourseCLO(courseID: Int) {
         guard let url = URL(string: "http://localhost:4000/getclo/\(courseID)") else {
             print("Invalid URL")
             return

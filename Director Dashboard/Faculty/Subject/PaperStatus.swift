@@ -9,6 +9,11 @@ import SwiftUI
 
 struct PaperStatus: View { // Design 100% Ok
     
+    var f_id: Int
+    var f_name: String
+    var c_id: Int
+    var c_title: String
+    
     @State private var searchText = ""
     @StateObject private var paperViewModel = PaperViewModel()
     
@@ -38,7 +43,8 @@ struct PaperStatus: View { // Design 100% Ok
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -55,6 +61,7 @@ struct PaperStatus: View { // Design 100% Ok
                     .foregroundColor(Color.white)
                 Spacer()
                 SearchBar(text: $searchText)
+                    .padding()
                 Spacer()
                 VStack{
                     ScrollView {
@@ -75,9 +82,9 @@ struct PaperStatus: View { // Design 100% Ok
                                 .padding(1)
                         }
                         if filteredPapers.isEmpty {
-                            Text("No Approved Paper Found")
+                            Text("\(f_name) Have Not Maked Any Paper Yet ...")
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -88,9 +95,9 @@ struct PaperStatus: View { // Design 100% Ok
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.green.opacity(0.5), lineWidth: 1)
                 )
-                .frame(height:700)
+                .frame(height:650)
                 .onAppear {
-                    paperViewModel.fetchExistingPapers()
+                    paperViewModel.fetchFacultyPaper(facultyID: f_id)
                 }
                 Spacer()
             }
@@ -101,6 +108,6 @@ struct PaperStatus: View { // Design 100% Ok
 
 struct PaperStatus_Previews: PreviewProvider {
     static var previews: some View {
-        PaperStatus()
+        PaperStatus(f_id: 0,f_name: "", c_id: 0, c_title: "")
     }
 }

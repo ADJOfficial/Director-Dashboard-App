@@ -9,7 +9,9 @@ import SwiftUI
 
 struct FacultyDetails: View { // Designed 100% OK
     
-//    @State private var f_name = ""
+
+//    var course: AllCourses
+    
     @State private var searchText = ""
     @StateObject private var facultiesViewModel = FacultiesViewModel()
     
@@ -42,7 +44,8 @@ struct FacultyDetails: View { // Designed 100% OK
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -71,7 +74,7 @@ struct FacultyDetails: View { // Designed 100% OK
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 
                                 NavigationLink{
-                                    EyeAssignedCousres(facultyID: cr.f_id,courseID: cr.f_id, facultyName: cr.f_name)
+                                    EyeAssignedCousres(facultyID: cr.f_id, facultyName: cr.f_name)
                                         .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "eye.fill")
@@ -86,9 +89,9 @@ struct FacultyDetails: View { // Designed 100% OK
                                 .padding(1)
                         }
                         if filteredFaculties.isEmpty {
-                            Text("No Data Found")
+                            Text("No Faculty Found")
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -97,9 +100,9 @@ struct FacultyDetails: View { // Designed 100% OK
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.blue.opacity(0.6), lineWidth: 2)
                 )
-                .frame(width: 410 , height:700)
+                .frame(height:700)
                 .onAppear {
                     facultiesViewModel.fetchExistingFaculties()
                 }
@@ -114,7 +117,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
     
     @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
     var facultyID: Int
-    var courseID: Int
+//    var courseID: Int
     var facultyName: String
     @Environment(\.presentationMode) var presentationMode
     
@@ -166,8 +169,8 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                         if assignedcoursesViewModel.assignedCourses.isEmpty {
                             Text("\(facultyName) have no Assigned Courses Yet !")
                             //                                .font(.headline)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(.yellow)
+                                .font(.headline)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -176,22 +179,22 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.blue.opacity(0.6), lineWidth: 2)
                 )
-                .frame(width: 410, height: 500)
+                .frame(height: 500)
                 .onAppear {
                     assignedcoursesViewModel.fetchAssignedCourses(facultyID: facultyID)
                 }
                 
                 NavigationLink{
-                    PlusAssignCourse(facultyID: facultyID,courseID: courseID, facultyName: facultyName)
+                    PlusAssignCourse(facultyID: facultyID, facultyName: facultyName)
                         .navigationBarBackButtonHidden(true)
                 }label: {
                     Image(systemName: "plus.app.fill")
                         .bold()
                         .padding()
                         .font(.largeTitle)
-                        .foregroundColor(Color.green)
+                        .foregroundColor(Color.blue.opacity(0.9))
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity , alignment: .trailing)
                 }
@@ -220,7 +223,7 @@ struct PlusAssignCourse: View { // Design 100% ok
     
     @StateObject private var coursesViewModel = CoursesViewModel()
     var facultyID: Int
-    var courseID: Int
+//    var courseID: Int
     var facultyName: String
     @State private var searchText = ""
     @Environment(\.presentationMode) var presentationMode
@@ -255,7 +258,8 @@ struct PlusAssignCourse: View { // Design 100% ok
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
                 Spacer()
@@ -295,7 +299,7 @@ struct PlusAssignCourse: View { // Design 100% ok
                                 .frame(maxWidth: .infinity , alignment: .leading)
                             Button(action: {
                                 toggleCourseSelection(courseID: cr.c_id)
-                                assignCourseToFaculty(courseID: courseID, facultyID: facultyID)
+                                assignCourseToFaculty(courseID: cr.c_id, facultyID: facultyID)
                             }) {
                                 Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
                                     .font(.title2)
@@ -311,13 +315,18 @@ struct PlusAssignCourse: View { // Design 100% ok
                     if filteredcourse.isEmpty {
                         Text("No Course Found")
                             .font(.headline)
-                            .foregroundColor(.yellow)
+                            .foregroundColor(.orange)
                             .padding()
                             .frame(maxWidth: .infinity)
                     }
                 }
             }
-            .frame(width: 410, height: 500)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.blue.opacity(0.6), lineWidth: 2)
+            )
+            .frame(height: 500)
             .onAppear {
                 coursesViewModel.fetchExistingCourses()
             }

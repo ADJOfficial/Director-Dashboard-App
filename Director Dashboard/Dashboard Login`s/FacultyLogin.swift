@@ -55,7 +55,7 @@ struct FacultyLogin: View {
                     .foregroundColor(Color.black)
                     .padding()
                     .frame(width: 150, height: 60)
-                    .background(Color.green.opacity(0.7))
+                    .background(Color.green.opacity(0.8))
                     .cornerRadius(8)
             }
             .onAppear {

@@ -244,6 +244,37 @@ class PaperViewModel: ObservableObject {
         }
         task.resume()
     }
+    
+    func fetchFacultyPaper(facultyID: Int) {
+        guard let url = URL(string: "http://localhost:4000/getfacultypaper/\(facultyID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let papers = try decoder.decode([Paper].self, from: data)
+                DispatchQueue.main.async {
+                    self.existingPapers = papers
+                    print("Fetched \(papers.count) papers")
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        .resume()
+    }
 }
 
 

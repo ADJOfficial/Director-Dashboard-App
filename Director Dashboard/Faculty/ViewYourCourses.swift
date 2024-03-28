@@ -162,7 +162,7 @@ struct Subject: View {
                     .padding(.all)
                     
                     NavigationLink{
-                        PaperStatus()
+                        PaperStatus(f_id: f_id, f_name: f_name, c_id: c_id, c_title: c_title)
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Paper Status")
@@ -236,7 +236,7 @@ struct Mail: View {
                                 .padding(2)
                         }
                         if feedbackViewModel.feedback.isEmpty {
-                            Text("No Mail Found")
+                            Text("No Mail Found For \(f_name)")
                                 .font(.headline)
                                 .foregroundColor(.orange)
                                 .padding()
