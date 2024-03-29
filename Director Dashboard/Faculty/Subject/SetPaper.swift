@@ -430,8 +430,9 @@ struct StartMakingPaper: View {
     @State private var selectedDifficulty = 0
     var options = ["EASY" , "HARD" , "MEDIUM"]
    
-    @State private var selectedtopic = 0
- 
+
+    @State private var selectedClo: Int?
+    @State private var selectedTopic: Int?
     
     @State private var selectedImage: UIImage?
     @State private var isShowingImagePicker = false
@@ -440,7 +441,9 @@ struct StartMakingPaper: View {
     @State private var questions = ""
     
     @StateObject private var questionViewModel = QuestionViewModel()
+    
     @StateObject private var  topicViewModel = TopicViewModel()
+    @StateObject private var  cloViewModel = CLOViewModel()
     
     var body: some View {
         VStack{
@@ -500,27 +503,42 @@ struct StartMakingPaper: View {
             .foregroundColor(Color.white)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.green, lineWidth: 1)
+                    .stroke(Color.green.opacity(0.5), lineWidth: 2)
             )
-//            Spacer()
-            ScrollView{
                 VStack{
-                    Text("Question")
-                        .bold()
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity , alignment: .leading)
+                    HStack{
+                        Text("Question")
+                            .bold()
+                            .foregroundColor(Color.white)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .leading)
+                        Text("CLO :")
+                            .foregroundColor(Color.white)
+                        Picker(selection: $selectedClo, label: Text("")) {
+                            Text("CLOs").tag(nil as Int?)
+                            ForEach(cloViewModel.existing, id: \.clo_id) { clo in
+                                Text(clo.clo_text)
+                                    .tag(clo.clo_id as Int?)
+                            }
+                        }
+                        .accentColor(Color.green)
+                        .onChange(of: (selectedClo)) { selectedCloID in
+                            if let selectedCLOID = selectedCloID {
+                                print("Selected CLO ID: \(selectedCLOID)")
+                            }
+                        }
+                    }
                     TextField("Type Question", text: $questions)
                         .padding()
-                        .background(Color.white.opacity(0.8))
+                        .foregroundColor(Color.black)
+                        .background(Color.gray.opacity(1))
                         .cornerRadius(8)
                         .padding(.horizontal)
                     
                     
                     HStack{
-                        Spacer()
                         Text("Difficulty :")
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                            .font(.title3)
+                            .padding(.horizontal)
                             .foregroundColor(Color.white)
                         Picker("" , selection: $selectedDifficulty) {
                             ForEach(0..<options.count) {index in
@@ -530,24 +548,20 @@ struct StartMakingPaper: View {
                         .accentColor(Color.green)
                         Spacer()
                         Text("Topic :")
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                            .font(.title3)
                             .foregroundColor(Color.white)
-                        
-                        Picker(selection: $selectedtopic, label: Text("")) {
+                        Picker(selection: $selectedTopic, label: Text("")) {
+                            Text("Topics").tag(nil as Int?)
                             ForEach(topicViewModel.existing, id: \.t_id) { topic in
                                 Text(topic.t_name)
-                                    .tag(topic.t_id)
+                                    .tag(topic.t_id as Int?)
                             }
                         }
-                        .pickerStyle(.wheel)
                         .accentColor(Color.green)
-                        .onChange(of: Optional(selectedtopic)) { selectedTopicID in
+                        .onChange(of: (selectedTopic)) { selectedTopicID in
                             if let selectedTopicID = selectedTopicID {
                                 print("Selected topic ID: \(selectedTopicID)")
                             }
                         }
-                        Spacer()
                     }
                     HStack {
                         Spacer()
@@ -570,45 +584,56 @@ struct StartMakingPaper: View {
                             .font(.title3)
                             .foregroundColor(Color.white)
                         TextField("Marks", text: $q_marks)
-                            .frame(width: 50, height: 40)
-                            .background(Color.white.opacity(0.8))
-                            .cornerRadius(10)
+                            .padding()
+                            .foregroundColor(Color.black)
+                            .background(Color.gray.opacity(1))
+                            .cornerRadius(8)
+                            .frame(width: 80)
+                            .padding(.horizontal)
                         Spacer()
                         Image(systemName: "bolt.fill")
                             .font(.largeTitle)
                             .foregroundColor(Color.green)
                             .onTapGesture {
                                 createQuestion()
+                                showAlert
                             }
                         Spacer()
                     }
-                    Divider()
-                        .background(Color.white)
-                        .padding(1)
-                    
+                    Spacer()
                     VStack{
                         ScrollView {
-                            ForEach(questionViewModel.uploadedQuestions, id: \.self) { cr in
-                                HStack{
+                            ForEach(questionViewModel.uploadedQuestions.indices, id: \.self) { index in
+                                let cr = questionViewModel.uploadedQuestions[index]
+                                VStack{
+                                    Text("Question # 0\(index + 1)")
+                                        .font(.headline)
+                                        .foregroundColor(Color.orange)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                     Text(cr.q_text)
                                         .font(.headline)
                                         .foregroundColor(Color.white)
                                         .frame(maxWidth: .infinity , alignment: .leading)
-                                    Text("[ \(cr.q_difficulty) ,\(cr.q_marks)]") //  , \(assignedFaculty.clo_text)
+                                    Text("[ \(cr.q_difficulty) ,\(cr.q_marks) , \(cr.clo_text)]") //  , \(assignedFaculty.clo_text)
                                         .font(.title3)
                                         .padding(.horizontal)
-                                        .foregroundColor(Color.white)
+                                        .foregroundColor(Color.yellow)
                                         .frame(maxWidth: .infinity, alignment: .trailing)
-                                    
-                                    //                                    NavigationLink(destination: EditFaculty(faculty: cr)) {
-                                    //                                        Image(systemName: "square.and.pencil.circle")
-                                    //                                            .bold()
-                                    //                                            .font(.title)
-                                    //                                            .foregroundColor(Color.orange)
                                 }
+                                Divider()
+                                    .background(Color.white)
+                                .padding(1)
                             }
                         }
+                        .padding()
                     }
+//                    .padding()
+                    .frame(height: 300)
+                    .foregroundColor(Color.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.green.opacity(0.5), lineWidth: 2)
+                    )
                     .onAppear{
                         questionViewModel.getPaperQuestions(paperID: p_id)
                     }
@@ -616,13 +641,10 @@ struct StartMakingPaper: View {
                 .onAppear{
                     topicViewModel.getCourseTopic(courseID: c_id)
                 }
-            }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.green.opacity(0.5), lineWidth: 1)
-            )
-            Spacer()
+                .onAppear{
+                    cloViewModel.getCourseCLO(courseID: c_id)
+                }
+//            Spacer()
         }
         .background(Image("fiii").resizable().ignoresSafeArea())
         .sheet(isPresented: $isShowingImagePicker) {
@@ -638,15 +660,26 @@ struct StartMakingPaper: View {
             return
         }
         
-        guard selectedtopic != 0 else {
+        guard selectedTopic != 0 else {
             print("No topic selected")
             return
         }
 
-        let selectedTopicID = selectedtopic
+        let selectedTopicID = selectedTopic
 
         guard let selectTopic = topicViewModel.existing.first(where: { Int($0.t_id) == selectedTopicID }) else {
             print("Selected topic not found")
+            return
+        }
+        guard selectedClo != 0 else {
+            print("No CLO selected")
+            return
+        }
+
+        let selectedCLOID = selectedClo
+
+        guard let selectClo = cloViewModel.existing.first(where: { Int($0.clo_id) == selectedCLOID }) else {
+            print("Selected CLO not found")
             return
         }
         
@@ -657,7 +690,8 @@ struct StartMakingPaper: View {
             "t_id": selectTopic.t_id,
             "p_id": p_id,
             "f_id": f_id,
-            "c_id": c_id
+            "c_id": c_id,
+            "clo_id": selectClo.clo_id
         ] as [String: Any]
         
         let boundary = UUID().uuidString
@@ -695,14 +729,15 @@ struct StartMakingPaper: View {
                 do {
                     let result = try JSONSerialization.jsonObject(with: data)
                     print("Result from server:", result)
+                    questionViewModel.getPaperQuestions(paperID: p_id)
                     showAlert = true
-                    
                     DispatchQueue.main.async {
                         questions = ""
-                        selectedtopic = 0
                         selectedDifficulty = 0
                         q_marks = ""
                         selectedImage = nil
+                        selectedClo = nil
+                        selectedTopic = nil
                     }
                     
                 } catch {
@@ -778,6 +813,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
 
 struct SetPaper_Previews: PreviewProvider {
     static var previews: some View {
-        SetPaper(f_id: 0, f_name: "", c_id: 0, c_title: "", c_code: "", p_id: 0)
+//        SetPaper(f_id: 1, f_name: "", c_id: 1, c_title: "", c_code: "", p_id: 1)
+        StartMakingPaper(f_id: 1, f_name: "", c_id: 1, c_title: "", c_code: "", paperName: "", exam_date: "", degree: "", duration: 0, totalMarks: 0, p_id: 1, t_id: 1)
     }
 }

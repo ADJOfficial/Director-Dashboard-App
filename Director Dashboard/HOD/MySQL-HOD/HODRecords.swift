@@ -25,22 +25,22 @@ class AssignedCoursesViewModel: ObservableObject {
             print("Invalid URL")
             return
         }
-        
+
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 print("Error fetching data: \(error.localizedDescription)")
                 return
             }
-            
+
             guard let data = data else {
                 print("No data returned")
                 return
             }
-            
+
             if let httpResponse = response as? HTTPURLResponse {
                             print("Response status code: \(httpResponse.statusCode)")
                         }
-            
+
             do {
                 let courses = try JSONDecoder().decode([ACTF].self, from: data)
                 DispatchQueue.main.async {
@@ -53,6 +53,7 @@ class AssignedCoursesViewModel: ObservableObject {
         }
         task.resume()
     }
+ 
     func deleteAssignedCourse(facultyId: Int, courseId: Int) {
         // Perform the deletion using an API call or database query
         deleteAssignedCourseFromServer(facultyId: facultyId, courseId: courseId) { success in

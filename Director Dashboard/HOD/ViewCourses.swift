@@ -99,9 +99,9 @@ struct ViewCourses: View {    // Design 100% OK
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.blue.opacity(0.6), lineWidth: 2)
                 )
-                .frame(width: 410, height: 700)
+                .frame(height: 700)
                 .onAppear {
                     coursesViewModel.fetchExistingCourses()
                 }

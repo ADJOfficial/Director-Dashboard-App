@@ -10,14 +10,20 @@ import SwiftUI
 
 struct AssignCourse: View { // Design 100% ok
     
+    var facultyID: Int
+    
     @StateObject private var coursesViewModel = CoursesViewModel()
     @StateObject private var facultiesViewModel = FacultiesViewModel()
-    var facultyID: Int
-    var facultyName: String
+    @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
+   
     @State private var searchText = ""
     @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedCourses: Set<Int> = []
-    @State private var selectedfaculty = 0
+    @State private var selectedfaculty: Int?
+    @State private var selectedFacultyName: String = ""
+    
+//    @State private var assignedCourses: [Int] = []
     
     var filteredcourse: [AllCourses] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
@@ -67,19 +73,20 @@ struct AssignCourse: View { // Design 100% ok
          
             VStack{
                 Spacer()
-                Picker(selection: $selectedfaculty, label: Text("ggggg")) {
+                Picker(selection: $selectedfaculty, label: Text("")) {
+                    Text("Faculties").tag(nil as Int?)
                     ForEach(facultiesViewModel.remaining, id: \.f_id) { faculty in
                         Text(faculty.f_name)
-                            .tag(faculty.f_id)
+                            .tag(faculty.f_id as Int?)
                     }
                 }
-                .pickerStyle(.menu)
                 .accentColor(Color.green)
-                .onChange(of: Optional(selectedfaculty)) { selectedFacultyID in
+                .onChange(of: (selectedfaculty)) { selectedFacultyID in
                     if let selectedfacultyID = selectedFacultyID {
                         print("Selected Fauclty ID: \(selectedfacultyID)")
                     }
                 }
+
                 
                 Spacer()
                 SearchBar(text: $searchText)
@@ -96,7 +103,9 @@ struct AssignCourse: View { // Design 100% ok
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 Button(action: {
                                     toggleCourseSelection(courseID: cr.c_id)
-                                    assignCourseToFaculty(courseID: cr.c_id, facultyID: facultyID)
+                                    if let selectedFacultyID = selectedfaculty {
+                                                assignCourseToFaculty(courseID: cr.c_id, facultyID: selectedFacultyID)
+                                            }
                                 }) {
                                     Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
                                         .font(.title2)
@@ -153,13 +162,13 @@ struct AssignCourse: View { // Design 100% ok
             selectedCourses.insert(courseID)
         }
     }
-    private func assignSelectedCourses() {
-        // Iterate over the selected courses
-        for courseID in selectedCourses {
-            // Make the API call to assign the course to the faculty
-            assignCourseToFaculty(courseID: courseID,facultyID: facultyID)
-        }
-    }
+//    private func assignSelectedCourses() {
+//        // Iterate over the selected courses
+//        for courseID in selectedCourses {
+//            // Make the API call to assign the course to the faculty
+//            assignCourseToFaculty(courseID: courseID,facultyID: selectedFacultyID)
+//        }
+//    }
     private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
         let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
         var request = URLRequest(url: url)
@@ -206,6 +215,6 @@ struct AssignCourse: View { // Design 100% ok
 
 struct AssignCourse_Previews: PreviewProvider {
     static var previews: some View {
-        AssignCourse(facultyID: 1, facultyName: "")
+        AssignCourse(facultyID: 0)
     }
 }

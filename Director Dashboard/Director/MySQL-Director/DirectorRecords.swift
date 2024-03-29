@@ -109,7 +109,7 @@ struct GetPaperQuestions: Hashable, Decodable, Encodable {
     var c_title: String
     var f_id: Int
     var f_name: String
-//    var clo_text: String
+    var clo_text: String
 //    var t_name: String
 }
 
