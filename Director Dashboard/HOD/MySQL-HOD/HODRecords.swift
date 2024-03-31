@@ -53,7 +53,11 @@ class AssignedCoursesViewModel: ObservableObject {
         }
         task.resume()
     }
- 
+    
+    func isCourseAssigned(courseID: Int) -> Bool {
+        return assignedCourses.contains { $0.c_id == courseID }
+    }
+    
     func deleteAssignedCourse(facultyId: Int, courseId: Int) {
         // Perform the deletion using an API call or database query
         deleteAssignedCourseFromServer(facultyId: facultyId, courseId: courseId) { success in
@@ -105,45 +109,99 @@ class AssignedCoursesViewModel: ObservableObject {
     }
 }
 
-//struct Courer: Codable  ,Hashable {
-//    let f_id: Int
-//    let c_id: Int
-//    let c_code: String
-//    let c_title: String
-//    let f_name: String
-//    
-//}
-//
-//class CoViewModel: ObservableObject {
-//    @Published var Courseassignedto: [Courer] = []
-//    
-//    func fetchCoursesAssignedTo(courseID: Int) {
-//        guard let url = URL(string: "http://localhost:2000/CourseAssignedTo?c_id=\(courseID)") else {
-//            print("Invalid URL")
-//            return
-//        }
-//        
-//        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-//            if let error = error {
-//                print("Error fetching data: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            guard let data = data else {
-//                print("No data returned")
-//                return
-//            }
-//            
-//            do {
-//                let courses = try JSONDecoder().decode([Courer].self, from: data)
-//                DispatchQueue.main.async {
-//                    self.Courseassignedto = courses
-//                    print("Fetched \(courses.count) assigned courses for faculty ID: \(courseID)")
-//                }
-//            } catch {
-//                print("Error decoding data: \(error.localizedDescription)")
-//            }
-//        }
-//        task.resume()
-//    }
-//}
+struct Courer: Codable  ,Hashable {
+    let f_id: Int
+    let c_id: Int
+    let c_code: String
+    let c_title: String
+    let f_name: String
+//    var role: String
+    
+}
+
+class CoViewModel: ObservableObject {
+    @Published var Courseassignedto: [Courer] = []
+    
+    func fetchCoursesAssignedTo(courseID: Int)  {
+        guard let url = URL(string: "http://localhost:2000/CourseAssignedTo?c_id=\(courseID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned")
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                            print("Response status code: \(httpResponse.statusCode)")
+                        }
+            
+            do {
+                let courses = try JSONDecoder().decode([Courer].self, from: data)
+                DispatchQueue.main.async {
+                    self.Courseassignedto = courses
+                    print("Fetched \(courses.count) assigned courses for faculty ID: \(courseID)")
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }
+    func deleteAssignedCourse(courseId: Int , facultyId: Int) {
+        // Perform the deletion using an API call or database query
+        deleteAssignedCourseFromServer(courseId: courseId , facultyId: facultyId) { success in
+            if success {
+                // Remove the deleted assigned course from the array
+                DispatchQueue.main.async {
+                    if let index = self.Courseassignedto.firstIndex(where: { $0.c_id == courseId && $0.f_id == facultyId }) {
+                        self.Courseassignedto.remove(at: index)
+                    }
+                }
+            } else {
+                // Handle error
+                print("Failed to delete assigned course")
+            }
+        }
+    }
+
+    private func deleteAssignedCourseFromServer(courseId: Int , facultyId: Int, completion: @escaping (Bool) -> Void) {
+        // Make the API call or database query to delete the assigned course
+        // You can use URLSession or Alamofire to make the HTTP request
+        
+        // Example using URLSession
+        guard let url = URL(string: "http://localhost:2000/DeleteAssignedFaculty/\(courseId)/\(facultyId)") else {
+            completion(false)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error deleting assigned course:", error)
+                completion(false)
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(false)
+                return
+            }
+            
+            if httpResponse.statusCode == 200 {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }.resume()
+    }
+}

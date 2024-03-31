@@ -162,13 +162,6 @@ struct AssignCourse: View { // Design 100% ok
             selectedCourses.insert(courseID)
         }
     }
-//    private func assignSelectedCourses() {
-//        // Iterate over the selected courses
-//        for courseID in selectedCourses {
-//            // Make the API call to assign the course to the faculty
-//            assignCourseToFaculty(courseID: courseID,facultyID: selectedFacultyID)
-//        }
-//    }
     private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
         let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
         var request = URLRequest(url: url)

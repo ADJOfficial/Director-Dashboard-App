@@ -28,9 +28,6 @@ struct SetPaper: View {
     var c_code: String
     
     var p_id: Int
-//    var t_id: Int
-    
-//    var status: String
     
     @State private var isChecked = false
     @State private var semIsChecked = false

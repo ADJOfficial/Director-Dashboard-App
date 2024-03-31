@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct FacultyDetails: View { // Designed 100% OK
-    
 
-//    var course: AllCourses
-    
     @State private var searchText = ""
     @StateObject private var facultiesViewModel = FacultiesViewModel()
     
-    
+    @Environment(\.presentationMode) var presentationMode
+
     var filteredFaculties: [faculties] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
             return facultiesViewModel.remaining
@@ -108,7 +106,17 @@ struct FacultyDetails: View { // Designed 100% OK
                 }
                 Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fc") .resizable().ignoresSafeArea())
+        }
+    }
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }
@@ -222,6 +230,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
 struct PlusAssignCourse: View { // Design 100% ok
     
     @StateObject private var coursesViewModel = CoursesViewModel()
+    @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
     var facultyID: Int
 //    var courseID: Int
     var facultyName: String
@@ -307,6 +316,13 @@ struct PlusAssignCourse: View { // Design 100% ok
                                     .padding(.horizontal)
                                     .frame(maxWidth: .infinity, alignment: .trailing)
                             }
+                            .disabled(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id))
+                            .opacity(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? 0.5 : 1.0)
+                            .onAppear {
+                                if assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) {
+                                    selectedCourses.insert(cr.c_id)
+                                }
+                            }
                         }
                         Divider()
                             .background(Color.white)
@@ -329,6 +345,7 @@ struct PlusAssignCourse: View { // Design 100% ok
             .frame(height: 500)
             .onAppear {
                 coursesViewModel.fetchExistingCourses()
+                assignedcoursesViewModel.fetchAssignedCourses(facultyID: facultyID)
             }
             Spacer()
             

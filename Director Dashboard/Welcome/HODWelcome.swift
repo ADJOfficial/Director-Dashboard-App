@@ -11,6 +11,8 @@ struct HODWelcome: View { // Design 100% OK
     
     let username: String
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         NavigationView{
@@ -30,8 +32,8 @@ struct HODWelcome: View { // Design 100% OK
                 Spacer()
                 VStack{
                     NavigationLink{
-//                        FacultyDetails()
-//                            .navigationBarBackButtonHidden(true)
+                        FacultyDetails()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Faculty Details")
                     }
@@ -45,7 +47,7 @@ struct HODWelcome: View { // Design 100% OK
                     
                     NavigationLink{
                         ViewCourses()
-                            
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("View Courses")
                     }
@@ -58,7 +60,8 @@ struct HODWelcome: View { // Design 100% OK
                     .padding(.all)
                     
                     NavigationLink{
-//                        AssignCourse()
+                        AssignCourse(facultyID: 0)
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Assign Course")
                     }
@@ -71,7 +74,22 @@ struct HODWelcome: View { // Design 100% OK
                     .padding(.all)
                     
                     NavigationLink{
+                        AssignRole()
+                            .navigationBarBackButtonHidden(true)
+                    } label: {
+                        Text("Course Senior")
+                    }
+                    .foregroundColor(.black)
+                    .padding()
+                    .bold()
+                    .frame(width: 150)
+                    .background(Color.teal.opacity(0.9))
+                    .cornerRadius(8)
+                    .padding(.all)
+                    
+                    NavigationLink{
                         GridView()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Grid View")
                     }
@@ -82,8 +100,6 @@ struct HODWelcome: View { // Design 100% OK
                     .background(Color.teal.opacity(0.9))
                     .cornerRadius(8)
                     .padding(.all)
-                    
-                    
                 }
                 Spacer()
                 
@@ -99,7 +115,17 @@ struct HODWelcome: View { // Design 100% OK
                 .foregroundColor(.teal)
                 .frame(maxWidth: .infinity , alignment: .trailing)
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fc").resizable().ignoresSafeArea())
+        }
+    }
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }

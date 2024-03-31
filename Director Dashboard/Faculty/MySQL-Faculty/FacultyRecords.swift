@@ -178,6 +178,49 @@ class SubTopicViewModel: ObservableObject {
     }
 }
 
+struct CoveredTopic: Hashable , Decodable  ,Encodable {
+    
+    var f_id: Int
+    var c_id: Int
+    var t_id: Int
+    var st_id: Int
+    
+}
+
+class CoveredTopicViewModel: ObservableObject {
+
+    @Published var existing: [CoveredTopic] = []
+
+    func getTopicSubTopic(facultyID: Int) {
+        guard let url = URL(string: "http://localhost:4000/coveredtopics/\(facultyID)") else {
+            print("Invalid URL")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let questions = try decoder.decode([CoveredTopic].self, from: data)
+                DispatchQueue.main.async {
+                    self.existing = questions
+                }
+            } catch {
+                print("Error decoding data: \(error.localizedDescription)")
+            }
+        }
+        .resume()
+    }
+}
 
 
 struct CLO: Hashable , Decodable  ,Encodable {
