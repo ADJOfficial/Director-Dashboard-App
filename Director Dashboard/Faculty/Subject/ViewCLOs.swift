@@ -16,7 +16,8 @@ struct ViewCLOs: View { // Design 100% Ok
 //    var clo_id: Int
 //    var clo_text: String
     
-    @State private var Clo_text = ""
+    @State private var clo_code = ""
+    @State private var clo_text = ""
     @State private var searchText = ""
     @StateObject private var cloViewModel = CLOViewModel()
     
@@ -77,32 +78,41 @@ struct ViewCLOs: View { // Design 100% Ok
                     .padding()
                     .frame(maxWidth: .infinity , alignment: .center)
                     .foregroundColor(Color.white)
-//                Spacer()
-                
-                    Text("Desccription")
+                VStack {
+                    Text("CLO-Code")
                         .padding(.horizontal)
                         .font(.headline)
                         .foregroundColor(Color.white)
                         .frame(maxWidth: .infinity , alignment: .leading)
-                    TextField("Enter CLO Description" , text: $Clo_text)
+                    TextField("Enter CLO Code" , text: $clo_code)
                         .padding()
                         .foregroundColor(Color.black)
                         .background(Color.gray.opacity(1))
                         .cornerRadius(8)
                         .padding(.horizontal)
-                
-                
-                Image(systemName: "bolt.fill")
-                    .padding()
-                    .font(.largeTitle)
-                    .foregroundColor(Color.green)
-                    .padding(.horizontal)
-                    .frame(maxWidth: .infinity , alignment: .trailing)
-                    .onTapGesture {
+                    Text("Desccription")
+                        .padding(.horizontal)
+                        .font(.headline)
+                        .foregroundColor(Color.white)
+                        .frame(maxWidth: .infinity , alignment: .leading)
+                    TextField("Enter CLO Description" , text: $clo_text)
+                        .padding()
+                        .foregroundColor(Color.black)
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                    
+                    Image(systemName: "bolt.fill")
+                        .padding()
+                        .font(.largeTitle)
+                        .foregroundColor(Color.green)
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity , alignment: .trailing)
+                        .onTapGesture {
                             createCLO()
                             showAlert
-                    }
-                
+                        }
+                }
                 SearchBar(text: $searchText)
                     .padding()
                 
@@ -149,7 +159,7 @@ struct ViewCLOs: View { // Design 100% Ok
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.green.opacity(0.5), lineWidth: 2)
                 )
-                .frame(height:400)
+                .frame(height:300)
                 .onAppear {
                     cloViewModel.getCourseCLO(courseID: c_id)
                 }
@@ -169,7 +179,8 @@ struct ViewCLOs: View { // Design 100% Ok
 
         let user = [
             "c_id": c_id,
-            "clo_text": Clo_text
+            "clo_code": clo_code,
+            "clo_text": clo_text
         ] as [String : Any]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: user) else {
@@ -189,7 +200,8 @@ struct ViewCLOs: View { // Design 100% Ok
                     cloViewModel.getCourseCLO(courseID: c_id) // Refresh faculties after creating a new one
                     showAlert = true
                     DispatchQueue.main.async {
-                        Clo_text = ""
+                        clo_code = ""
+                        clo_text = ""
                     }
                 } catch {
                     print("Error parsing JSON:", error)
@@ -201,17 +213,17 @@ struct ViewCLOs: View { // Design 100% Ok
     }
     
     func isCloEnabled(_ index: Int) -> Bool {
-        return filteredClo[index].status == "Enable"
+        return filteredClo[index].enabledisable == "Enable"
     }
     func toggleCloStatus(_ index: Int) {
         let topic = filteredClo[index]
-        let newStatus = topic.status == "Enable" ? "Disable" : "Enable"
+        let newStatus = topic.enabledisable == "Enable" ? "Disable" : "Enable"
         
         guard let url = URL(string: "http://localhost:4000/enabledisableclo/\(topic.clo_id)") else {
             return
         }
         
-        guard let jsonData = try? JSONEncoder().encode(["status": newStatus]) else {
+        guard let jsonData = try? JSONEncoder().encode(["enabledisable": newStatus]) else {
             return
         }
         
@@ -240,7 +252,8 @@ struct EditCLO: View { // Design 100% Ok
     var c_title: String
     
     var clo: CLO
-    
+   
+    @State private var clo_code = ""
     @State private var clo_text = ""
     @StateObject private var cloViewModel = CLOViewModel()
     
@@ -266,6 +279,20 @@ struct EditCLO: View { // Design 100% Ok
                     .padding()
                     .frame(maxWidth: .infinity , alignment: .center)
                     .foregroundColor(Color.white)
+                Text("CLO-Code")
+                    .padding(.horizontal)
+                    .font(.headline)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity , alignment: .leading)
+                TextField("Enter CLO Description" , text: $clo_code)
+                    .padding()
+                    .foregroundColor(Color.black)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    .onAppear {
+                        clo_code = clo.clo_code
+                    }
                 Text("Desccription")
                     .padding(.horizontal)
                     .font(.headline)
@@ -304,7 +331,7 @@ struct EditCLO: View { // Design 100% Ok
             return
         }
 
-        let updatedSubtopic = CLO(clo_id: clo.clo_id, clo_text: clo_text, status: clo.status)
+        let updatedSubtopic = CLO(clo_id: clo.clo_id,clo_code: clo_code, clo_text: clo_text, status: clo.status, enabledisable: clo.enabledisable)
 
         guard let encodedData = try? JSONEncoder().encode(updatedSubtopic) else {
             return

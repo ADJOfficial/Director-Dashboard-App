@@ -15,7 +15,8 @@ struct ViewYourCourses: View { // Design 100% OK
     var c_title: String
     var c_code: String
     var p_id: Int
-//    var t_id: Int
+    var t_id: Int
+    var t_name: String
     @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
     @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
     @StateObject private var  topicViewModel = TopicViewModel()
@@ -49,7 +50,7 @@ struct ViewYourCourses: View { // Design 100% OK
                         ForEach(assignedcoursesViewModel.assignedCourses, id: \.self) { cr in
                             HStack{
                                 NavigationLink{
-                                    Subject(f_id: f_id, f_name: f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code , p_id: p_id)
+                                    Subject(f_id: f_id, f_name: f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code , p_id: p_id , t_id: t_id , t_name: t_name)
                                 }label: {
                                     Text(cr.c_title)
                                         .foregroundColor(.black)
@@ -98,13 +99,15 @@ struct Subject: View {
     var c_title: String
     var c_code: String
     var p_id: Int
-//    var t_id: Int
+    var t_id: Int
+    var t_name: String
+    
     @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
     var body: some View {
         
         NavigationView{
             VStack{
-                Text("Subject")
+                Text("Course")
                     .bold()
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
@@ -127,6 +130,19 @@ struct Subject: View {
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("View Topics")
+                            .underline()
+                    }
+                    .bold()
+                    .padding()
+                    .font(.title2)
+                    .foregroundColor(.green)
+                    .padding(.all)
+                    
+                    NavigationLink{
+                        CoveredTopics(c_id: c_id, c_code: c_code, c_title: c_title, t_id: t_id, t_name: t_name)
+                            .navigationBarBackButtonHidden(true)
+                    } label: {
+                        Text("Covered Topic")
                             .underline()
                     }
                     .bold()
@@ -185,7 +201,7 @@ struct ViewYourCourses_Previews: PreviewProvider {
     static var previews: some View {
 //        Mail(fb_details: "", c_title: "", c_code: "", f_name: "", q_id: 1, p_id: 1)
 //        ViewYourCourses(f_id: 0, c_id: 0, c_code: "", c_title: "", f_name: "")
-        Subject(f_id: 1, f_name: "", c_id: 0, c_title: "", c_code: "" , p_id: 0)
+        Subject(f_id: 1, f_name: "", c_id: 0, c_title: "", c_code: "" , p_id: 0 , t_id: 0, t_name: "")
     }
 }
 

@@ -17,6 +17,8 @@ struct FacultyLogin: View {
     @StateObject private var facultiesViewModel = FacultiesViewModel()
     @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
     @StateObject private var  topicViewModel = TopicViewModel()
+    
+    var topic: Topic
     var body: some View {
         VStack {
             Text("Faculty")
@@ -66,7 +68,7 @@ struct FacultyLogin: View {
             }
             .fullScreenCover(isPresented: $isLoggedIn) {
                 if let faculty = facultiesViewModel.remaining.first(where: { $0.username == username }) {
-                    FacultyWelcome(facultyName: faculty.f_name , f_id: faculty.f_id, p_id: 0,t_id: 0)
+                    FacultyWelcome(facultyName: faculty.f_name , f_id: faculty.f_id, p_id: 0,t_id: topic.t_id)
                 }
             }
         }
@@ -86,6 +88,6 @@ struct FacultyLogin: View {
 
 struct FacultyLogin_Previews: PreviewProvider {
     static var previews: some View {
-        FacultyLogin()
+        FacultyLogin(topic: Topic(t_id: 0, t_name: "", status: ""))
     }
 }

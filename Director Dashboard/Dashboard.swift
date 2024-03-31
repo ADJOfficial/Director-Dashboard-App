@@ -63,7 +63,7 @@ struct Dashboard: View {
 //                            .blur(radius: animate ? 0 : 10)
 //                    }
                     NavigationLink{
-                        FacultyLogin()
+                        FacultyLogin(topic: Topic(t_id: 0, t_name: "", status: ""))
                     }label: {
                         Text("Faculty")
                             .foregroundColor(.black)

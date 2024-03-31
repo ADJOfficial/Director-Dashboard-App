@@ -137,6 +137,7 @@ class TopicViewModel: ObservableObject {
 
 struct SubTopic: Hashable , Decodable  ,Encodable {
 
+    var t_id: Int
     var st_id: Int
     var st_name: String
     var status: String
@@ -178,11 +179,14 @@ class SubTopicViewModel: ObservableObject {
 }
 
 
+
 struct CLO: Hashable , Decodable  ,Encodable {
 
     var clo_id: Int
+    var clo_code: String
     var clo_text: String
     var status: String
+    var enabledisable: String
     
 }
 

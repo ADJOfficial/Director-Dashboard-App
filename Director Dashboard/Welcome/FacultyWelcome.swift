@@ -35,7 +35,7 @@ struct FacultyWelcome: View { // Design 100% OK
                 Spacer()
                 VStack{
                     NavigationLink {
-                        ViewYourCourses(f_id: f_id, f_name: facultyName, c_id: 0, c_title: "", c_code: "" , p_id: p_id)
+                        ViewYourCourses(f_id: f_id, f_name: facultyName, c_id: 0, c_title: "", c_code: "" , p_id: p_id , t_id: t_id , t_name: "")
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Courses")
@@ -78,7 +78,7 @@ struct FacultyWelcome: View { // Design 100% OK
                 Spacer()
                 
                 NavigationLink{
-                    FacultyLogin()
+                    FacultyLogin(topic: Topic(t_id: 0, t_name: "", status: ""))
                         .navigationBarBackButtonHidden(true)
                 } label: {
                     Text("Logout ? ")

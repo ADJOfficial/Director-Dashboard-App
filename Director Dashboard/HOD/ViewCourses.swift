@@ -12,7 +12,6 @@ struct ViewCourses: View {    // Design 100% OK
     @State private var c_code = ""
     @State private var c_title = ""
     @State private var searchText = ""
-    @State private var searchResults: [AllCourses] = []
     @StateObject private var coursesViewModel = CoursesViewModel()
     
     @State private var selectedCourseName: String? = nil
@@ -45,7 +44,8 @@ struct ViewCourses: View {    // Design 100% OK
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -75,7 +75,7 @@ struct ViewCourses: View {    // Design 100% OK
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
                                 NavigationLink{
-                                    CourseAssignedTo(courseID: cr.c_id, courseName: cr.c_title)
+                                    CourseAssignedTo(c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code)
                                 } label: {Image(systemName: "eye.fill")
                                         .bold()
                                         .font(.title3)
@@ -213,8 +213,13 @@ struct CourseAssignedTo: View {  // Design 100% ok
     
     @StateObject private var coViewModel = CoViewModel()
 //    var facultyID: Int
-    var courseID: Int
-    var courseName: String
+    var c_id: Int
+    var c_title: String
+    var c_code: String
+//    var clo: CLO
+//    var status: String
+//    var approved: String
+    
     @Environment(\.presentationMode) var presentationMode
     
     
@@ -227,7 +232,7 @@ struct CourseAssignedTo: View {  // Design 100% ok
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("\(courseName)")
+                Text("\(c_title)")
                     .bold()
                     .padding()
                     .font(.title2)
@@ -259,7 +264,7 @@ struct CourseAssignedTo: View {  // Design 100% ok
                                 .padding(1)
                         }
                         if coViewModel.Courseassignedto.isEmpty {
-                            Text("\(courseName) have no Assigned Courses Yet !")
+                            Text("\(c_title) have no Assigned Courses Yet !")
                             //                                .font(.headline)
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.yellow)
@@ -271,24 +276,24 @@ struct CourseAssignedTo: View {  // Design 100% ok
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.blue.opacity(0.6), lineWidth: 2)
                 )
-                .frame(width: 410, height: 500)
+                .frame(height: 500)
                 .onAppear {
-                    coViewModel.fetchCoursesAssignedTo(courseID: courseID)
+                    coViewModel.fetchCoursesAssignedTo(courseID: c_id)
                 }
                 
                 NavigationLink {
-                    CLOS()
+                    CLOS(c_id: c_id, c_title: c_title, c_code: c_code)
                         .navigationBarBackButtonHidden(true)
                 }label: {
-                    Text("View Topics")
+                    Text("View CLOs")
                 }
                 .bold()
                 .padding()
                 .frame(width: 150)
                 .foregroundColor(.black)
-                .background(Color.cyan)
+                .background(Color.blue.opacity(0.9))
                 .cornerRadius(8)
                 
             }
@@ -311,6 +316,47 @@ struct CourseAssignedTo: View {  // Design 100% ok
 }
 struct CLOS: View { // Design 100% OK
     
+    var c_id: Int
+    var c_title: String
+    var c_code: String
+    @State private var selectedButton: String?
+    
+    @State private var searchText = ""
+    @StateObject private var cloViewModel = CLOViewModel()
+    
+    @State private var showAlert = false
+    
+    var filteredClo: [CLO] { // All Data Will Be Filter and show on Table
+        if searchText.isEmpty {
+            return cloViewModel.existing
+        } else {
+            return cloViewModel.existing.filter { topic in
+                topic.clo_text.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
+    var statusText: String {
+        if cloViewModel.existing.contains(where: { $0.status == "Pending" }) {
+            return "Pending"
+        } else if cloViewModel.existing.contains(where: { $0.status == "Approved" }) {
+            return "Approved"
+        } else {
+            return "Rejected"
+        }
+    }
+    var statusColor: Color {
+        switch statusText {
+        case "Pending":
+            return Color.yellow
+        case "Approved":
+            return Color.green
+        case "Rejected":
+            return Color.red
+        default:
+            return Color.gray
+        }
+    }
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         VStack {
@@ -320,76 +366,136 @@ struct CLOS: View { // Design 100% OK
                 .foregroundColor(Color.white)
             HStack{
                 Spacer()
-                Text("Status: ")
+                Text("Status - \(statusText)")
                     .font(.title3)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .trailing)
                 Image(systemName: "circle.fill")
-                    .foregroundColor(Color.yellow)
+                    .foregroundColor(statusColor)
                 Spacer()
             }
             .padding()
-            Text("Programming Fundamental")
+            Text("\(c_title)")
                 .bold()
                 .font(.title2)
                 .padding(.horizontal)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            Text("Course Code  CS-323")
+            Text("\(c_code)")
                 .bold()
                 .padding(.horizontal)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
            Spacer()
             
-            VStack{
-                Text("CLO-1")
-                    .padding()
-                Text("CLO-2")
-                    .padding()
-                Text("CLO-3")
-                    .padding()
-                Text("CLO-4")
-                    .padding()
+            VStack {
+                ScrollView{
+                    ForEach(filteredClo.indices , id:\ .self) { index in
+                        let cr = filteredClo[index]
+                        VStack{
+                            Text(cr.clo_code)
+                                .padding(1)
+                                .font(.headline)
+                                .foregroundColor(Color.orange)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text(cr.clo_text)
+                                .padding(.horizontal)
+                                .font(.headline)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            HStack {
+                                Button(action: {
+                                    selectedButton = "Approved"
+                                    updateQuestionStatus(cloId: cr.clo_id, cloStatus: "Approved")
+                                }) {
+                                    Image(systemName: selectedButton == "Approved" ? "largecircle.fill.circle" : "circle")
+                                        .foregroundColor(selectedButton == "Approved" ? .green : .gray)
+                                    Text("Approved")
+                                        .font(.title3)
+                                        .foregroundColor(selectedButton == "Approved" ? .green : .gray)
+                                }
+                                .onTapGesture {
+                                    selectedButton = selectedButton == "Approved" ? "" : "Approved"
+                                }
+                                
+                                Button(action: {
+                                    selectedButton = "Rejected"
+                                    updateQuestionStatus(cloId: cr.clo_id, cloStatus: "Rejected")
+                                }) {
+                                    Image(systemName: selectedButton == "Rejected" ? "largecircle.fill.circle" : "circle")
+                                        .foregroundColor(selectedButton == "Rejected" ? .red : .gray)
+                                    Text("Rejected")
+                                        .font(.title3)
+                                        .foregroundColor(selectedButton == "Rejected" ? .red : .gray)
+                                }
+                                .onTapGesture {
+                                    selectedButton = selectedButton == "Rejected" ? "" : "Rejected"
+                                }
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        Divider()
+                            .background(Color.white)
+                        .padding(1)
+                    }
+                    if filteredClo.isEmpty {
+                        Text("No CLO Found For Course - \(c_title)")
+                            .font(.headline)
+                            .foregroundColor(.orange)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding()
             }
-            .bold()
-            .font(.headline)
-            .frame(maxWidth: .infinity , alignment: .leading)
-            .foregroundColor(Color.white)
-            
-          Spacer()
-            
-            HStack{
-                Spacer()
-                Button("Approve"){
-                    // Add Logic for Backend to Store New Data
-                }
-                .bold()
-                .padding()
-                .frame(width: 150)
-                .foregroundColor(.black)
-                .background(Color.teal)
-                .cornerRadius(8)
-                .padding(.all)
-                Button("Disapprove"){
-                    // Add Logic for Backend to Store New Data
-                }
-                .bold()
-                .padding()
-                .frame(width: 150)
-                .foregroundColor(.black)
-                .background(Color.teal)
-                .cornerRadius(8)
-                .padding(.all)
-                Spacer()
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.blue.opacity(0.6), lineWidth: 2)
+            )
+            .frame(height:450)
+            .onAppear {
+                cloViewModel.getCourseCLO(courseID: c_id)
             }
         }
         .background(Image("fc").resizable().ignoresSafeArea())
+    }
+    private func updateQuestionStatus(cloId: Int, cloStatus: String) {
+        var statusValue: String
+           if cloStatus.isEmpty {
+               statusValue = "Pending"
+           } else {
+               statusValue = cloStatus
+           }
+        
+        let url = URL(string: "http://localhost:4000/updateclostatus/\(cloId)")!
+        let parameters = ["q_verification": statusValue]
+        
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error updating question status: \(error.localizedDescription)")
+            } else if let data = data {
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("CLO status updated successfully: \(responseString)")
+                    // Handle the response as needed
+                }
+            }
+        }.resume()
     }
 }
 
 struct ViewCourses_Previews: PreviewProvider {
     static var previews: some View {
        ViewCourses()
+//        CLOS(c_id: 2, c_title: "", c_code: "", status: "")
     }
 }

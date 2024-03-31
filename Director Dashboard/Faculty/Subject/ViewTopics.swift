@@ -698,7 +698,7 @@ struct EditSubTopics: View { // Design 100% Ok
             return
         }
 
-        let updatedSubtopic = SubTopic(st_id: subtopic.st_id, st_name: editsubtopicname, status: subtopic.status)
+        let updatedSubtopic = SubTopic(t_id: subtopic.t_id, st_id: subtopic.st_id, st_name: editsubtopicname, status: subtopic.status)
 
         guard let encodedData = try? JSONEncoder().encode(updatedSubtopic) else {
             return

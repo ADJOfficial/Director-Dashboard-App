@@ -12,7 +12,6 @@
 		442E08782BA4F5EA00907B7D /* UploadedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08772BA4F5EA00907B7D /* UploadedPapers.swift */; };
 		442E087A2BA4F65E00907B7D /* DirectorRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08792BA4F65E00907B7D /* DirectorRecords.swift */; };
 		442E087F2BA622D400907B7D /* PaperMaking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E087E2BA622D400907B7D /* PaperMaking.swift */; };
-		445068E62B93391000D1427A /* CT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445068E52B93391000D1427A /* CT.swift */; };
 		445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083802B48E8EF00707476 /* Director_DashboardApp.swift */; };
 		445083832B48E8EF00707476 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083822B48E8EF00707476 /* Login.swift */; };
 		445083852B48E8F100707476 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 445083842B48E8F100707476 /* Assets.xcassets */; };
@@ -25,6 +24,7 @@
 		4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839D2B48EB1900707476 /* DirectorWelcome.swift */; };
 		445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839F2B48EB2900707476 /* DataCellWelcome.swift */; };
 		445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083BF2B4AAC0200707476 /* ExistingUser.swift */; };
+		4460DEB42BB94C880099B00A /* CoveredTopics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4460DEB32BB94C880099B00A /* CoveredTopics.swift */; };
 		449BA12F2B4FF159009473F6 /* DirectorLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA12E2B4FF159009473F6 /* DirectorLogin.swift */; };
 		449BA1312B4FF177009473F6 /* HODLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1302B4FF177009473F6 /* HODLogin.swift */; };
 		449BA1332B4FF187009473F6 /* FacultyLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1322B4FF187009473F6 /* FacultyLogin.swift */; };
@@ -58,7 +58,6 @@
 		442E08772BA4F5EA00907B7D /* UploadedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadedPapers.swift; sourceTree = "<group>"; };
 		442E08792BA4F65E00907B7D /* DirectorRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorRecords.swift; sourceTree = "<group>"; };
 		442E087E2BA622D400907B7D /* PaperMaking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperMaking.swift; sourceTree = "<group>"; };
-		445068E52B93391000D1427A /* CT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CT.swift; sourceTree = "<group>"; };
 		4450837D2B48E8EF00707476 /* Director Dashboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Director Dashboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		445083802B48E8EF00707476 /* Director_DashboardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Director_DashboardApp.swift; sourceTree = "<group>"; };
 		445083822B48E8EF00707476 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -72,6 +71,7 @@
 		4450839D2B48EB1900707476 /* DirectorWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorWelcome.swift; sourceTree = "<group>"; };
 		4450839F2B48EB2900707476 /* DataCellWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellWelcome.swift; sourceTree = "<group>"; };
 		445083BF2B4AAC0200707476 /* ExistingUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUser.swift; sourceTree = "<group>"; };
+		4460DEB32BB94C880099B00A /* CoveredTopics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoveredTopics.swift; sourceTree = "<group>"; };
 		449BA12E2B4FF159009473F6 /* DirectorLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorLogin.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 		449BA1302B4FF177009473F6 /* HODLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HODLogin.swift; sourceTree = "<group>"; };
 		449BA1322B4FF187009473F6 /* FacultyLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyLogin.swift; sourceTree = "<group>"; };
@@ -242,7 +242,7 @@
 				44A041DA2B53A21900AF79AD /* ViewCLOs.swift */,
 				44A041D82B53A20500AF79AD /* SetPaper.swift */,
 				44A041DC2B53A22700AF79AD /* PaperStatus.swift */,
-				445068E52B93391000D1427A /* CT.swift */,
+				4460DEB32BB94C880099B00A /* CoveredTopics.swift */,
 			);
 			path = Subject;
 			sourceTree = "<group>";
@@ -393,6 +393,7 @@
 				44A041DB2B53A21900AF79AD /* ViewCLOs.swift in Sources */,
 				445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */,
 				445083832B48E8EF00707476 /* Login.swift in Sources */,
+				4460DEB42BB94C880099B00A /* CoveredTopics.swift in Sources */,
 				44C5C0222B52445800702538 /* FacultyDetails.swift in Sources */,
 				44C5C02F2B52971600702538 /* Courses.swift in Sources */,
 				44BA721F2BA0F70200812049 /* FacultyRecords.swift in Sources */,
@@ -406,7 +407,6 @@
 				44BA72192B99AC0B00812049 /* updatecheck.swift in Sources */,
 				44C5C0262B52451E00702538 /* GridView.swift in Sources */,
 				445083942B48E98A00707476 /* FacultyWelcome.swift in Sources */,
-				445068E62B93391000D1427A /* CT.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

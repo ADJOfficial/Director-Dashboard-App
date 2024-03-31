@@ -401,34 +401,6 @@ struct PlusAssignCourse: View { // Design 100% ok
             }
         }.resume()
     }
-//    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
-//        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//
-//        let parameters: [String: Any] = [
-//            "courseID": courseID,
-//            "facultyID": facultyID
-//        ]
-//
-//        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let data = data else {
-//                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-//                return
-//            }
-//
-//            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-//               let message = responseJSON["message"] as? String {
-//                print("Fetched \(courses.count) assigned courses for faculty ID: \(facultyID)")
-//                print(message)
-//            } else {
-////                print("Error decoding data: \(error.localizedDescription)")
-//            }
-//        }.resume()
-//    }
 }
 
 struct FacultyDetails_Previews: PreviewProvider {
@@ -437,35 +409,3 @@ struct FacultyDetails_Previews: PreviewProvider {
     }
 }
 
-
-
-
-
-
-//    private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
-//        // Prepare the request URL
-//        let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
-//
-//        // Prepare the request body
-//        let parameters: [String: Any] = [
-//            "courseID": courseID,
-//            "facultyID": facultyID
-//        ]
-//
-//        // Create the request
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
-//
-//        // Send the request
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let error = error {
-//                print("Error: \(error)")
-//                // Handle the error as needed
-//            } else if let data = data {
-//                // Parse the response data if needed
-//                // Handle the response as needed
-//            }
-//        }.resume()
-//    }

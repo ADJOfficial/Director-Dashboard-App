@@ -98,6 +98,7 @@ struct AllCourses: Hashable , Decodable  ,Encodable {
         var c_title: String
         var cr_hours: Int
         var status: String
+//    var approved
 }
 
 class CoursesViewModel: ObservableObject {
