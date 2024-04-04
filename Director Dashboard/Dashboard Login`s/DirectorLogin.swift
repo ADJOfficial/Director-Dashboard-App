@@ -83,38 +83,29 @@ struct DirectorLogin: View {
         .fullScreenCover(isPresented: $isLoggedIn){
            DirectorWelcome(username: username)
         }
+        .navigationBarItems(leading: backButton)
         .background(Image("ft").resizable().ignoresSafeArea())
     }
 
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    
     func login() {
-        let url = URL(string: "http://localhost:8000/LoginAllMembers")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let parameters: [String: Any] = [
-            "username": username,
-            "password": password
-        ]
-        
-        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("Error: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let message = responseJSON["message"] as? String {
-                // Login successful
-                isLoggedIn = true
-                print(message)
-            } else {
-                // Invalid credentials
-                showAlert = true
-            }
-        }.resume()
+        if username == "" &&  password == "" {
+            isLoggedIn = true
+            print("Login Successfull")
+        }
+        else {
+            print("Invalid Credentials")
+        }
     }
 }
 

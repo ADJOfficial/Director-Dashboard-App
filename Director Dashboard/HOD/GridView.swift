@@ -220,7 +220,18 @@ struct GridView: View { // Design 100% ok
             .padding(.bottom)
             Spacer()
         }
+        .navigationBarItems(leading: backButton)
         .background(Image("fc").resizable().ignoresSafeArea())
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
     }
 }
 

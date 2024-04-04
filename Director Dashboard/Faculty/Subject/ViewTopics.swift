@@ -15,10 +15,12 @@ struct ViewTopics: View { // Design 100% Ok
 //    var t_id: Int
 //    var t_name: String
 //    var t_name: String
-    @State private var topic = ""
+    @State private var t_name = ""
     @State private var isCLOChecked: [Bool] = [false, false, false, false]
     @State private var searchText = ""
     @StateObject private var topicViewModel = TopicViewModel()
+    
+    @State private var showAlert = false
     
     var filteredTopics: [Topic] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
@@ -82,7 +84,7 @@ struct ViewTopics: View { // Design 100% Ok
                         .font(.title2)
                         .foregroundColor(Color.white)
                         .frame(maxWidth: .infinity , alignment: .leading)
-                    TextField("Username" , text: $topic)
+                    TextField("Username" , text: $t_name)
                         .padding()
                         .background(Color.gray.opacity(1))
                         .cornerRadius(8)
@@ -90,55 +92,9 @@ struct ViewTopics: View { // Design 100% Ok
                     Text("CLOs")
                         .bold()
                         .padding()
-//                        .padding(.horizontal)
                         .font(.title2)
                         .foregroundColor(Color.white)
                         .frame(maxWidth: .infinity , alignment: .center)
-//                    HStack {
-//                        Text("CLO:1")
-//                        Image(systemName: "square")
-//                        Text("CLO:2")
-//                        Image(systemName: "checkmark.square")
-//                            .foregroundColor(.green)
-//
-//                        //                        Spacer()
-//
-//                        Text("CLO:3")
-//                        Image(systemName: "square")
-//                        Text("CLO:4")
-//                        Image(systemName: "checkmark.square")
-//                            .foregroundColor(.green)
-//
-//                    }
-//                    HStack {
-//                            Text("CLO:1")
-//                            Image(systemName: isCLOChecked ? "checkmark.square" : "square")
-//                                .foregroundColor(isCLOChecked ? .green : .white)
-//                                .onTapGesture {
-//                                    isCLOChecked.toggle()
-//                                }
-//
-//                            Text("CLO:2")
-//                            Image(systemName: isCLOChecked ? "checkmark.square" : "square")
-//                                .foregroundColor(isCLOChecked ? .green : .white)
-//                                .onTapGesture {
-//                                    isCLOChecked.toggle()
-//                                }
-//
-//                            Text("CLO:3")
-//                            Image(systemName: isCLOChecked ? "checkmark.square" : "square")
-//                                .foregroundColor(isCLOChecked ? .green : .white)
-//                                .onTapGesture {
-//                                    isCLOChecked.toggle()
-//                                }
-//
-//                            Text("CLO:4")
-//                            Image(systemName: isCLOChecked ? "checkmark.square" : "square")
-//                                .foregroundColor(isCLOChecked ? .green : .white)
-//                                .onTapGesture {
-//                                    isCLOChecked.toggle()
-//                                }
-//                        }
                     HStack {
                         ForEach(0..<4) { index in
                             Text("CLO:\(index + 1)")
@@ -156,7 +112,7 @@ struct ViewTopics: View { // Design 100% Ok
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity , alignment: .trailing)
                         .onTapGesture {
-//                            createQuestion()
+                            createTopic()
                         }
                     
                     SearchBar(text: $searchText)
@@ -223,11 +179,59 @@ struct ViewTopics: View { // Design 100% Ok
                     topicViewModel.getCourseTopic(courseID: c_id)
                 }
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fiii").resizable().ignoresSafeArea())
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Congratulations"), message: Text("SubTopic Created Successfully"), dismissButton: .default(Text("OK")))
+            }
         }
     }
-    func saveTopic() {
-        
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    func createTopic() {
+        guard let url = URL(string: "http://localhost:4000/addtopic") else {
+            return
+        }
+
+        let user = [
+            "c_id": c_id,
+            "t_name": t_name
+        ] as [String : Any]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: user) else {
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                do {
+                    let result = try JSONSerialization.jsonObject(with: data)
+                    print("Result from server:", result)
+                    topicViewModel.getCourseTopic(courseID: c_id)// Refresh faculties after creating a new one
+                    showAlert = true
+                    DispatchQueue.main.async {
+                        t_name = ""
+                    }
+                } catch {
+                    print("Error parsing JSON:", error)
+                }
+            } else if let error = error {
+                print("Error making request:", error)
+            }
+        }.resume()
     }
     func isTopicEnabled(_ index: Int) -> Bool {
         return filteredTopics[index].status == "Enable"
@@ -274,6 +278,8 @@ struct EditTopics: View { // Design 100% Ok
     @State private var edittopicname = ""
     @StateObject var userViewModel = UserViewModel()
     
+    @State private var showAlert = false
+    
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         
@@ -295,6 +301,9 @@ struct EditTopics: View { // Design 100% Ok
                     .frame(maxWidth: .infinity , alignment: .center)
                     .font(.title3)
                     .foregroundColor(Color.white)
+                    .onAppear{
+                        edittopicname = topic.t_name
+                    }
                 Text("Topic")
                     .bold()
                     .padding()
@@ -336,6 +345,7 @@ struct EditTopics: View { // Design 100% Ok
             }
             Button("Update"){
                 updateTopic()
+                showAlert
             }
             .bold()
             .padding()
@@ -346,16 +356,20 @@ struct EditTopics: View { // Design 100% Ok
             .padding(.all)
             Spacer()
         }
+        .navigationBarItems(leading: backButton)
         .background(Image("fiii").resizable().ignoresSafeArea())
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Congratulations"), message: Text("SubTopic Created Successfully"), dismissButton: .default(Text("OK")))
+        }
     }
     func updateTopic() {
-        guard let url = URL(string: "http://localhost:8000/updateanyfaculty/\(topic.t_id)") else {
+        guard let url = URL(string: "http://localhost:4000/updatetopic/\(topic.t_id)") else {
             return
         }
 
-        let updatedFaculty = Topic(t_id: topic.t_id, t_name: edittopicname, status: topic.status)
+        let updatedSubtopic = Topic(t_id: topic.t_id, t_name: edittopicname, status: topic.status)
 
-        guard let encodedData = try? JSONEncoder().encode(updatedFaculty) else {
+        guard let encodedData = try? JSONEncoder().encode(updatedSubtopic) else {
             return
         }
 
@@ -366,19 +380,35 @@ struct EditTopics: View { // Design 100% Ok
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
-                print("Error while updating faculty: \(error?.localizedDescription ?? "Unknown error")")
+                print("Error while updating subtopic: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
 
-            if let response = try? JSONDecoder().decode(Topic.self, from: data) {
-                print("Faculty updated successfully: \(response)")
+            print("Response Data: \(String(data: data, encoding: .utf8) ?? "")")
 
-                // Perform any necessary UI updates or navigation after successful update
-            } else {
-                print("Error while decoding updated faculty data")
-            }
+            do {
+                    let responseJSON = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    if let message = responseJSON?["message"] as? String, message == "CLO record updated successfully" {
+                        print("CLO updated successfully")
+                        showAlert = true
+                    } else {
+                        print("Error: CLO record not updated")
+                    }
+                } catch {
+                    print("Error while decoding response data: \(error)")
+                }
         }
         task.resume()
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
     }
 }
 
@@ -535,9 +565,10 @@ struct AddSubTopics: View { // Design 100% Ok
                 subtopicViewModel.getTopicSubTopic(topicID: t_id)
             }
         }
+        .navigationBarItems(leading: backButton)
         .background(Image("fiii").resizable().ignoresSafeArea())
         .alert(isPresented: $showAlert) {
-            Alert(title: Text("Congratulations"), message: Text("SubTopic Created Successfully"), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Congratulations"), message: Text("Topic Created Successfully"), dismissButton: .default(Text("OK")))
         }
     }
     
@@ -609,6 +640,16 @@ struct AddSubTopics: View { // Design 100% Ok
                 }
             }
         }.resume()
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
     }
 }
 struct EditSubTopics: View { // Design 100% Ok
@@ -687,6 +728,7 @@ struct EditSubTopics: View { // Design 100% Ok
                 .cornerRadius(8)
                 .padding(.all)
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fiii").resizable().ignoresSafeArea())
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Congratulations"), message: Text("SubTopic Updated Successfully"), dismissButton: .default(Text("OK")))
@@ -730,6 +772,16 @@ struct EditSubTopics: View { // Design 100% Ok
                 }
         }
         task.resume()
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
     }
 }
 

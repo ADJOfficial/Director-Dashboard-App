@@ -94,12 +94,24 @@ struct AssignRole: View {
             }
             Spacer()
         }
+        .navigationBarItems(leading: backButton)
         .background(Image("fc").resizable().ignoresSafeArea())
         .onAppear {
             coursesViewModel.fetchExistingCourses()
         }
     }
+    @Environment(\.presentationMode) var presentationMode
 
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    
     func fetchAssignedFaculty() {
         coViewModel.Courseassignedto.removeAll()
         if let courseID = selectedCourse?.c_id {

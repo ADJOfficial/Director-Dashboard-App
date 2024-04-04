@@ -11,7 +11,6 @@
 		4427DD0E2BABF54200C5A920 /* MatchCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4427DD0D2BABF54200C5A920 /* MatchCredentials.swift */; };
 		442E08782BA4F5EA00907B7D /* UploadedPapers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08772BA4F5EA00907B7D /* UploadedPapers.swift */; };
 		442E087A2BA4F65E00907B7D /* DirectorRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E08792BA4F65E00907B7D /* DirectorRecords.swift */; };
-		442E087F2BA622D400907B7D /* PaperMaking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E087E2BA622D400907B7D /* PaperMaking.swift */; };
 		445083812B48E8EF00707476 /* Director_DashboardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083802B48E8EF00707476 /* Director_DashboardApp.swift */; };
 		445083832B48E8EF00707476 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083822B48E8EF00707476 /* Login.swift */; };
 		445083852B48E8F100707476 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 445083842B48E8F100707476 /* Assets.xcassets */; };
@@ -25,6 +24,7 @@
 		445083A02B48EB2900707476 /* DataCellWelcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450839F2B48EB2900707476 /* DataCellWelcome.swift */; };
 		445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445083BF2B4AAC0200707476 /* ExistingUser.swift */; };
 		4460DEB42BB94C880099B00A /* CoveredTopics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4460DEB32BB94C880099B00A /* CoveredTopics.swift */; };
+		44745D0C2BBE80540010A9AE /* PaperQuestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44745D0B2BBE80540010A9AE /* PaperQuestions.swift */; };
 		449BA12F2B4FF159009473F6 /* DirectorLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA12E2B4FF159009473F6 /* DirectorLogin.swift */; };
 		449BA1312B4FF177009473F6 /* HODLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1302B4FF177009473F6 /* HODLogin.swift */; };
 		449BA1332B4FF187009473F6 /* FacultyLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449BA1322B4FF187009473F6 /* FacultyLogin.swift */; };
@@ -57,7 +57,6 @@
 		4427DD0D2BABF54200C5A920 /* MatchCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchCredentials.swift; sourceTree = "<group>"; };
 		442E08772BA4F5EA00907B7D /* UploadedPapers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadedPapers.swift; sourceTree = "<group>"; };
 		442E08792BA4F65E00907B7D /* DirectorRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorRecords.swift; sourceTree = "<group>"; };
-		442E087E2BA622D400907B7D /* PaperMaking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperMaking.swift; sourceTree = "<group>"; };
 		4450837D2B48E8EF00707476 /* Director Dashboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Director Dashboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		445083802B48E8EF00707476 /* Director_DashboardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Director_DashboardApp.swift; sourceTree = "<group>"; };
 		445083822B48E8EF00707476 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -72,6 +71,7 @@
 		4450839F2B48EB2900707476 /* DataCellWelcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellWelcome.swift; sourceTree = "<group>"; };
 		445083BF2B4AAC0200707476 /* ExistingUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUser.swift; sourceTree = "<group>"; };
 		4460DEB32BB94C880099B00A /* CoveredTopics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoveredTopics.swift; sourceTree = "<group>"; };
+		44745D0B2BBE80540010A9AE /* PaperQuestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperQuestions.swift; sourceTree = "<group>"; };
 		449BA12E2B4FF159009473F6 /* DirectorLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorLogin.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 		449BA1302B4FF177009473F6 /* HODLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HODLogin.swift; sourceTree = "<group>"; };
 		449BA1322B4FF187009473F6 /* FacultyLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyLogin.swift; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 			children = (
 				442E087B2BA4F90500907B7D /* MySQL-Director */,
 				442E08772BA4F5EA00907B7D /* UploadedPapers.swift */,
-				442E087E2BA622D400907B7D /* PaperMaking.swift */,
+				44745D0B2BBE80540010A9AE /* PaperQuestions.swift */,
 			);
 			path = Director;
 			sourceTree = "<group>";
@@ -374,6 +374,7 @@
 				44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */,
 				44A041D42B5392DD00AF79AD /* ViewYourCourses.swift in Sources */,
 				445083C02B4AAC0200707476 /* ExistingUser.swift in Sources */,
+				44745D0C2BBE80540010A9AE /* PaperQuestions.swift in Sources */,
 				449BA1312B4FF177009473F6 /* HODLogin.swift in Sources */,
 				44A041D92B53A20500AF79AD /* SetPaper.swift in Sources */,
 				4450839A2B48EA3400707476 /* SignUp.swift in Sources */,
@@ -402,7 +403,6 @@
 				44BCB4F02B5A3E2300FDC33B /* chek.swift in Sources */,
 				44BA72172B99A4B300812049 /* DataCellRecords.swift in Sources */,
 				44A041E32B53B11400AF79AD /* Topics.swift in Sources */,
-				442E087F2BA622D400907B7D /* PaperMaking.swift in Sources */,
 				4427DD0B2BAADC8900C5A920 /* ApprovedPapers.swift in Sources */,
 				44BA72192B99AC0B00812049 /* updatecheck.swift in Sources */,
 				44C5C0262B52451E00702538 /* GridView.swift in Sources */,

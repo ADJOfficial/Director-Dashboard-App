@@ -19,6 +19,7 @@ struct GetUploadedPaper: Hashable , Decodable  ,Encodable {
     var exam_date: String
     var semester: String
     var status: String
+    var t_questions: Int
     var c_id: Int
     var c_title: String
     var c_code: String
@@ -95,55 +96,55 @@ class UploadedPaperViewModel: ObservableObject {
 }
 
 
-struct GetPaperQuestions: Hashable, Decodable, Encodable {
-    var p_id: Int
-    var q_id: Int
-    var q_text: String
-    var q_image: String
-    var q_marks: Int
-    var q_difficulty: String
-    var q_verification: String
-//    var parent_topic_id: Int
-    var c_id: Int
-    var c_code: String
-    var c_title: String
-    var f_id: Int
-    var f_name: String
-    var clo_text: String
+//struct GetPaperQuestions: Hashable, Decodable, Encodable {
+//    var q_id: Int
+//    var q_text: String
+//    var q_image: String?
+//    var q_marks: Int
+//    var q_difficulty: String
+//    var q_verification: String
+//    var p_id: Int
+//    var c_id: Int
+//    var c_code: String
+//    var c_title: String
+//    var f_id: Int
+//    var f_name: String
+//    var clo_code: String
 //    var t_name: String
-}
-
-class QuestionViewModel: ObservableObject {
-    
-    @Published var uploadedQuestions: [GetPaperQuestions] = []
-    
-    func getPaperQuestions(paperID: Int) {
-        guard let url = URL(string: "http://localhost:3000/getpaperquestion/\(paperID)") else {
-            print("Invalid URL")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                let questions = try decoder.decode([GetPaperQuestions].self, from: data)
-                DispatchQueue.main.async {
-                    self.uploadedQuestions = questions
-                }
-            } catch {
-                print("Error decoding data: \(error.localizedDescription)")
-            }
-        }
-        .resume()
-    }
-}
+//}
+//
+//class QuestionViewModel: ObservableObject {
+//    
+//    @Published var uploadedQuestions: [GetPaperQuestions] = []
+//    
+//    func getPaperQuestions(paperID: Int) {
+//        guard let url = URL(string: "http://localhost:3000/getpaperquestion/\(paperID)") else {
+//            print("Invalid URL")
+//            return
+//        }
+//        
+//        URLSession.shared.dataTask(with: url) { (data, response, error) in
+//            if let error = error {
+//                print("Error: \(error.localizedDescription)")
+//                return
+//            }
+//            
+//            guard let data = data else {
+//                print("No data received")
+//                return
+//            }
+//            
+//            do {
+//                let decoder = JSONDecoder()
+////                decoder.dataDecodingStrategy = .base64
+//                let questions = try decoder.decode([GetPaperQuestions].self, from: data)
+//                DispatchQueue.main.async {
+//                    self.uploadedQuestions = questions
+//                }
+//            } catch {
+//                print("Error decoding data: \(error.localizedDescription)")
+//            }
+//        }
+//        .resume()
+//    }
+//}

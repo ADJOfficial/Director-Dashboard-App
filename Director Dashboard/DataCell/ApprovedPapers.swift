@@ -54,6 +54,7 @@ struct ApprovedPaper: View { // Design 100% OK
                     .foregroundColor(Color.white)
                 Spacer()
                 SearchBar(text: $searchText)
+                    .padding()
                 Spacer()
                 VStack{
                     ScrollView {
@@ -79,7 +80,7 @@ struct ApprovedPaper: View { // Design 100% OK
                         if filteredPapers.isEmpty {
                             Text("No Approved Paper Found")
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -88,17 +89,29 @@ struct ApprovedPaper: View { // Design 100% OK
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 2)
                 )
-                .frame(width: 410 , height:700)
+                .frame(height:700)
                 .onAppear {
                     paperViewModel.fetchApprovedPapers()
                 }
                 Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fw").resizable().ignoresSafeArea())
         }
     }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    
     func isPaperApproved(_ index: Int) -> Bool {
         return filteredPapers[index].status == "Print"
     }

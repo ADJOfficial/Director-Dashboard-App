@@ -31,6 +31,7 @@ struct DirectorWelcome: View { // Design 100% Ok
                 VStack {   
                     NavigationLink {
                         UploadedPapers()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Upload Papers")
                     }
@@ -42,7 +43,8 @@ struct DirectorWelcome: View { // Design 100% Ok
                     .cornerRadius(8)
                     .padding(.all)
                     NavigationLink {
-                        ApprovedPapers()
+                        AdditionalQuestions()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Approved Papers")
                     }
@@ -209,7 +211,18 @@ struct MakePaper: View {
                 
             }
         }
+        .navigationBarItems(leading: backButton)
         .background(Image("ft").resizable().ignoresSafeArea())
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
     }
 }
 struct DirectorWelcome_Previews: PreviewProvider {

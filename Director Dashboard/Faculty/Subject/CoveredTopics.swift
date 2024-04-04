@@ -122,7 +122,7 @@ struct CoveredTopics: View {
                 .frame(height:600)
                 .onAppear {
                     topicViewModel.getCourseTopic(courseID: c_id)
-                    subtopicViewModel.getTopicSubTopic(topicID: t_id)
+                    subtopicViewModel.getTopicSubTopic(topicID: 1)
                 }
             }
             .background(Image("fiii").resizable().ignoresSafeArea())

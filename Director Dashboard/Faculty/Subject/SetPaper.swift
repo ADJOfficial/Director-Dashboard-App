@@ -611,7 +611,7 @@ struct StartMakingPaper: View {
                                         .font(.headline)
                                         .foregroundColor(Color.white)
                                         .frame(maxWidth: .infinity , alignment: .leading)
-                                    Text("[ \(cr.q_difficulty) ,\(cr.q_marks) , \(cr.clo_text)]") //  , \(assignedFaculty.clo_text)
+                                    Text("[ \(cr.q_difficulty) , \(cr.q_marks) , \(cr.clo_code) ]")
                                         .font(.title3)
                                         .padding(.horizontal)
                                         .foregroundColor(Color.yellow)
@@ -653,7 +653,7 @@ struct StartMakingPaper: View {
     }
     
     func createQuestion() {
-        guard let url = URL(string: "http://localhost:4000/createquestion") else {
+        guard let url = URL(string: "http://localhost:4000/createquestions") else {
             return
         }
         

@@ -30,6 +30,7 @@ struct ViewYourCourses: View { // Design 100% OK
                     .foregroundColor(Color.white)
                 NavigationLink {
                     Mail(fb_details: "", f_id: f_id, c_id: c_id, c_title: c_title, c_code: c_code, f_name: f_name, q_id: 0, p_id: 0)
+                        .navigationBarBackButtonHidden(true)
                 } label: {
                     Image(systemName: "mail.fill")
                         .foregroundColor(Color.blue.opacity(0.7))
@@ -51,6 +52,7 @@ struct ViewYourCourses: View { // Design 100% OK
                             HStack{
                                 NavigationLink{
                                     Subject(f_id: f_id, f_name: f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code , p_id: p_id , t_id: t_id , t_name: t_name)
+                                        .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Text(cr.c_title)
                                         .foregroundColor(.black)
@@ -86,7 +88,18 @@ struct ViewYourCourses: View { // Design 100% OK
                 }
                 Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fiii").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }
@@ -192,7 +205,18 @@ struct Subject: View {
                 }
                 Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fiii").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }
@@ -270,7 +294,18 @@ struct Mail: View {
                     feedbackViewModel.fetchExistingFeedback(facultyID: f_id, courseID: c_id)
                 }
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fiii").resizable().ignoresSafeArea().aspectRatio(contentMode: .fill))
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }

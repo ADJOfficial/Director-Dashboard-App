@@ -86,7 +86,7 @@ struct PrintedPapers: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 2)
                 )
                 .frame(height:700)
                 .onAppear {
@@ -94,7 +94,18 @@ struct PrintedPapers: View {
                 }
                 Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fw").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }

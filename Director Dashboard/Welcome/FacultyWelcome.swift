@@ -90,7 +90,18 @@ struct FacultyWelcome: View { // Design 100% OK
                 .frame(maxWidth: .infinity , alignment: .trailing)
                 
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fiii").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }

@@ -38,6 +38,7 @@ struct Dashboard: View {
                     
                     NavigationLink{
                         DirectorLogin()
+                            .navigationBarBackButtonHidden(true)
                     }label: {
                         Text("Director")
                             .foregroundColor(.black)

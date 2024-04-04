@@ -21,7 +21,7 @@ struct AssignCourse: View { // Design 100% ok
     
     @State private var selectedCourses: Set<Int> = []
     @State private var selectedfaculty: Int?
-    @State private var selectedFacultyName: String = ""
+
     
 //    @State private var assignedCourses: [Int] = []
     
@@ -95,7 +95,6 @@ struct AssignCourse: View { // Design 100% ok
                     ScrollView{
                         ForEach(filteredcourse, id: \.self) { cr in
                             HStack{
-                                
                                 Text(cr.c_title)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
@@ -103,15 +102,20 @@ struct AssignCourse: View { // Design 100% ok
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 Button(action: {
                                     toggleCourseSelection(courseID: cr.c_id)
-                                    if let selectedFacultyID = selectedfaculty {
-                                                assignCourseToFaculty(courseID: cr.c_id, facultyID: selectedFacultyID)
-                                            }
+                                    assignCourseToFaculty(courseID: cr.c_id, facultyID: facultyID)
                                 }) {
                                     Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
                                         .font(.title2)
                                         .foregroundColor(Color.white)
                                         .padding(.horizontal)
                                         .frame(maxWidth: .infinity, alignment: .trailing)
+                                }
+                                .disabled(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id))
+                                .opacity(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? 0.5 : 1.0)
+                                .onAppear {
+                                    if assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) {
+                                        selectedCourses.insert(cr.c_id)
+                                    }
                                 }
                             }
                             Divider()
@@ -135,6 +139,10 @@ struct AssignCourse: View { // Design 100% ok
                 .frame(height: 500)
                 .onAppear {
                     coursesViewModel.fetchExistingCourses()
+//                    assignedcoursesViewModel.fetchAssignedCourses(facultyID: facultyID)
+                    if let selectedFacultyID = selectedfaculty {
+                            assignedcoursesViewModel.fetchAssignedCourses(facultyID: selectedFacultyID)
+                        }
                 }
             }
             .onAppear {
@@ -192,7 +200,11 @@ struct AssignCourse: View { // Design 100% ok
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     if let message = json["message"] as? String {
                         print(message)
-                        // Update the UI or perform any other action based on the message
+                        if selectedCourses.contains(courseID) {
+                                selectedCourses.remove(courseID)
+                            } else {
+                                selectedCourses.insert(courseID)
+                            }
                     }
                 } else {
                     print("Invalid JSON response")

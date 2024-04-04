@@ -175,7 +175,10 @@ struct Course: View {   // Design 100% OK
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .center)
 
-                                NavigationLink(destination: EditCourse(course: cr)) {
+                                NavigationLink {
+                                    EditCourse(course: cr)
+                                        .navigationBarBackButtonHidden(true)
+                                } label:{
                                     Image(systemName: "square.and.pencil.circle")
                                         .bold()
                                         .font(.title)
@@ -204,17 +207,29 @@ struct Course: View {   // Design 100% OK
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 2)
                 )
-                .frame(width: 410 , height:250)
+                .frame(height:250)
                 .onAppear {
                     coursesViewModel.fetchExistingCourses()
                 }
                 Spacer()
             }
-            .background(Image("fw"))
+            .navigationBarItems(leading: backButton)
+            .background(Image("fw").resizable().ignoresSafeArea())
         }
     }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    
     func isFacultyEnabled(_ index: Int) -> Bool {
         return filteredCourses[index].status == "enable"
     }
@@ -369,8 +384,20 @@ struct EditCourse: View { // Design 100% OK
             .cornerRadius(8)
             .padding(.all)
         }
-        .background(Image("fw"))
+        .navigationBarItems(leading: backButton)
+        .background(Image("fw").resizable().ignoresSafeArea())
     }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    
     func updateCourse() {
             guard let url = URL(string: "http://localhost:8000/updateanycourse/\(course.c_id)") else {
                 print("Invalid URL")

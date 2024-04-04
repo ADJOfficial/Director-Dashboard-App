@@ -122,7 +122,10 @@ struct Faculty: View {   // Design 100% OK
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .center)
                                 
-                                NavigationLink(destination: EditFaculty(faculty: cr)) {
+                                NavigationLink {
+                                    EditFaculty(faculty: cr)
+                                        .navigationBarBackButtonHidden(true)
+                                } label:{
                                     Image(systemName: "square.and.pencil.circle")
                                         .bold()
                                         .font(.title)
@@ -151,42 +154,28 @@ struct Faculty: View {   // Design 100% OK
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 2)
                 )
-                .frame(width: 410 , height:250)
+                .frame(height:250)
                 .onAppear {
                     facultiesViewModel.fetchExistingFaculties()
                 }
                 Spacer()
             }
-            .background(Image("fw"))
+            .navigationBarItems(leading: backButton)
+            .background(Image("fw").resizable().ignoresSafeArea())
         }
     }
-//    func performSearch(_ searchText: String) {
-//            guard !searchText.isEmpty else {
-//                searchResults = []
-//                return
-//            }
-//            
-//            guard let url = URL(string: "http://localhost:8000/faculty/search?q=\(searchText)") else {
-//                return
-//            }
-//
-//            URLSession.shared.dataTask(with: url) { data, response, error in
-//                if let error = error {
-//                    print("Error searching faculty: \(error.localizedDescription)")
-//                } else if let data = data {
-//                    do {
-//                        let searchResults = try JSONDecoder().decode([faculties].self, from: data)
-//                        DispatchQueue.main.async {
-//                            self.searchResults = searchResults
-//                        }
-//                    } catch {
-//                        print("Error decoding search results: \(error.localizedDescription)")
-//                    }
-//                }
-//            }.resume()
-//        }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
     func isFacultyEnabled(_ index: Int) -> Bool {
         return filteredFaculties[index].status == "enable"
     }
@@ -328,7 +317,18 @@ struct EditFaculty: View { // Design 100% OK
             .cornerRadius(8)
             .padding(.all)
         }
-        .background(Image("fw"))
+        .navigationBarItems(leading: backButton)
+        .background(Image("fw").resizable().ignoresSafeArea())
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
     }
     func updateFaculty() {
         guard let url = URL(string: "http://localhost:8000/updateanyfaculty/\(faculty.f_id)") else {

@@ -53,7 +53,7 @@ class AssignedCoursesViewModel: ObservableObject {
         }
         task.resume()
     }
-    
+
     func isCourseAssigned(courseID: Int) -> Bool {
         return assignedCourses.contains { $0.c_id == courseID }
     }

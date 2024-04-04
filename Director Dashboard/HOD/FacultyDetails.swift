@@ -202,7 +202,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                         .bold()
                         .padding()
                         .font(.largeTitle)
-                        .foregroundColor(Color.blue.opacity(0.9))
+                        .foregroundColor(Color.teal.opacity(0.9))
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity , alignment: .trailing)
                 }

@@ -72,8 +72,8 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .padding(.all)
                     
                     NavigationLink{
-//                        PrintedPapers()
-//                            .navigationBarBackButtonHidden(true)
+                        PrintedPapers()
+                            .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Printed")
                     }
@@ -87,7 +87,18 @@ struct DataCellWelcome: View { // Design 100% Ok
                 }
                 Spacer()
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("ff").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }

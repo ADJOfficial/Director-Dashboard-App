@@ -107,7 +107,19 @@ struct ViewCourses: View {    // Design 100% OK
                     coursesViewModel.fetchExistingCourses()
                 }
             }
+            .navigationBarItems(leading: backButton)
             .background(Image("fc") .resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }
@@ -198,7 +210,7 @@ struct CourseAssignedTo: View {  // Design 100% ok
                 .padding()
                 .frame(width: 150)
                 .foregroundColor(.black)
-                .background(Color.blue.opacity(0.9))
+                .background(Color.teal.opacity(0.9))
                 .cornerRadius(8)
                 
             }
@@ -227,7 +239,7 @@ struct CLOS: View { // Design 100% OK
     
     @Environment(\.presentationMode) var presentationMode
     
-    @State private var selectedButton: String?
+    @State private var selectedButton: [Int: String] = [:]
     
     @State private var searchText = ""
     @StateObject private var cloViewModel = CLOViewModel()
@@ -244,25 +256,48 @@ struct CLOS: View { // Design 100% OK
         }
     }
     
+    struct SearchBar: View { // Search Bar avaible outside of table to search record
+        
+        @Binding var text: String
+        
+        var body: some View {
+            HStack {
+                TextField("Search", text: $text)
+                    .padding()
+                    .frame(width: 247 , height: 40)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8) // Set the corner radius to round the corners
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Button(action: {
+                    text = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
+                }
+                .opacity(text.isEmpty ? 0 : 1)
+            }
+        }
+    }
+    
     var statusText: String {
-        if cloViewModel.existing.contains(where: { $0.status == "Pending" }) {
-            return "Pending"
-        } else if cloViewModel.existing.contains(where: { $0.status == "Approved" }) {
+        if filteredClo.allSatisfy({ $0.status == "Approved" }) {
             return "Approved"
+        } else if filteredClo.contains(where: { $0.status == "Pending" }) {
+            return "Pending"
         } else {
             return "Rejected"
         }
     }
+
     var statusColor: Color {
-        switch statusText {
-        case "Pending":
-            return Color.yellow
-        case "Approved":
+        if filteredClo.allSatisfy({ $0.status == "Approved" }) {
             return Color.green
-        case "Rejected":
+        } else if filteredClo.contains(where: { $0.status == "Pending" }) {
+            return Color.yellow
+        } else {
             return Color.red
-        default:
-            return Color.gray
         }
     }
     
@@ -273,17 +308,26 @@ struct CLOS: View { // Design 100% OK
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
-            HStack{
+//            Spacer()
+            HStack {
                 Spacer()
-                Text("Status - \(statusText)")
-                    .font(.title3)
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity , alignment: .trailing)
+                if filteredClo.allSatisfy({ $0.status == "Approved" }) {
+                    Text("Status - \(statusText)")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity , alignment: .trailing)
+                } else {
+                    Text("Status - \(statusText)")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity , alignment: .trailing)
+                }
                 Image(systemName: "circle.fill")
                     .foregroundColor(statusColor)
                 Spacer()
             }
             .padding()
+//            .padding()
             Text("\(c_title)")
                 .bold()
                 .font(.title2)
@@ -295,8 +339,11 @@ struct CLOS: View { // Design 100% OK
                 .padding(.horizontal)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-           Spacer()
             
+            Spacer()
+            
+            SearchBar(text: $searchText)
+                .padding()
             VStack {
                 ScrollView{
                     ForEach(filteredClo.indices , id:\ .self) { index in
@@ -314,31 +361,39 @@ struct CLOS: View { // Design 100% OK
                                 .frame(maxWidth: .infinity , alignment: .leading)
                             HStack {
                                 Button(action: {
-                                    selectedButton = "Approved"
+                                    selectedButton[cr.clo_id] = "Approved"
                                     updateQuestionStatus(cloId: cr.clo_id, cloStatus: "Approved")
                                 }) {
-                                    Image(systemName: selectedButton == "Approved" ? "largecircle.fill.circle" : "circle")
-                                        .foregroundColor(selectedButton == "Approved" ? .green : .gray)
+                                    Image(systemName: selectedButton[cr.clo_id] == "Approved" ? "largecircle.fill.circle" : "circle")
+                                        .foregroundColor(selectedButton[cr.clo_id] == "Approved" ? .green : .gray)
                                     Text("Approved")
                                         .font(.title3)
-                                        .foregroundColor(selectedButton == "Approved" ? .green : .gray)
+                                        .foregroundColor(selectedButton[cr.clo_id] == "Approved" ? .green : .gray)
                                 }
                                 .onTapGesture {
-                                    selectedButton = selectedButton == "Approved" ? "" : "Approved"
+                                    if selectedButton[cr.clo_id] == "Approved" {
+                                        selectedButton[cr.clo_id] = nil
+                                    } else {
+                                        selectedButton[cr.clo_id] = "Approved"
+                                    }
                                 }
                                 
                                 Button(action: {
-                                    selectedButton = "Rejected"
+                                    selectedButton[cr.clo_id] = "Rejected"
                                     updateQuestionStatus(cloId: cr.clo_id, cloStatus: "Rejected")
                                 }) {
-                                    Image(systemName: selectedButton == "Rejected" ? "largecircle.fill.circle" : "circle")
-                                        .foregroundColor(selectedButton == "Rejected" ? .red : .gray)
+                                    Image(systemName: selectedButton[cr.clo_id] == "Rejected" ? "largecircle.fill.circle" : "circle")
+                                        .foregroundColor(selectedButton[cr.clo_id] == "Rejected" ? .red : .gray)
                                     Text("Rejected")
                                         .font(.title3)
-                                        .foregroundColor(selectedButton == "Rejected" ? .red : .gray)
+                                        .foregroundColor(selectedButton[cr.clo_id] == "Rejected" ? .red : .gray)
                                 }
                                 .onTapGesture {
-                                    selectedButton = selectedButton == "Rejected" ? "" : "Rejected"
+                                    if selectedButton[cr.clo_id] == "Rejected" {
+                                        selectedButton[cr.clo_id] = nil
+                                    } else {
+                                        selectedButton[cr.clo_id] = "Rejected"
+                                    }
                                 }
                             }
                             .padding()
@@ -366,6 +421,8 @@ struct CLOS: View { // Design 100% OK
             .onAppear {
                 cloViewModel.getCourseCLO(courseID: c_id)
             }
+            
+//            Spacer()
         }
         .navigationBarItems(leading: backButton)
         .background(Image("fc").resizable().ignoresSafeArea())
@@ -378,8 +435,8 @@ struct CLOS: View { // Design 100% OK
                statusValue = cloStatus
            }
         
-        let url = URL(string: "http://localhost:4000/updateclostatus/\(cloId)")!
-        let parameters = ["q_verification": statusValue]
+        let url = URL(string: "http://localhost:2000/updateclostatus/\(cloId)")!
+        let parameters = ["status": statusValue]
         
         guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters) else {
             return

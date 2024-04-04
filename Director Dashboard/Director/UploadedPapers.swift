@@ -11,7 +11,7 @@ struct UploadedPapers: View {
     
     
     @State private var searchText = ""
-    @State private var searchResults: [GetUploadedPaper] = []
+//    @State private var searchResults: [GetUploadedPaper] = []
     @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
 //    @StateObject private var coursesViewModel = CoursesViewModel()
     
@@ -77,8 +77,8 @@ struct UploadedPapers: View {
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .center)
                                 NavigationLink{
-                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, q_id: 0 ,clo_text: "", t_name: "" )
-                                        .navigationBarBackButtonHidden(false)
+                                    EyeViewPaperHeader(p_id: cr.p_id, f_id: cr.f_id, f_name: cr.f_name, c_id: cr.c_id, c_title: cr.c_title, c_code: cr.c_code, exam_date: cr.exam_date, duration: cr.duration, degree: cr.degree, term: cr.term, year: cr.year, t_marks: cr.t_marks, t_questions: cr.t_questions, q_id: 0 ,clo_text: "", t_name: "" )
+                                        .navigationBarBackButtonHidden(true)
                                 }label: {
                                     Image(systemName: "eye.fill")
                                         .bold()
@@ -102,9 +102,9 @@ struct UploadedPapers: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 2)
+                        .stroke(Color.red.opacity(0.3), lineWidth: 2)
                 )
-                .frame(width: 410 , height:700)
+                .frame(height:700)
                 .onAppear {
                     uploadedPaperViewModel.fetchExistingPapers()
                     print("Filtered Papers Count:", filteredPapers.count)
@@ -112,7 +112,18 @@ struct UploadedPapers: View {
                 
                 Spacer()
             }
-            .background(Image("fw").resizable().ignoresSafeArea())
+            .navigationBarItems(leading: backButton)
+            .background(Image("ft").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }
@@ -131,6 +142,7 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
     var term: String
     var year: Int
     var t_marks: Int
+    var t_questions: Int
     var q_id: Int
     var clo_text: String
     var t_name: String
@@ -161,7 +173,7 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
                 NavigationLink {
-                    Comments(f_id: f_id, c_id: c_id, p_id: p_id, q_id: q_id)
+                    Comments(f_id: f_id, c_id: c_id, p_id: p_id, q_id: q_id, c_title: c_title, c_code: c_code)
                         .navigationBarBackButtonHidden(true)
                 } label: {
                     Image(systemName: "text.bubble.fill")
@@ -171,146 +183,170 @@ struct EyeViewPaperHeader: View { // Design 100% Ok
                         .frame(maxWidth: .infinity , alignment: .trailing)
                 }
                 Spacer()
-                VStack(){
-                    HStack{
-                        Text("Teacher :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(f_name)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Course Title :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(c_title)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Course Code :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(c_code)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Date of Exam :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(exam_date)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Duration :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(duration)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Degree :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(degree)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Term :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(term)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Year :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(year)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Total Marks :")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(t_marks)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
-                    }
-                    HStack{
-                        Text("Questions ")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .leading)
-                        Text("\(q_id)")
-                            .padding(1)
-                            .foregroundColor(Color.white)
-                            .padding(.horizontal)
-                            .frame(maxWidth: .infinity , alignment: .trailing)
+                VStack {
+                    ScrollView{
+                        HStack{
+                            Text("Teacher :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(f_name)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Course Title :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(c_title)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Course Code :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(c_code)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Date of Exam :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(exam_date)")
+                                .font(.headline)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Duration :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(duration)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Degree :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(degree)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Term :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(term)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Year :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(year)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Total Marks :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(t_marks)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
+                        HStack{
+                            Text("Questions :")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("\(t_questions)")
+                                .bold()
+                                .font(.title3)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity , alignment: .trailing)
+                        }
+                        .padding(3)
                     }
                 }
-                .bold()
-                .font(.title3)
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity , alignment: .leading)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.red.opacity(0.3), lineWidth: 2)
+                )
+                .frame(height: 450)
                 Spacer()
                 NavigationLink {
-                    PaperMaking(paperID: p_id, q_id: q_id, p_id: p_id, c_id: c_id, c_code: c_code, c_title: c_title, f_id: f_id, f_name: f_name, clo_text: clo_text, t_name: t_name, exam_date: exam_date, degree: degree, duration: duration, t_marks: t_marks)
+                    PaperQuestions(paperID: p_id, q_id: q_id, p_id: p_id, c_id: c_id, c_code: c_code, c_title: c_title, f_id: f_id, f_name: f_name, clo_text: clo_text, t_name: t_name, exam_date: exam_date, degree: degree, duration: duration, t_marks: t_marks)
                         .navigationBarBackButtonHidden(true)
                 }label: {
-                    Text("View Paper")
+                    Text("View Questions")
                 }
                 .foregroundColor(.black)
                 .padding()
-                .background(Color.cyan)
+                .background(Color.brown.opacity(1))
                 .cornerRadius(8)
                 Spacer()
             }
-            .background(Image("fw").resizable().ignoresSafeArea())
+            .navigationBarItems(leading: backButton)
+            .background(Image("ft").resizable().ignoresSafeArea())
+        }
+    }
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
         }
     }
 }
@@ -321,22 +357,30 @@ struct Comments: View { // Design 100% Ok
     var c_id: Int
     var p_id: Int
     var q_id: Int
+    var c_title: String
+    var c_code: String
     @State private var fb_details: String = ""
     
     var body: some View { // Get All Data From Node MongoDB : Pending
-        
         VStack {
             Text("Comments")
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-            Text("Feedback")
+            Text("\(c_title)")
                 .bold()
-                .font(.title)
-                .foregroundColor(Color.white)
+                .font(.title2)
                 .padding(.horizontal)
+                .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
+            Text("\(c_code)")
+                .bold()
+                .font(.headline)
+                .padding(.horizontal)
+                .foregroundColor(Color.white)
+                .frame(maxWidth: .infinity , alignment: .leading)
+            Spacer()
             ZStack(alignment: .bottomTrailing) {
                 TextEditor(text: $fb_details)
                     .padding()
@@ -357,11 +401,23 @@ struct Comments: View { // Design 100% Ok
                     }
                 }
             }
-            .padding()
             Spacer()
         }
-        .background(Image("fw").resizable().ignoresSafeArea())
+        .navigationBarItems(leading: backButton)
+        .background(Image("ft").resizable().ignoresSafeArea())
     }
+    
+    @Environment(\.presentationMode) var presentationMode
+    private var backButton: some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.blue)
+                .imageScale(.large)
+        }
+    }
+    
     func createFeedback() {
         guard let url = URL(string: "http://localhost:3000/addfeedback") else {
             return
@@ -371,7 +427,7 @@ struct Comments: View { // Design 100% Ok
             "f_id": f_id,
             "c_id": c_id,
             "p_id": p_id,
-            "q_id": q_id,
+//            "q_id": q_id,
             "fb_details": fb_details
         ] as [String : Any]
 

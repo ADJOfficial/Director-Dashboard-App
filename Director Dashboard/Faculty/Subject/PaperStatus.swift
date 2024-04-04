@@ -50,11 +50,24 @@ struct PaperStatus: View { // Design 100% Ok
             }
         }
     }
+    func getColorForStatus(_ status: String) -> Color {
+        switch status {
+        case "Approved":
+            return Color.green
+        case "Pending":
+            return Color.yellow
+        case "Rejected":
+            return Color.red
+        default:
+            return Color.white
+        }
+    }
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
         
         NavigationView {
             VStack {
-                Text("Approved Papers")
+                Text("Papers Status")
                     .bold()
                     .padding()
                     .font(.largeTitle)
@@ -74,7 +87,7 @@ struct PaperStatus: View { // Design 100% Ok
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                 Text(cr.status)
                                     .font(.headline)
-                                    .foregroundColor(cr.status == "Pending" ? Color.yellow : Color.green)
+                                    .foregroundColor(getColorForStatus(cr.status))
                                     .frame(maxWidth: .infinity , alignment: .trailing)
                             }
                             Divider()
@@ -108,6 +121,6 @@ struct PaperStatus: View { // Design 100% Ok
 
 struct PaperStatus_Previews: PreviewProvider {
     static var previews: some View {
-        PaperStatus(f_id: 0,f_name: "", c_id: 0, c_title: "")
+        PaperStatus(f_id: 1,f_name: "", c_id: 1, c_title: "")
     }
 }
