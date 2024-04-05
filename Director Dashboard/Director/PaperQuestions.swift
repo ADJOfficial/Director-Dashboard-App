@@ -10,7 +10,7 @@ import SwiftUI
 struct GetPaperQuestions: Hashable, Decodable, Encodable {
     var q_id: Int
     var q_text: String
-    var q_image: String?
+    var q_image: Data?
     var q_marks: Int
     var q_difficulty: String
     var q_verification: String
@@ -41,7 +41,7 @@ class QuestionViewModel: ObservableObject {
             }
             
             guard let data = data else {
-                print("No data received")
+                print("No data received: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
             
@@ -78,11 +78,15 @@ struct PaperQuestions: View {
     var duration: Int
     var t_marks: Int
     
+    
+    @State private var decodedImage: UIImage? = nil
+    
     @State private var isAccepted = false // For Accept All CheckMark
     @State private var showApprovedPaperButton = false
     @State private var showAlert = false
     
     @State private var q_text = ""
+//    @State private var q_image = ""
     @State private var fb_details = ""
     @StateObject private var questionViewModel = QuestionViewModel()
     
@@ -205,23 +209,42 @@ struct PaperQuestions: View {
                                         .onAppear {
                                             q_text = cr.q_text
                                         }
+                                    
+                                    
                                 }
-                                if let imageDataString = cr.q_image,
-                                   let imageData = Data(base64Encoded: imageDataString),
-                                   let uiImage = UIImage(data: imageData) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .cornerRadius(30)
-                                        .frame(width: 300, height: 300)
-                                }
-                                Text("[ \(cr.q_difficulty) , \(cr.q_marks) , \(cr.clo_code) ]")
-                                    .font(.title3)
-                                    .padding(.horizontal)
-                                    .foregroundColor(Color.white)
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                
                                 HStack {
+                                    
+                                    if let base64Image = cr.q_image,
+                                              let imageData = Data(base64Encoded: base64Image),
+                                              let uiImage = UIImage(data: imageData) {
+                                               decodedImage = uiImage // Assign the decoded image directly
+                                               
+                                               // Now use decodedImage in your view
+                                               if let image = decodedImage {
+                                                   Image(uiImage: image)
+                                                       .resizable()
+                                                       .aspectRatio(contentMode: .fit)
+                                                       .frame(width: 100, height: 100) // Adjust size as needed
+                                                       .onAppear {
+                                                           print("Image data decoded successfully.")
+                                                       }
+                                               } else {
+                                                   print("Error decoding image data.")
+                                               }
+                                           }
+                                
+
+                                    
+                                    Text("[ \(cr.q_difficulty) , \(cr.q_marks) , \(cr.clo_code) ]")
+                                        .font(.title3)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.white)
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                    
+                                    
+                                }
+                                HStack {
+                                    
                                     Button(action: {
                                         selectedButton[cr.q_id] = "Approved"
                                         updateQuestionStatus(questionId: cr.q_id, q_verification: "Approved")
@@ -260,6 +283,7 @@ struct PaperQuestions: View {
                                         }
                                     }
                                 }
+                                
                                 .padding()
                                 .frame(maxWidth: .infinity , alignment: .trailing)
                                 HStack{
@@ -282,6 +306,8 @@ struct PaperQuestions: View {
                             Divider()
                                 .background(Color.white)
                                 .padding()
+                            
+                                
                         }
                     }
                 }
@@ -639,7 +665,7 @@ struct AdditionalQuestions: View { // For Radio Button
 
 struct PaperTopic_Previews: PreviewProvider {
     static var previews: some View {
-        PaperQuestions(paperID: 1, q_id: 1, p_id: 2, c_id: 1, c_code: "", c_title: "", f_id: 1, f_name: "", clo_text: "", t_name: "", exam_date: "", degree: "", duration: 1, t_marks: 1)
+        PaperQuestions(paperID: 1, q_id: 1, p_id: 1, c_id: 1, c_code: "", c_title: "", f_id: 1, f_name: "", clo_text: "", t_name: "", exam_date: "", degree: "", duration: 1, t_marks: 1)
 //        AdditionalQuestions()
 //        PaperTopic(c_id: 3, t_name: "", c_title: "", c_code: "")
     }

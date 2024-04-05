@@ -653,7 +653,7 @@ struct StartMakingPaper: View {
     }
     
     func createQuestion() {
-        guard let url = URL(string: "http://localhost:4000/createquestions") else {
+        guard let url = URL(string: "http://localhost:4000/ifimageornot") else {
             return
         }
         
