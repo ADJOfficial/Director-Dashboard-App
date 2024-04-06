@@ -7,60 +7,6 @@
 
 import SwiftUI
 
-struct GetPaperQuestions: Hashable, Decodable, Encodable {
-    var q_id: Int
-    var q_text: String
-    var q_image: Data?
-    var q_marks: Int
-    var q_difficulty: String
-    var q_verification: String
-    var p_id: Int
-    var c_id: Int
-    var c_code: String
-    var c_title: String
-    var f_id: Int
-    var f_name: String
-    var clo_code: String
-    var t_name: String
-}
-
-class QuestionViewModel: ObservableObject {
-    
-    @Published var uploadedQuestions: [GetPaperQuestions] = []
-    
-    func getPaperQuestions(paperID: Int) {
-        guard let url = URL(string: "http://localhost:3000/getpaperquestion/\(paperID)") else {
-            print("Invalid URL")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-//                decoder.dataDecodingStrategy = .base64
-                let questions = try decoder.decode([GetPaperQuestions].self, from: data)
-                DispatchQueue.main.async {
-                    self.uploadedQuestions = questions
-                }
-            } catch {
-                print("Error decoding data: \(error.localizedDescription)")
-            }
-        }
-        .resume()
-    }
-}
-
-
 struct PaperQuestions: View {
     
     let paperID: Int
@@ -79,10 +25,14 @@ struct PaperQuestions: View {
     var t_marks: Int
     
     
-    @State private var decodedImage: UIImage? = nil
+    @State private var q_image: UIImage?
     
+    @State private var selectedCLOText: String = ""
+    @State private var selectedQuestionIndex: Int?
     @State private var isAccepted = false // For Accept All CheckMark
+    @State private var paperStatus: String = ""
     @State private var showApprovedPaperButton = false
+    @State private var showRejectedPaperButton = false
     @State private var showAlert = false
     
     @State private var q_text = ""
@@ -196,10 +146,28 @@ struct PaperQuestions: View {
                                             questionViewModel.uploadedQuestions[index].q_text = newValue
                                         }
                                     )
-                                    Text("Question # 0\(index + 1)")
-                                        .font(.headline)
-                                        .foregroundColor(Color.orange)
-                                        .frame(maxWidth: .infinity , alignment: .leading)
+                                    HStack{
+                                        Text("Question # 0\(index + 1)")
+                                            .font(.headline)
+                                            .foregroundColor(Color.orange)
+                                            .frame(maxWidth: .infinity , alignment: .leading)
+                                            .gesture(
+                                                        DragGesture()
+                                                            .onEnded { value in
+                                                                if value.translation.width > 100 {
+                                                                    selectedQuestionIndex = index
+                                                                }
+                                                            }
+                                                    )
+                                        NavigationLink{
+                                            AdditionalQuestions(p_id: cr.p_id , c_title: cr.c_title , c_code: cr.c_code, selectedQuestionIndex: $selectedQuestionIndex)
+                                                .navigationBarBackButtonHidden(true)
+                                        }label: {
+                                            Image(systemName: "fibrechannel")
+                                        }
+                                        .font(.title3)
+                                        .foregroundColor(Color.mint)
+                                    }
                                     TextField("", text: binding)
                                         .padding()
                                         .font(.headline)
@@ -209,39 +177,20 @@ struct PaperQuestions: View {
                                         .onAppear {
                                             q_text = cr.q_text
                                         }
-                                    
-                                    
                                 }
                                 HStack {
-                                    
                                     if let base64Image = cr.q_image,
-                                              let imageData = Data(base64Encoded: base64Image),
-                                              let uiImage = UIImage(data: imageData) {
-                                               decodedImage = uiImage // Assign the decoded image directly
-                                               
-                                               // Now use decodedImage in your view
-                                               if let image = decodedImage {
-                                                   Image(uiImage: image)
-                                                       .resizable()
-                                                       .aspectRatio(contentMode: .fit)
-                                                       .frame(width: 100, height: 100) // Adjust size as needed
-                                                       .onAppear {
-                                                           print("Image data decoded successfully.")
-                                                       }
-                                               } else {
-                                                   print("Error decoding image data.")
-                                               }
-                                           }
-                                
-
-                                    
-                                    Text("[ \(cr.q_difficulty) , \(cr.q_marks) , \(cr.clo_code) ]")
+                                       let imageData = Data(base64Encoded: base64Image),
+                                       let uiImage = UIImage(data: imageData) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                    }
+                                    Text("[ \(cr.t_name) , \(cr.q_difficulty) , \(cr.q_marks) , \(cr.clo_code) ]")
                                         .font(.title3)
                                         .padding(.horizontal)
                                         .foregroundColor(Color.white)
                                         .frame(maxWidth: .infinity, alignment: .trailing)
-                                    
-                                    
                                 }
                                 HStack {
                                     
@@ -262,6 +211,7 @@ struct PaperQuestions: View {
                                         } else {
                                             selectedButton[cr.q_id] = "Approved"
                                         }
+                                        updateApprovedPaperButtonVisibility()
                                     }
                                     
                                     Button(action: {
@@ -281,6 +231,7 @@ struct PaperQuestions: View {
                                         } else {
                                             selectedButton[cr.q_id] = "Rejected"
                                         }
+                                        updateApprovedPaperButtonVisibility()
                                     }
                                 }
                                 
@@ -306,8 +257,6 @@ struct PaperQuestions: View {
                             Divider()
                                 .background(Color.white)
                                 .padding()
-                            
-                                
                         }
                     }
                 }
@@ -324,7 +273,7 @@ struct PaperQuestions: View {
                 HStack{
                     Spacer()
                     NavigationLink {
-                        PaperTopic(c_id: c_id, t_name: t_name , c_title: c_title , c_code: c_code)
+                        PaperTopic(c_id: c_id, t_name: t_name, c_title: c_title, c_code: c_code, questionTopics: questionViewModel.uploadedQuestions.map { $0.t_name }, cloCodes: questionViewModel.uploadedQuestions.map { ($0.clo_text , $0.clo_code) })
                             .navigationBarBackButtonHidden(true)
                     }label: {
                         Text("View Topics")
@@ -336,21 +285,29 @@ struct PaperQuestions: View {
                     .background(Color.brown.opacity(0.7))
                     .cornerRadius(8)
                     Spacer()
-                    Button("Approved") {
-                        updateApprovedPaperButtonVisibility()
-                        updatePaperStatus()
+                    Button(action: {
+                        if showRejectedPaperButton {
+                            updatePaperStatusToRejected(paperID: p_id)
+                            paperStatus = "Rejected"
+                        } else {
+                            updateApprovedPaperButtonVisibility()
+                            updatePaperStatusToApproved(paperID: p_id)
+                            paperStatus = "Approved"
+                        }
+                    }) {
+                        Text(showApprovedPaperButton ? "Approved" : "Reject")
+                            .bold()
+                            .padding()
+                            .frame(width: 150)
+                            .foregroundColor(.black)
+                            .background(showApprovedPaperButton ? Color.brown.opacity(0.7) : Color.red.opacity(0.7))
+                            .cornerRadius(8)
                     }
-                    .bold()
-                    .padding()
-                    .frame(width: 150)
-                    .foregroundColor(.black)
-                    .background(Color.brown.opacity(0.7))
-                    .cornerRadius(8)
-                    .opacity(showApprovedPaperButton ? 1 : 0)
+                    .opacity(showApprovedPaperButton || showRejectedPaperButton ? 1 : 0)
                     Spacer()
                 }
                 .alert(isPresented: $showAlert) {
-                    Alert(title: Text("Paper Status Updated"), message: Text("The paper status has been set to Approved."), dismissButton: .default(Text("OK")))
+                    Alert(title: Text("Paper Status Updated"), message: Text("Paper status has been set to \(paperStatus)."), dismissButton: .default(Text("OK")))
                 }
             }
             .navigationBarItems(leading: backButton)
@@ -447,18 +404,52 @@ struct PaperQuestions: View {
             }
         }.resume()
     }
+
+//    private func updateApprovedPaperButtonVisibility() {
+//        let allApproved = questionViewModel.uploadedQuestions.allSatisfy { assignedQuestion in
+//            selectedButton[assignedQuestion.q_id] == "Approved"
+//        }
+//
+//        showApprovedPaperButton = allApproved
+//    }
     private func updateApprovedPaperButtonVisibility() {
-        let allApproved = questionViewModel.uploadedQuestions.allSatisfy { assignedFaculty in
-            selectedButton.values.contains("Approved") || selectedButton.isEmpty
+        let allApproved = questionViewModel.uploadedQuestions.allSatisfy { assignedQuestion in
+            selectedButton[assignedQuestion.q_id] == "Approved"
         }
-        let anyRejected = questionViewModel.uploadedQuestions.contains { assignedFaculty in
-            selectedButton.values.contains("Rejected")
+        
+        let allRejected = questionViewModel.uploadedQuestions.allSatisfy { assignedQuestion in
+            selectedButton[assignedQuestion.q_id] == "Rejected"
         }
 
-        showApprovedPaperButton = allApproved && !anyRejected
+        showApprovedPaperButton = allApproved && !allRejected
+        showRejectedPaperButton = allRejected && !allApproved
     }
-    func updatePaperStatus() {
-            guard let url = URL(string: "http://localhost:3000/updatepaperstatus/\(p_id)") else {
+    
+    func updatePaperStatusToApproved(paperID: Int) {
+            guard let url = URL(string: "http://localhost:3000/updatepaperstatustoapproved/\(paperID)") else {
+                print("Invalid URL")
+                return
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let response = response as? HTTPURLResponse else {
+                    print("Error updating paper status")
+                    return
+                }
+
+                if response.statusCode == 200 {
+                    print("Paper status updated to Approved")
+                    self.showAlert = true
+                } else {
+                    print("Paper status was not updated")
+                }
+            }.resume()
+        }
+    func updatePaperStatusToRejected(paperID: Int) {
+        guard let url = URL(string: "http://localhost:3000/updatepaperstatustorejected/\(paperID)") else {
                 print("Invalid URL")
                 return
             }
@@ -505,16 +496,19 @@ struct PaperTopic: View { // For Radio Button
     var t_name : String
     var c_title: String
     var c_code: String
+    var questionTopics: [String]
+    let cloCodes: [(String , String)]
+    
     @State private var searchText = ""
-    var filteredTopics: [Topic] { // All Data Will Be Filter and show on Table
-        if searchText.isEmpty {
-            return topicViewModel.existing
-        } else {
-            return topicViewModel.existing.filter { topic in
-                topic.t_name.localizedCaseInsensitiveContains(searchText)
+    var filteredTopics: [String] {
+            if searchText.isEmpty {
+                return questionTopics
+            } else {
+                return questionTopics.filter { topic in
+                    topic.localizedCaseInsensitiveContains(searchText)
+                }
             }
         }
-    }
     struct SearchBar: View { // Search Bar avaible outside of table to search record
         @Binding var text: String
         
@@ -526,21 +520,18 @@ struct PaperTopic: View { // For Radio Button
                     .background(Color.gray.opacity(1))
                     .cornerRadius(8) // Set the corner radius to round the corners
                     .padding(.horizontal)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 Button(action: {
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title3)
                         .foregroundColor(Color.red.opacity(0.9))
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
         }
     }
-    
-    @StateObject private var topicViewModel = TopicViewModel()
     
     var body: some View {
         
@@ -562,20 +553,28 @@ struct PaperTopic: View { // For Radio Button
                 .padding(.horizontal)
                 .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity , alignment: .leading)
-            
-            SearchBar(text: $searchText)
-                .padding()
-            
-            Spacer()
+//
+//            SearchBar(text: $searchText)
+//                .padding()
+            Text("Questions Topics")
+                .bold()
+                .font(.title2)
+                .padding(.horizontal)
+                .foregroundColor(Color.white)
+                .frame(maxWidth: .infinity , alignment: .leading)
             VStack {
                 ScrollView{
                     ForEach(filteredTopics.indices , id:\ .self) { index in
                         let cr = filteredTopics[index]
                         HStack{
-                            Text(cr.t_name)
+                            Text(cr)
                                 .font(.headline)
                                 .foregroundColor(Color.white)
                                 .frame(maxWidth: .infinity , alignment: .leading)
+                            Text("Question # 0\(index + 1)")
+                                .font(.headline)
+                                .foregroundColor(Color.orange)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                         Divider()
                             .background(Color.white)
@@ -596,10 +595,50 @@ struct PaperTopic: View { // For Radio Button
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(Color.red.opacity(0.3), lineWidth: 1)
             )
-            .frame(height:600)
-            .onAppear {
-                topicViewModel.getCourseTopic(courseID: c_id)
+            .frame(height:300)
+            
+            Text("Questions CLOs")
+                .bold()
+                .font(.title2)
+                .padding(.horizontal)
+                .foregroundColor(Color.white)
+                .frame(maxWidth: .infinity , alignment: .leading)
+            VStack {
+                ScrollView{
+                    ForEach(cloCodes.indices , id:\ .self) { index in
+                        let cr = cloCodes[index]
+                        HStack{
+                            Text(cr.0)
+                                .font(.headline)
+                                .foregroundColor(Color.white)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Text(cr.1)
+                                .bold()
+                                .font(.headline)
+                                .foregroundColor(Color.orange)
+                        }
+                        Divider()
+                            .background(Color.white)
+                        .padding(1)
+                    }
+                    if cloCodes.isEmpty {
+                        Text("No CLO Found For This Course Paper - \(c_title)")
+                            .font(.headline)
+                            .foregroundColor(.orange)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding()
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.red.opacity(0.3), lineWidth: 1)
+            )
+            .frame(height:300)
+            
+            Spacer()
         }
         .navigationBarItems(leading: backButton)
         .background(Image("ft").resizable().ignoresSafeArea())
@@ -618,7 +657,23 @@ struct PaperTopic: View { // For Radio Button
 
 struct AdditionalQuestions: View { // For Radio Button
     
-//    var t_name : String
+    var p_id: Int
+    var c_title: String
+    var c_code: String
+    @Binding var selectedQuestionIndex: Int?
+    
+    @StateObject private var additionalquestionViewModel = AdditionalQuestionViewModel()
+    
+    @State private var searchText = ""
+    var filteredAdditionalQuestions: [GetPaperAdditionalQuestions] { // All Data Will Be Filter and show on Table
+        if searchText.isEmpty {
+            return additionalquestionViewModel.uploadedAdditionalQuestions
+        } else {
+            return additionalquestionViewModel.uploadedAdditionalQuestions.filter { topic in
+                topic.aq_text.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
     
     var body: some View {
         
@@ -628,25 +683,62 @@ struct AdditionalQuestions: View { // For Radio Button
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
             Spacer()
-            VStack{
-                ScrollView {
-                    HStack{
-                        Text("")
-                            .font(.headline)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity , alignment: .center)
-                    }
-                    Divider()
-                        .background(Color.white)
+            VStack {
+                ScrollView{
+                    ForEach(filteredAdditionalQuestions.indices , id:\ .self) { index in
+                        let cr = filteredAdditionalQuestions[index]
+                        Button(action: {
+                            selectedQuestionIndex = index
+                        }) {
+                            VStack{
+                                Text("Question # 0\(index + 1)")
+                                    .font(.headline)
+                                    .padding(2)
+                                    .foregroundColor(Color.orange)
+                                    .frame(maxWidth: .infinity , alignment: .leading)
+                                Text(cr.aq_text)
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                HStack{
+                                    Text("[ \(cr.t_name) , \(cr.aq_difficulty) , \(cr.aq_marks) , \(cr.clo_code) ]")
+                                        .font(.title3)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.white)
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                }
+                                .padding(2)
+                            }
+                        }
+//                        .onDisappear {
+//                            if let selectedQuestionIndex = selectedQuestionIndex {
+//                                additionalquestionViewModel.sendSelectedQuestionBack(selectedQuestionIndex: selectedQuestionIndex)
+//                            }
+//                        }
+                        Divider()
+                            .background(Color.white)
                         .padding(1)
+                    }
+                    if filteredAdditionalQuestions.isEmpty {
+                        Text("No Additional Questions Found For This Course Paper - \(c_title)")
+                            .font(.headline)
+                            .foregroundColor(.orange)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                    }
                 }
+            }
+            .onAppear{
+                additionalquestionViewModel.getPaperAdditionalQuestions(paperID: p_id)
             }
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.red.opacity(0.3), lineWidth: 2)
+                    .stroke(Color.red.opacity(0.3), lineWidth: 1)
             )
             .frame(height:700)
+            
+            Spacer()
         }
         .navigationBarItems(leading: backButton)
         .background(Image("ft").resizable().ignoresSafeArea())

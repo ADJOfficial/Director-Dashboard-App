@@ -106,7 +106,7 @@ struct UploadedPapers: View {
                 )
                 .frame(height:700)
                 .onAppear {
-                    uploadedPaperViewModel.fetchExistingPapers()
+                    uploadedPaperViewModel.fetchUploadedPapers()
                     print("Filtered Papers Count:", filteredPapers.count)
                 }
                 

@@ -83,6 +83,9 @@ struct DirectorLogin: View {
         .fullScreenCover(isPresented: $isLoggedIn){
            DirectorWelcome(username: username)
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Login Failed"), message: Text("Username or Password is incorrect"), dismissButton: .default(Text("OK")))
+        }
         .navigationBarItems(leading: backButton)
         .background(Image("ft").resizable().ignoresSafeArea())
     }
@@ -99,12 +102,14 @@ struct DirectorLogin: View {
     }
     
     func login() {
-        if username == "" &&  password == "" {
+        if username == "Dr Jamil" &&  password == "sawaar@786" {
             isLoggedIn = true
             print("Login Successfull")
+            
         }
         else {
             print("Invalid Credentials")
+            showAlert = true
         }
     }
 }

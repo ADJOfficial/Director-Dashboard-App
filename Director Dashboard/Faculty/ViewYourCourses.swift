@@ -152,7 +152,7 @@ struct Subject: View {
                     .padding(.all)
                     
                     NavigationLink{
-                        CoveredTopics(f_id: f_id, c_id: c_id, c_code: c_code, c_title: c_title, t_id: t_id, t_name: t_name, subtopics: SubTopic(t_id: 0, st_id: 0, st_name: "", status: ""))
+                        CoveredTopics(f_id: f_id, c_id: c_id, c_code: c_code, c_title: c_title)
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Covered Topic")

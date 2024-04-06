@@ -37,6 +37,7 @@
 		44A041E12B53A6B400AF79AD /* SetCLOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A041E02B53A6B400AF79AD /* SetCLOs.swift */; };
 		44A041E32B53B11400AF79AD /* Topics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A041E22B53B11400AF79AD /* Topics.swift */; };
 		44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A786512B4F24A600C55B7A /* Dashboard.swift */; };
+		44B085B82BC1B2A7002B909F /* ApprovePaper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B085B72BC1B2A7002B909F /* ApprovePaper.swift */; };
 		44BA72172B99A4B300812049 /* DataCellRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA72162B99A4B300812049 /* DataCellRecords.swift */; };
 		44BA72192B99AC0B00812049 /* updatecheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA72182B99AC0B00812049 /* updatecheck.swift */; };
 		44BA721C2BA042A100812049 /* HODRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44BA721B2BA042A100812049 /* HODRecords.swift */; };
@@ -84,6 +85,7 @@
 		44A041E02B53A6B400AF79AD /* SetCLOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCLOs.swift; sourceTree = "<group>"; };
 		44A041E22B53B11400AF79AD /* Topics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Topics.swift; sourceTree = "<group>"; };
 		44A786512B4F24A600C55B7A /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
+		44B085B72BC1B2A7002B909F /* ApprovePaper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApprovePaper.swift; sourceTree = "<group>"; };
 		44BA72162B99A4B300812049 /* DataCellRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCellRecords.swift; sourceTree = "<group>"; };
 		44BA72182B99AC0B00812049 /* updatecheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = updatecheck.swift; sourceTree = "<group>"; };
 		44BA721B2BA042A100812049 /* HODRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HODRecords.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				442E087B2BA4F90500907B7D /* MySQL-Director */,
 				442E08772BA4F5EA00907B7D /* UploadedPapers.swift */,
 				44745D0B2BBE80540010A9AE /* PaperQuestions.swift */,
+				44B085B72BC1B2A7002B909F /* ApprovePaper.swift */,
 			);
 			path = Director;
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 				44C5C0292B52944B00702538 /* Faculty.swift in Sources */,
 				44BCB4F22B5B816A00FDC33B /* AssignRole.swift in Sources */,
 				4450839E2B48EB1900707476 /* DirectorWelcome.swift in Sources */,
+				44B085B82BC1B2A7002B909F /* ApprovePaper.swift in Sources */,
 				449BA1352B4FF19A009473F6 /* DataCellLogin.swift in Sources */,
 				44A786522B4F24A600C55B7A /* Dashboard.swift in Sources */,
 				44A041D42B5392DD00AF79AD /* ViewYourCourses.swift in Sources */,
