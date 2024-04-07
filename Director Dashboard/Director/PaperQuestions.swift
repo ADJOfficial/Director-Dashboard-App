@@ -35,7 +35,7 @@ struct PaperQuestions: View {
     @State private var showRejectedPaperButton = false
     @State private var showAlert = false
     
-    @State private var q_text = ""
+//    @State private var q_text = ""
 //    @State private var q_image = ""
     @State private var fb_details = ""
     @StateObject private var questionViewModel = QuestionViewModel()
@@ -152,13 +152,13 @@ struct PaperQuestions: View {
                                             .foregroundColor(Color.orange)
                                             .frame(maxWidth: .infinity , alignment: .leading)
                                             .gesture(
-                                                        DragGesture()
-                                                            .onEnded { value in
-                                                                if value.translation.width > 100 {
-                                                                    selectedQuestionIndex = index
-                                                                }
-                                                            }
-                                                    )
+                                                DragGesture()
+                                                    .onEnded { value in
+                                                        if value.translation.width > 100 {
+                                                            selectedQuestionIndex = index
+                                                        }
+                                                    }
+                                            )
                                         NavigationLink{
                                             AdditionalQuestions(p_id: cr.p_id , c_title: cr.c_title , c_code: cr.c_code, selectedQuestionIndex: $selectedQuestionIndex)
                                                 .navigationBarBackButtonHidden(true)
@@ -168,15 +168,13 @@ struct PaperQuestions: View {
                                         .font(.title3)
                                         .foregroundColor(Color.mint)
                                     }
-                                    TextField("", text: binding)
-                                        .padding()
-                                        .font(.headline)
-                                        .background(Color.gray.opacity(0.8))
-                                        .cornerRadius(8)
+                                    Text("\(cr.q_text)")
+                                        .font(.title3)
+                                        .padding(2)
                                         .padding(.horizontal)
-                                        .onAppear {
-                                            q_text = cr.q_text
-                                        }
+                                        .foregroundColor(Color.white)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        
                                 }
                                 HStack {
                                     if let base64Image = cr.q_image,
@@ -660,17 +658,18 @@ struct AdditionalQuestions: View { // For Radio Button
     var p_id: Int
     var c_title: String
     var c_code: String
+    
     @Binding var selectedQuestionIndex: Int?
     
-    @StateObject private var additionalquestionViewModel = AdditionalQuestionViewModel()
+    @StateObject private var questionViewModel = QuestionViewModel()
     
     @State private var searchText = ""
-    var filteredAdditionalQuestions: [GetPaperAdditionalQuestions] { // All Data Will Be Filter and show on Table
+    var filteredAdditionalQuestions: [GetPaperQuestions] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {
-            return additionalquestionViewModel.uploadedAdditionalQuestions
+            return questionViewModel.uploadedQuestions
         } else {
-            return additionalquestionViewModel.uploadedAdditionalQuestions.filter { topic in
-                topic.aq_text.localizedCaseInsensitiveContains(searchText)
+            return questionViewModel.uploadedQuestions.filter { topic in
+                topic.q_text.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
@@ -696,12 +695,12 @@ struct AdditionalQuestions: View { // For Radio Button
                                     .padding(2)
                                     .foregroundColor(Color.orange)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                Text(cr.aq_text)
+                                Text(cr.q_text)
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 HStack{
-                                    Text("[ \(cr.t_name) , \(cr.aq_difficulty) , \(cr.aq_marks) , \(cr.clo_code) ]")
+                                    Text("[ \(cr.t_name) , \(cr.q_difficulty) , \(cr.q_marks) , \(cr.clo_code) ]")
                                         .font(.title3)
                                         .padding(.horizontal)
                                         .foregroundColor(Color.white)
@@ -710,11 +709,11 @@ struct AdditionalQuestions: View { // For Radio Button
                                 .padding(2)
                             }
                         }
-//                        .onDisappear {
-//                            if let selectedQuestionIndex = selectedQuestionIndex {
-//                                additionalquestionViewModel.sendSelectedQuestionBack(selectedQuestionIndex: selectedQuestionIndex)
-//                            }
-//                        }
+                        .onDisappear {
+                            if let selectedQuestionIndex = selectedQuestionIndex {
+                                questionViewModel.sendSelectedQuestionBack(selectedQuestionIndex: selectedQuestionIndex)
+                            }
+                        }
                         Divider()
                             .background(Color.white)
                         .padding(1)
@@ -729,7 +728,7 @@ struct AdditionalQuestions: View { // For Radio Button
                 }
             }
             .onAppear{
-                additionalquestionViewModel.getPaperAdditionalQuestions(paperID: p_id)
+                questionViewModel.getPaperAdditionalQuestions(paperID: p_id)
             }
             .padding()
             .background(

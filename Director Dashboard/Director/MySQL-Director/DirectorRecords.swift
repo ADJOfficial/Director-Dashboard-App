@@ -148,6 +148,7 @@ struct GetPaperQuestions: Hashable, Decodable, Encodable {
 class QuestionViewModel: ObservableObject {
     
     @Published var uploadedQuestions: [GetPaperQuestions] = []
+    @Published var selectedQuestionIndex: Int?
     
     func getPaperQuestions(paperID: Int) {
         guard let url = URL(string: "http://localhost:3000/getpaperquestion/\(paperID)") else {
@@ -179,30 +180,6 @@ class QuestionViewModel: ObservableObject {
         }
         .resume()
     }
-}
-
-
-struct GetPaperAdditionalQuestions: Hashable, Decodable, Encodable {
-    var aq_id: Int
-    var aq_text: String
-    var aq_image: String?
-    var aq_marks: Int
-    var aq_difficulty: String
-    var aq_verification: String
-    var p_id: Int
-    var c_id: Int
-    var c_code: String
-    var c_title: String
-    var f_id: Int
-    var f_name: String
-    var clo_code: String
-    var clo_text: String
-    var t_name: String
-}
-
-class AdditionalQuestionViewModel: ObservableObject {
-    
-    @Published var uploadedAdditionalQuestions: [GetPaperAdditionalQuestions] = []
     
     func getPaperAdditionalQuestions(paperID: Int) {
         guard let url = URL(string: "http://localhost:3000/getpaperadditionalquestion/\(paperID)") else {
@@ -224,9 +201,9 @@ class AdditionalQuestionViewModel: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 //                decoder.dataDecodingStrategy = .base64
-                let questions = try decoder.decode([GetPaperAdditionalQuestions].self, from: data)
+                let questions = try decoder.decode([GetPaperQuestions].self, from: data)
                 DispatchQueue.main.async {
-                    self.uploadedAdditionalQuestions = questions
+                    self.uploadedQuestions = questions
                 }
             } catch {
                 print("Error decoding data: \(error.localizedDescription)")
@@ -234,4 +211,10 @@ class AdditionalQuestionViewModel: ObservableObject {
         }
         .resume()
     }
+    
+    func sendSelectedQuestionBack(selectedQuestionIndex: Int) {
+            self.selectedQuestionIndex = selectedQuestionIndex
+        }
 }
+    
+
