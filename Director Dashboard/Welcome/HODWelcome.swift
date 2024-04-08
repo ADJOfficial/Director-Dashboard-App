@@ -60,7 +60,7 @@ struct HODWelcome: View { // Design 100% OK
                     .padding(.all)
                     
                     NavigationLink{
-                        AssignCourse(facultyID: 0)
+                        AssignCourse()
                             .navigationBarBackButtonHidden(true)
                     } label: {
                         Text("Assign Course")

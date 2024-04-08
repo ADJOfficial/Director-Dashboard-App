@@ -124,10 +124,12 @@ struct FacultyDetails: View { // Designed 100% OK
 struct EyeAssignedCousres: View {  // Design 100% ok
     
     @StateObject private var assignedcoursesViewModel = AssignedCoursesViewModel()
+    
     var facultyID: Int
-//    var courseID: Int
     var facultyName: String
-    @Environment(\.presentationMode) var presentationMode
+    
+    @State private var showDeleteAlert = false
+    @State private var selectedCourse: (facultyId: Int, courseId: Int)?
     
     
     var body: some View { // Get All Data From Node MongoDB : Pending
@@ -144,7 +146,7 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                     .padding()
                     .font(.title2)
                     .frame(maxWidth: .infinity , alignment: .center)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(Color.teal)
                 Text("Assigned Courses")
                     .underline()
                     .font(.title2)
@@ -167,7 +169,8 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                                     .font(.title3)
                                     .foregroundColor(Color.red)
                                     .onTapGesture {
-                                        deleteAssignedCourse(facultyId: cr.f_id, courseId: cr.c_id)
+                                        showDeleteAlert = true
+                                        selectedCourse = (facultyId: cr.f_id, courseId: cr.c_id)
                                     }
                             }
                             Divider()
@@ -176,7 +179,6 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                         }
                         if assignedcoursesViewModel.assignedCourses.isEmpty {
                             Text("\(facultyName) have no Assigned Courses Yet !")
-                            //                                .font(.headline)
                                 .font(.headline)
                                 .foregroundColor(.orange)
                                 .padding()
@@ -206,12 +208,26 @@ struct EyeAssignedCousres: View {  // Design 100% ok
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity , alignment: .trailing)
                 }
-                
+//                Spacer()
+            }
+            .alert(isPresented: $showDeleteAlert) {
+                let courseTitle = assignedcoursesViewModel.assignedCourses.first { $0.c_id == selectedCourse?.courseId }?.c_title ?? ""
+                    return Alert(
+                    title: Text("Delete Course"),
+                    message: Text("Are you sure you want to Delete Assigned Course \(courseTitle) For \(facultyName)"),
+                    primaryButton: .cancel(),
+                    secondaryButton: .destructive(Text("Delete"), action: {
+                        if let course = selectedCourse {
+                            deleteAssignedCourse(facultyId: course.facultyId, courseId: course.courseId)
+                        }
+                    })
+                )
             }
             .navigationBarItems(leading: backButton)
             .background(Image("fc").resizable().ignoresSafeArea())
         }
     }
+    @Environment(\.presentationMode) var presentationMode
     private var backButton: some View {
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
@@ -288,7 +304,7 @@ struct PlusAssignCourse: View { // Design 100% ok
                     .bold()
                     .padding()
                     .font(.title2)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(Color.teal)
                 Text("Subject")
                     .padding()
                     .foregroundColor(Color.white)
@@ -300,27 +316,28 @@ struct PlusAssignCourse: View { // Design 100% ok
                 ScrollView{
                     ForEach(filteredcourse, id: \.self) { cr in
                         HStack{
-                            
                             Text(cr.c_title)
                                 .font(.headline)
                                 .foregroundColor(Color.white)
                                 .padding(.horizontal)
                                 .frame(maxWidth: .infinity , alignment: .leading)
-                            Button(action: {
-                                toggleCourseSelection(courseID: cr.c_id)
-                                assignCourseToFaculty(courseID: cr.c_id, facultyID: facultyID)
-                            }) {
-                                Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
-                                    .font(.title2)
-                                    .foregroundColor(Color.white)
-                                    .padding(.horizontal)
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                            }
-                            .disabled(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id))
-                            .opacity(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? 0.5 : 1.0)
-                            .onAppear {
-                                if assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) {
+                            VStack{
+                                Button(action: {
+                                    toggleCourseSelection(courseID: cr.c_id)
+                                    assignCourseToFaculty(courseID: cr.c_id, facultyID: facultyID)
                                     selectedCourses.insert(cr.c_id)
+                                }) {
+                                    Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
+                                        .font(.title2)
+                                        .foregroundColor(selectedCourses.contains(cr.c_id) || assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? Color.teal : Color.white)
+                                        .padding(.horizontal)
+                                }
+                                .disabled(selectedCourses.contains(cr.c_id) || assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id))
+                                .opacity(selectedCourses.contains(cr.c_id) || assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? 0.9 : 1.0)
+                                .onAppear {
+                                    if assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) {
+                                        selectedCourses.insert(cr.c_id)
+                                    }
                                 }
                             }
                         }
@@ -369,13 +386,6 @@ struct PlusAssignCourse: View { // Design 100% ok
                selectedCourses.insert(courseID)
            }
        }
-//    private func assignSelectedCourses() {
-//        // Iterate over the selected courses
-//        for courseID in selectedCourses {
-//            // Make the API call to assign the course to the faculty
-//            assignCourseToFaculty(courseID: courseID,facultyID: facultyID)
-//        }
-//    }
     private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
         let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
         var request = URLRequest(url: url)

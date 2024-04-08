@@ -181,7 +181,7 @@ struct Course: View {   // Design 100% OK
                                         .foregroundColor(Color.orange)
                                 }
                                 Image(systemName: isFacultyEnabled(index) ? "checkmark.circle.fill" : "nosign")
-                                    .font(.title2)
+                                    .font(.title)
                                     .foregroundColor(isFacultyEnabled(index) ? .green : .red)
                                     .onTapGesture {
                                         toggleFacultyStatus(index)
@@ -315,13 +315,15 @@ struct Course: View {   // Design 100% OK
 
 
 struct EditCourse: View { // Design 100% OK
-
+    
     var course: AllCourses
-
     @State private var c_code = ""
     @State private var c_title = ""
     @State private var cr_hours = 0
-
+    
+    @State private var updatedCourseName = ""
+    @State private var showAlert = false
+    
     var body: some View { // Get All Data From Node MongoDB : Pending
         VStack {
             Text("Update Course")
@@ -384,6 +386,9 @@ struct EditCourse: View { // Design 100% OK
             .cornerRadius(8)
             .padding(.all)
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Congratulations"), message: Text("Course *\(updatedCourseName)* has been Updated Successfully"), dismissButton: .default(Text("OK")))
+        }
         .navigationBarItems(leading: backButton)
         .background(Image("fw").resizable().ignoresSafeArea())
     }
@@ -397,41 +402,44 @@ struct EditCourse: View { // Design 100% OK
                 .imageScale(.large)
         }
     }
-    
     func updateCourse() {
-            guard let url = URL(string: "http://localhost:8000/updateanycourse/\(course.c_id)") else {
-                print("Invalid URL")
-                return
-            }
-
-            let updatedCourse = AllCourses(c_id: course.c_id, c_code: c_code, c_title: c_title, cr_hours: cr_hours, status: course.status)
-
-            guard let encodedData = try? JSONEncoder().encode(updatedCourse) else {
-                print("Failed to encode data")
-                return
-            }
-
-            var request = URLRequest(url: url)
-            request.httpMethod = "PUT"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = encodedData
-
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data, error == nil else {
-                    print("Error while updating course: \(error?.localizedDescription ?? "Unknown error")")
-                    return
-                }
-
-                if let response = try? JSONDecoder().decode(AllCourses.self, from: data) {
-                    print("Course updated successfully: \(response)")
-
-                    // Perform any necessary UI updates or navigation after successful update
-                } else {
-                    print("Error while decoding updated course data")
-                }
-            }
-            task.resume()
+        guard let url = URL(string: "http://localhost:8000/updatecourse/\(course.c_id)") else {
+            return
         }
+        
+        let updatedCourse = AllCourses(c_id: course.c_id, c_code: c_code, c_title: c_title, cr_hours: cr_hours, status: course.status)
+        updatedCourseName = c_title
+        guard let encodedData = try? JSONEncoder().encode(updatedCourse) else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = encodedData
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error while updating subtopic: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            print("Response Data: \(String(data: data, encoding: .utf8) ?? "")")
+            
+            do {
+                let responseJSON = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                if let message = responseJSON?["message"] as? String, message == "Course record updated successfully" {
+                    print("Course updated successfully")
+                    showAlert = true
+                } else {
+                    print("Error: Course record not updated")
+                }
+            } catch {
+                print("Error while decoding response data: \(error)")
+            }
+        }
+        task.resume()
+    }
 }
 struct Courses_Previews: PreviewProvider {
     static var previews: some View {

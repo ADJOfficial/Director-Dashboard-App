@@ -136,7 +136,8 @@ struct CourseAssignedTo: View {  // Design 100% ok
 //    var clo: CLO
 //    var status: String
 //    var approved: String
-    
+    @State private var showDeleteAlert = false
+    @State private var selectedFaculty: (facultyId: Int, courseId: Int)?
     @Environment(\.presentationMode) var presentationMode
     
     
@@ -173,7 +174,8 @@ struct CourseAssignedTo: View {  // Design 100% ok
                                     .font(.title3)
                                     .foregroundColor(Color.red)
                                     .onTapGesture {
-                                        deleteAssignedCourse(courseId: cr.c_id,facultyId: cr.f_id)
+                                        showDeleteAlert = true
+                                        selectedFaculty = (facultyId: cr.f_id, courseId: cr.c_id)
                                     }
                             }
                             Divider()
@@ -181,10 +183,9 @@ struct CourseAssignedTo: View {  // Design 100% ok
                                 .padding(1)
                         }
                         if coViewModel.Courseassignedto.isEmpty {
-                            Text("\(c_title) have no Assigned Courses Yet !")
-                            //                                .font(.headline)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(.yellow)
+                            Text("\(c_title) have not Assigned to any Faculty Yet !")
+                                .font(.headline)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -213,6 +214,19 @@ struct CourseAssignedTo: View {  // Design 100% ok
                 .background(Color.teal.opacity(0.9))
                 .cornerRadius(8)
                 
+            }
+            .alert(isPresented: $showDeleteAlert) {
+                let fname = coViewModel.Courseassignedto.first { $0.f_id == selectedFaculty?.facultyId }?.f_name ?? ""
+                    return Alert(
+                    title: Text("Delete Course"),
+                    message: Text("Are you sure you want to Delete \(fname) For Assigned Course \(c_title)"),
+                    primaryButton: .cancel(),
+                    secondaryButton: .destructive(Text("Delete"), action: {
+                        if let course = selectedFaculty {
+                            deleteAssignedCourse(courseId: course.courseId, facultyId: course.facultyId)
+                        }
+                    })
+                )
             }
             .navigationBarItems(leading: backButton)
             .background(Image("fc").resizable().ignoresSafeArea())
@@ -282,7 +296,9 @@ struct CLOS: View { // Design 100% OK
     }
     
     var statusText: String {
-        if filteredClo.allSatisfy({ $0.status == "Approved" }) {
+        if filteredClo.isEmpty {
+            return "No CLOs Found"
+        } else if filteredClo.allSatisfy({ $0.status == "Approved" }) {
             return "Approved"
         } else if filteredClo.contains(where: { $0.status == "Pending" }) {
             return "Pending"
@@ -292,7 +308,9 @@ struct CLOS: View { // Design 100% OK
     }
 
     var statusColor: Color {
-        if filteredClo.allSatisfy({ $0.status == "Approved" }) {
+        if filteredClo.isEmpty {
+            return Color.gray
+        } else if filteredClo.allSatisfy({ $0.status == "Approved" }) {
             return Color.green
         } else if filteredClo.contains(where: { $0.status == "Pending" }) {
             return Color.yellow
@@ -421,8 +439,6 @@ struct CLOS: View { // Design 100% OK
             .onAppear {
                 cloViewModel.getCourseCLO(courseID: c_id)
             }
-            
-//            Spacer()
         }
         .navigationBarItems(leading: backButton)
         .background(Image("fc").resizable().ignoresSafeArea())

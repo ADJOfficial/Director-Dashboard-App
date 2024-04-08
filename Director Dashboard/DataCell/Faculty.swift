@@ -308,10 +308,14 @@ struct Faculty: View {   // Design 100% OK
 
 
 struct EditFaculty: View { // Design 100% OK
+    
     var faculty: faculties
     @State private var f_name = ""
     @State private var username = ""
     @State private var password = ""
+    
+    @State private var updatedFacultyName = ""
+    @State private var showAlert = false
     
     var body: some View { // Get All Data From Node MongoDB : Pending
         VStack {
@@ -375,6 +379,9 @@ struct EditFaculty: View { // Design 100% OK
             .cornerRadius(8)
             .padding(.all)
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Congratulations"), message: Text("Faculty *\(updatedFacultyName)* Updated Successfully"), dismissButton: .default(Text("OK")))
+        }
         .navigationBarItems(leading: backButton)
         .background(Image("fw").resizable().ignoresSafeArea())
     }
@@ -388,13 +395,14 @@ struct EditFaculty: View { // Design 100% OK
                 .imageScale(.large)
         }
     }
+    
     func updateFaculty() {
-        guard let url = URL(string: "http://localhost:8000/updateanyfaculty/\(faculty.f_id)") else {
+        guard let url = URL(string: "http://localhost:8000/updatefaculty/\(faculty.f_id)") else {
             return
         }
 
         let updatedFaculty = faculties(f_id: faculty.f_id, f_name: f_name, username: username , password: password ,status: faculty.status)
-
+        updatedFacultyName = f_name
         guard let encodedData = try? JSONEncoder().encode(updatedFaculty) else {
             return
         }
@@ -406,17 +414,23 @@ struct EditFaculty: View { // Design 100% OK
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
-                print("Error while updating faculty: \(error?.localizedDescription ?? "Unknown error")")
+                print("Error while updating subtopic: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
 
-            if let response = try? JSONDecoder().decode(faculties.self, from: data) {
-                print("Faculty updated successfully: \(response)")
+            print("Response Data: \(String(data: data, encoding: .utf8) ?? "")")
 
-                // Perform any necessary UI updates or navigation after successful update
-            } else {
-                print("Error while decoding updated faculty data")
-            }
+            do {
+                    let responseJSON = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    if let message = responseJSON?["message"] as? String, message == "Faculty record updated successfully" {
+                        print("Faculty updated successfully")
+                        showAlert = true
+                    } else {
+                        print("Error: Faculty record not updated")
+                    }
+                } catch {
+                    print("Error while decoding response data: \(error)")
+                }
         }
         task.resume()
     }

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AssignCourse: View { // Design 100% ok
     
-    var facultyID: Int
+//    var facultyID: Int
     
     @StateObject private var coursesViewModel = CoursesViewModel()
     @StateObject private var facultiesViewModel = FacultiesViewModel()
@@ -35,7 +35,7 @@ struct AssignCourse: View { // Design 100% ok
             }
         }
     }
-    
+
     struct SearchBar: View { // Search Bar avaible outside of table to search record
         
         @Binding var text: String
@@ -81,16 +81,17 @@ struct AssignCourse: View { // Design 100% ok
                     }
                 }
                 .accentColor(Color.green)
-                .onChange(of: (selectedfaculty)) { selectedFacultyID in
+                .onChange(of: selectedfaculty) { selectedFacultyID in
                     if let selectedfacultyID = selectedFacultyID {
-                        print("Selected Fauclty ID: \(selectedfacultyID)")
+                        selectedfaculty = selectedfacultyID
+                        print("Selected Faculty ID: \(selectedfacultyID)")
+                    } else {
+                        selectedfaculty = nil
+                        print("No faculty selected")
                     }
                 }
-
-                
-                Spacer()
                 SearchBar(text: $searchText)
-                Spacer()
+                    .padding()
                 VStack{
                     ScrollView{
                         ForEach(filteredcourse, id: \.self) { cr in
@@ -100,22 +101,27 @@ struct AssignCourse: View { // Design 100% ok
                                     .foregroundColor(Color.white)
                                     .padding(.horizontal)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                Button(action: {
-                                    toggleCourseSelection(courseID: cr.c_id)
-                                    assignCourseToFaculty(courseID: cr.c_id, facultyID: facultyID)
-                                }) {
-                                    Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
-                                        .font(.title2)
-                                        .foregroundColor(Color.white)
-                                        .padding(.horizontal)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
-                                }
-                                .disabled(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id))
-                                .opacity(assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? 0.5 : 1.0)
-                                .onAppear {
-                                    if assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) {
+                                VStack{
+                                    Button(action: {
+                                        toggleCourseSelection(courseID: cr.c_id)
+                                        assignCourseToFaculty(courseID: cr.c_id, facultyID: selectedfaculty ?? 0)
                                         selectedCourses.insert(cr.c_id)
+                                    }) {
+                                        
+                                        Image(systemName: selectedCourses.contains(cr.c_id) ? "checkmark.square.fill" : "square")
+                                            .font(.title2)
+                                            .foregroundColor(selectedCourses.contains(cr.c_id) || assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? Color.teal : Color.white)
+                                            .padding(.horizontal)
+                                            .frame(maxWidth: .infinity, alignment: .trailing)
                                     }
+                                    .disabled(selectedCourses.contains(cr.c_id) || assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id))
+                                    .opacity(selectedCourses.contains(cr.c_id) || assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) ? 0.9 : 1.0)
+                                    .onAppear {
+                                        if assignedcoursesViewModel.isCourseAssigned(courseID: cr.c_id) {
+                                            selectedCourses.insert(cr.c_id)
+                                        }
+                                    }
+                                    
                                 }
                             }
                             Divider()
@@ -136,19 +142,14 @@ struct AssignCourse: View { // Design 100% ok
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.blue.opacity(0.6), lineWidth: 2)
                 )
-                .frame(height: 500)
+                .frame(height: 600)
                 .onAppear {
+                    facultiesViewModel.fetchExistingFaculties()
                     coursesViewModel.fetchExistingCourses()
-//                    assignedcoursesViewModel.fetchAssignedCourses(facultyID: facultyID)
-                    if let selectedFacultyID = selectedfaculty {
-                            assignedcoursesViewModel.fetchAssignedCourses(facultyID: selectedFacultyID)
-                        }
+                    assignedcoursesViewModel.fetchAssignedCourses(facultyID: selectedfaculty ?? 0)
                 }
+                Spacer()
             }
-            .onAppear {
-                facultiesViewModel.fetchExistingFaculties()
-            }
-            Spacer()
             
         }
         .navigationBarItems(leading: backButton)
@@ -164,12 +165,12 @@ struct AssignCourse: View { // Design 100% ok
         }
     }
     private func toggleCourseSelection(courseID: Int) {
-        if selectedCourses.contains(courseID) {
-            selectedCourses.remove(courseID)
-        } else {
-            selectedCourses.insert(courseID)
-        }
-    }
+           if selectedCourses.contains(courseID) {
+               selectedCourses.remove(courseID)
+           } else {
+               selectedCourses.insert(courseID)
+           }
+       }
     private func assignCourseToFaculty(courseID: Int, facultyID: Int) {
         let url = URL(string: "http://localhost:2000/assigncoursetofaculty")!
         var request = URLRequest(url: url)
@@ -200,11 +201,7 @@ struct AssignCourse: View { // Design 100% ok
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     if let message = json["message"] as? String {
                         print(message)
-                        if selectedCourses.contains(courseID) {
-                                selectedCourses.remove(courseID)
-                            } else {
-                                selectedCourses.insert(courseID)
-                            }
+                        // Update the UI or perform any other action based on the message
                     }
                 } else {
                     print("Invalid JSON response")
@@ -220,6 +217,6 @@ struct AssignCourse: View { // Design 100% ok
 
 struct AssignCourse_Previews: PreviewProvider {
     static var previews: some View {
-        AssignCourse(facultyID: 0)
+        AssignCourse()
     }
 }

@@ -288,6 +288,7 @@ struct EditTopics: View { // Design 100% Ok
                 .bold()
                 .font(.largeTitle)
                 .foregroundColor(Color.white)
+            Spacer()
             VStack{
                 Spacer()
                 Text("Course")
@@ -318,26 +319,26 @@ struct EditTopics: View { // Design 100% Ok
                     .onAppear{
                         edittopicname = topic.t_name
                     }
-                Text("CLOs")
-                    .bold()
-                    .padding()
-                    .font(.title2)
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity , alignment: .leading)
-                HStack {
-                    Spacer()
-                    Text("CLO:1")
-                    Image(systemName: "square")
-                    Text("CLO:2")
-                    Image(systemName: "checkmark.square")
-                        .foregroundColor(.green)
-                    Text("CLO:3")
-                    Image(systemName: "square")
-                    Text("CLO:4")
-                    Image(systemName: "checkmark.square")
-                        .foregroundColor(.green)
-                    Spacer()
-                }
+//                Text("CLOs")
+//                    .bold()
+//                    .padding()
+//                    .font(.title2)
+//                    .foregroundColor(Color.white)
+//                    .frame(maxWidth: .infinity , alignment: .leading)
+//                HStack {
+//                    Spacer()
+//                    Text("CLO:1")
+//                    Image(systemName: "square")
+//                    Text("CLO:2")
+//                    Image(systemName: "checkmark.square")
+//                        .foregroundColor(.green)
+//                    Text("CLO:3")
+//                    Image(systemName: "square")
+//                    Text("CLO:4")
+//                    Image(systemName: "checkmark.square")
+//                        .foregroundColor(.green)
+//                    Spacer()
+//                }
                 .padding()
                 .font(.title3)
                 .foregroundColor(.white)
@@ -359,7 +360,7 @@ struct EditTopics: View { // Design 100% Ok
         .navigationBarItems(leading: backButton)
         .background(Image("fiii").resizable().ignoresSafeArea())
         .alert(isPresented: $showAlert) {
-            Alert(title: Text("Congratulations"), message: Text("SubTopic Created Successfully"), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Congratulations"), message: Text("Topic Updated Successfully"), dismissButton: .default(Text("OK")))
         }
     }
     func updateTopic() {
@@ -388,11 +389,11 @@ struct EditTopics: View { // Design 100% Ok
 
             do {
                     let responseJSON = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-                    if let message = responseJSON?["message"] as? String, message == "CLO record updated successfully" {
-                        print("CLO updated successfully")
+                    if let message = responseJSON?["message"] as? String, message == "Topic record updated successfully" {
+                        print("Topic updated successfully")
                         showAlert = true
                     } else {
-                        print("Error: CLO record not updated")
+                        print("Error: Topic record not updated")
                     }
                 } catch {
                     print("Error while decoding response data: \(error)")

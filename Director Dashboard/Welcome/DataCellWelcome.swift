@@ -37,7 +37,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     }
                     .bold()
                     .padding()
-                    .frame(width: 150)
+                    .frame(width: 160)
                     .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
@@ -51,7 +51,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     }
                     .bold()
                     .padding()
-                    .frame(width: 150)
+                    .frame(width: 160)
                     .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
@@ -61,11 +61,11 @@ struct DataCellWelcome: View { // Design 100% Ok
                         ApprovedPaper()
                             .navigationBarBackButtonHidden(true)
                     } label: {
-                        Text("Papers")
+                        Text("Approved Paper")
                     }
                     .bold()
                     .padding()
-                    .frame(width: 150)
+                    .frame(width: 160)
                     .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
@@ -75,11 +75,11 @@ struct DataCellWelcome: View { // Design 100% Ok
                         PrintedPapers()
                             .navigationBarBackButtonHidden(true)
                     } label: {
-                        Text("Printed")
+                        Text("Printed Paper")
                     }
                     .bold()
                     .padding()
-                    .frame(width: 150)
+                    .frame(width: 160)
                     .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)

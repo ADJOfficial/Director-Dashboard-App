@@ -56,6 +56,7 @@ class AssignedCoursesViewModel: ObservableObject {
 
     func isCourseAssigned(courseID: Int) -> Bool {
         return assignedCourses.contains { $0.c_id == courseID }
+        print("Checking if course \(courseID) is assigned")
     }
     
     func deleteAssignedCourse(facultyId: Int, courseId: Int) {
