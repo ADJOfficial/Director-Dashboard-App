@@ -37,7 +37,8 @@ struct PrintedPapers: View {
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -54,6 +55,7 @@ struct PrintedPapers: View {
                     .foregroundColor(Color.white)
                 Spacer()
                 SearchBar(text: $searchPaper)
+                    .padding()
                 Spacer()
                 VStack{
                     ScrollView {
@@ -64,10 +66,11 @@ struct PrintedPapers: View {
                                     .font(.headline)
                                     .foregroundColor(Color.white)
                                     .frame(maxWidth: .infinity , alignment: .leading)
-                                Text(cr.status)
-                                    .font(.headline)
-                                    .foregroundColor(Color.green)
-                                    .frame(maxWidth: .infinity , alignment: .trailing)
+                                VStack{
+                                    Text(cr.status)
+                                        .font(.headline)
+                                        .foregroundColor(Color.green)
+                                }
                                
                             }
                             Divider()
@@ -77,7 +80,7 @@ struct PrintedPapers: View {
                         if filteredPapers.isEmpty {
                             Text("No Printed Paper Found")
                                 .font(.headline)
-                                .foregroundColor(.yellow)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }

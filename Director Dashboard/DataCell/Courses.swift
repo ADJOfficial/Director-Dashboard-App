@@ -10,6 +10,7 @@ import SwiftUI
 struct Course: View {   // Design 100% OK
 
     @State private var showAlert = false
+    @State private var createdCourse = ""
     
     @State private var c_code = ""
     @State private var c_title = ""
@@ -20,8 +21,6 @@ struct Course: View {   // Design 100% OK
     @State private var isHoursEmpty = false
     
     @State private var searchText = ""
-    
-    @State private var searchResults: [AllCourses] = []
     @StateObject private var coursesViewModel = CoursesViewModel()
 
     var filteredCourses: [AllCourses] { // All Data Will Be Filter and show on Table
@@ -52,7 +51,8 @@ struct Course: View {   // Design 100% OK
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -152,12 +152,8 @@ struct Course: View {   // Design 100% OK
                     .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
-                    .alert(isPresented: $showAlert) {
-                        Alert(title: Text("Success"), message: Text("Course created successfully"), dismissButton: .default(Text("OK")))
-                    }
-                    Spacer()
                     SearchBar(text: $searchText)
-                    Spacer()
+                        .padding()
                 }
 
                 VStack{
@@ -196,9 +192,10 @@ struct Course: View {   // Design 100% OK
                                 .padding(1)
                         }
                         if filteredCourses.isEmpty {
-                            Text("No Data Found")
+                            Text("No Course Found")
+                                .bold()
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -214,6 +211,9 @@ struct Course: View {   // Design 100% OK
                     coursesViewModel.fetchExistingCourses()
                 }
                 Spacer()
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Course Created"), message: Text("Course \(createdCourse) has been Created Successfully"), dismissButton: .default(Text("OK")))
             }
             .navigationBarItems(leading: backButton)
             .background(Image("fw").resizable().ignoresSafeArea())
@@ -281,7 +281,7 @@ struct Course: View {   // Design 100% OK
             "c_title": c_title,
             "cr_hours": cr_hours
         ] as [String : Any]
-
+        createdCourse = c_title
         guard let jsonData = try? JSONSerialization.data(withJSONObject: user) else {
             return
         }

@@ -11,9 +11,7 @@ struct UploadedPapers: View {
     
     
     @State private var searchText = ""
-//    @State private var searchResults: [GetUploadedPaper] = []
     @StateObject private var uploadedPaperViewModel = UploadedPaperViewModel()
-//    @StateObject private var coursesViewModel = CoursesViewModel()
     
     var filteredPapers: [GetUploadedPaper] { // All Data Will Be Filter and show on Table
         if searchText.isEmpty {

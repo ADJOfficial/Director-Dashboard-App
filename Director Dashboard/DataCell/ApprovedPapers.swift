@@ -9,10 +9,13 @@ import SwiftUI
 
 struct ApprovedPaper: View { // Design 100% OK
     
+    @State private var showAlert = false
+    @State private var printedPaperName = ""
+    
     @State private var searchText = ""
     @StateObject private var paperViewModel = PaperViewModel()
     
-    var filteredPapers: [Paper] { // All Data Will Be Filter and show on Table
+    var filteredPapers: [Paper]{ // All Data Will Be Filter and show on Table
             if searchText.isEmpty {
                 return paperViewModel.existingPapers
             } else {
@@ -21,6 +24,7 @@ struct ApprovedPaper: View { // Design 100% OK
                 }
             }
         }
+    
     struct SearchBar: View { // Search Bar avaible outside of table to search record
         @Binding var text: String
 
@@ -37,7 +41,8 @@ struct ApprovedPaper: View { // Design 100% OK
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -68,7 +73,7 @@ struct ApprovedPaper: View { // Design 100% OK
                                
                                 Image(systemName: isPaperApproved(index) ? "printer.filled.and.paper" : "printer.filled.and.paper")
                                     .font(.title2)
-                                    .foregroundColor(isPaperApproved(index) ? .red : .green)
+                                    .foregroundColor(isPaperApproved(index) ? .green : .yellow)
                                     .onTapGesture {
                                         togglePaperStatus(index)
                                     }
@@ -97,6 +102,9 @@ struct ApprovedPaper: View { // Design 100% OK
                 }
                 Spacer()
             }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Paper Printed"), message: Text("\(printedPaperName) Paper has been Printed"), dismissButton: .default(Text("OK")))
+            }
             .navigationBarItems(leading: backButton)
             .background(Image("fw").resizable().ignoresSafeArea())
         }
@@ -113,12 +121,20 @@ struct ApprovedPaper: View { // Design 100% OK
     }
     
     func isPaperApproved(_ index: Int) -> Bool {
-        return filteredPapers[index].status == "Print"
-    }
-    func togglePaperStatus(_ index: Int) {
-        
         let paper = filteredPapers[index]
-        let newStatus = paper.status == "Print" ? "Print" : "Printed"
+        return paper.status == "Approved"
+    }
+    
+    func togglePaperStatus(_ index: Int) {
+        let paper = filteredPapers[index]
+        
+        guard paper.status == "Approved" else {
+            return
+        }
+        
+        printedPaperName = paper.p_name
+        
+        let newStatus = "Printed"
         
         guard let url = URL(string: "http://localhost:8000/updatepaperstatus/\(paper.p_id)") else {
             return
@@ -135,11 +151,15 @@ struct ApprovedPaper: View { // Design 100% OK
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error updating faculty status: \(error.localizedDescription)")
+                print("Error updating paper status: \(error.localizedDescription)")
             } else if let data = data {
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("Faculty status updated successfully: \(responseString)")
-                    paperViewModel.fetchExistingPapers()
+                    print("Paper status updated successfully: \(responseString)")
+                    
+                    DispatchQueue.main.async {
+                        showAlert = true
+                        paperViewModel.existingPapers.removeAll { $0.p_id == paper.p_id }
+                    }
                 }
             }
         }.resume()

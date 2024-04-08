@@ -12,6 +12,7 @@ struct DataCellLogin: View {
     @State private var username = ""
     @State private var password = ""
     @State private var isLoggedIn = false
+    @State private var showAlert = false
     
     var body: some View {
         VStack{
@@ -19,12 +20,6 @@ struct DataCellLogin: View {
                 .font(.largeTitle)
                 .bold()
                 .foregroundColor(Color.white)
-            Spacer()
-            Text("Welcome")
-                .font(.title2)
-                .bold()
-                .foregroundColor(Color.white)
-                .padding(.leading,-170)
             Spacer()
             VStack(alignment: .leading){
                 Text("Username")
@@ -60,11 +55,14 @@ struct DataCellLogin: View {
             .cornerRadius(8)
         }
         .fullScreenCover(isPresented: $isLoggedIn){
-            DataCellWelcome()
-//                .navigationBarBackButtonHidden(false)
+            DataCellWelcome(username: username)
+                .navigationBarBackButtonHidden(true)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Login Failed"), message: Text("Username or Password is incorrect"), dismissButton: .default(Text("OK")))
         }
         .navigationBarItems(leading: backButton)
-        .background(Image("ff").resizable().ignoresSafeArea())
+        .background(Image("fw").resizable().ignoresSafeArea())
     }
     @Environment(\.presentationMode) var presentationMode
     private var backButton: some View {
@@ -78,12 +76,13 @@ struct DataCellLogin: View {
     }
     
     func login() {
-        if username == "" &&  password == "" {
+        if username == "Nadeem" &&  password == "123" {
             isLoggedIn = true
             print("Login Successfull")
         }
         else {
             print("Invalid Credentials")
+            showAlert = true
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DataCellWelcome: View { // Design 100% Ok
     
-//    let username: String
+    let username: String
     
     var body: some View { // Get All Data From Node MongoDB : Pending
     
@@ -20,7 +20,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                     .font(.largeTitle)
                     .foregroundColor(Color.white)
                 Spacer()
-                Text("Welcome")
+                Text("Welcome \(username)")
                     .bold()
                     .padding()
                     .font(.title)
@@ -88,7 +88,7 @@ struct DataCellWelcome: View { // Design 100% Ok
                 Spacer()
             }
             .navigationBarItems(leading: backButton)
-            .background(Image("ff").resizable().ignoresSafeArea())
+            .background(Image("fw").resizable().ignoresSafeArea())
         }
     }
     @Environment(\.presentationMode) var presentationMode
@@ -105,6 +105,6 @@ struct DataCellWelcome: View { // Design 100% Ok
 
 struct DataCellWelcome_Previews: PreviewProvider {
     static var previews: some View {
-        DataCellWelcome()
+        DataCellWelcome(username: "")
     }
 }

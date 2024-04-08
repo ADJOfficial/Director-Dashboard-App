@@ -74,8 +74,6 @@ struct DirectorLogin: View {
             .frame(width: 150, height: 60)
             .background(Color.brown.opacity(0.7))
             .cornerRadius(8)
-            
-//            Spacer()
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Invalid credentials"), message: Text("Please enter valid username and password"), dismissButton: .default(Text("OK")))

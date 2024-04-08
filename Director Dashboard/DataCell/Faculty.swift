@@ -9,9 +9,17 @@ import SwiftUI
 
 struct Faculty: View {   // Design 100% OK
 
+    @State private var showAlert = false
+    @State private var createdFaculty = ""
+
     @State private var f_name = ""
     @State private var username = ""
     @State private var password = ""
+    
+    @State private var isf_nameEmpty = false
+    @State private var isusernameEmpty = false
+    @State private var ispasswordEmpty = false
+    
     @State private var searchText = ""
     @State private var searchResults: [faculties] = []
     @StateObject private var facultiesViewModel = FacultiesViewModel()
@@ -43,7 +51,8 @@ struct Faculty: View {   // Design 100% OK
                     text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .font(.title3)
+                        .foregroundColor(Color.red.opacity(0.9))
                 }
                 .opacity(text.isEmpty ? 0 : 1)
             }
@@ -63,38 +72,73 @@ struct Faculty: View {   // Design 100% OK
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Name" , text: $f_name)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
+                VStack{
+                    if isf_nameEmpty {
+                        Text("Required*")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                    }
+                    TextField("Name" , text: $f_name)
+                        .padding()
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                }
+                .onChange(of: f_name) { newValue in
+                    isf_nameEmpty = newValue.isEmpty
+                }
                 Text("Username")
                     .bold()
                     .padding(.horizontal)
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                TextField("Username" , text: $username)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
+                VStack{
+                    if isusernameEmpty {
+                        Text("Required*")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                    }
+                    TextField("Username" , text: $username)
+                        .padding()
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                }
+                .onChange(of: username) { newValue in
+                    isusernameEmpty = newValue.isEmpty
+                }
                 Text("Password")
                     .bold()
                     .padding(.horizontal)
                     .font(.title2)
                     .foregroundColor(Color.white)
                     .frame(maxWidth: .infinity , alignment: .leading)
-                SecureField("Password" , text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                
+                VStack{
+                    if ispasswordEmpty {
+                        Text("Required*")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity , alignment: .trailing)
+                    }
+                    SecureField("Password" , text: $password)
+                        .padding()
+                        .background(Color.gray.opacity(1))
+                        .cornerRadius(8)
+                        .padding(.horizontal)
+                }
+                .onChange(of: password) { newValue in
+                    ispasswordEmpty = newValue.isEmpty
+                }
                 VStack{
                     Spacer()
                     Button("Create"){
-                        createFaculty()
+                        validateAndCreateFaculty()
                     }
                     .bold()
                     .padding()
@@ -102,9 +146,8 @@ struct Faculty: View {   // Design 100% OK
                     .foregroundColor(.black)
                     .background(Color.yellow)
                     .cornerRadius(8)
-                    Spacer()
                     SearchBar(text: $searchText)
-                    Spacer()
+                        .padding()
                 }
 
                 VStack{
@@ -143,9 +186,10 @@ struct Faculty: View {   // Design 100% OK
                                 .padding(1)
                         }
                         if filteredFaculties.isEmpty {
-                            Text("No Data Found")
+                            Text("No Faculty Found")
+                                .bold()
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.orange)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
@@ -161,6 +205,9 @@ struct Faculty: View {   // Design 100% OK
                     facultiesViewModel.fetchExistingFaculties()
                 }
                 Spacer()
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Faculty Created"), message: Text("Faculty \(createdFaculty) has been Created Successfully"), dismissButton: .default(Text("OK")))
             }
             .navigationBarItems(leading: backButton)
             .background(Image("fw").resizable().ignoresSafeArea())
@@ -207,6 +254,16 @@ struct Faculty: View {   // Design 100% OK
             }
         }.resume()
     }
+    
+    func validateAndCreateFaculty() {
+        isf_nameEmpty = f_name.isEmpty
+        isusernameEmpty = username.isEmpty
+        ispasswordEmpty = password.isEmpty
+        
+        if !isf_nameEmpty && !isusernameEmpty && !ispasswordEmpty {
+            createFaculty()
+        }
+    }
     func createFaculty() {
         guard let url = URL(string: "http://localhost:8000/addnewfaculty") else {
             return
@@ -217,7 +274,7 @@ struct Faculty: View {   // Design 100% OK
             "username": username,
             "password": password
         ] as [String : Any]
-
+        createdFaculty = f_name
         guard let jsonData = try? JSONSerialization.data(withJSONObject: user) else {
             return
         }
@@ -234,6 +291,7 @@ struct Faculty: View {   // Design 100% OK
                     print("Result from server:", result)
                     facultiesViewModel.fetchExistingFaculties() // Refresh faculties after creating a new one
                     DispatchQueue.main.async {
+                        showAlert = true
                         f_name = ""
                         username = ""
                         password = ""
